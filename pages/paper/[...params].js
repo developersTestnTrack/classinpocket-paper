@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
 
@@ -11,8 +12,11 @@ const PdfUpload = dynamic(() => import("@/components/PdfUpload"));
 
 export default function Paper() {
     const [editor, setEditor] = useState({ show: false, data: {} });
+    const router = useRouter();
 
     useEffect(() => {
+        console.log(router.query);
+
         firestoreDB
             .collection("service")
             .get()
