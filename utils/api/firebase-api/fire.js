@@ -11,7 +11,9 @@ const firebaseConfig = {
     measurementId: "G-74Q44H083Q",
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (firebase.apps.length === 0) {
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig, "cip");
+}
 
 export const firestoreDB = firebase.firestore();
