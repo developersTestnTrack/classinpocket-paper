@@ -1,31 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-
-import { firestoreDB } from "@/utils/api/firebase-api/fire";
+import { useQuery } from "react-query";
 
 import Page from "@/components/Page";
-import StepForm from "@/components/step-form/StepForm";
+import { Progress } from "@/components/Common";
+
+import { getClassById } from "@/utils/api/firebase-api/query";
 
 const QuestionEditor = dynamic(() => import("@/components/editor/QuestionEditor"));
 const PdfUpload = dynamic(() => import("@/components/PdfUpload"));
+const PaperDetail = dynamic(() => import("@/components/PaperDetail"));
 
-export default function Paper() {
+function PaperPage({ params }) {
     const [editor, setEditor] = useState({ show: false, data: {} });
-    const router = useRouter();
+    const { data, isLoading } = useQuery("classes", () => getClassById({ school_id: params[0], class_id: params[1] }));
 
-    useEffect(() => {
-        console.log(router.query);
-
-        firestoreDB
-            .collection("service")
-            .get()
-            .then((docs) => {
-                docs.forEach((doc) => {
-                    console.log(doc.data());
-                });
-            });
-    });
+    if (isLoading) {
+        return <Progress />;
+    }
 
     if (editor.show && editor.data?.config.questionType === "Individual") {
         return (
@@ -42,7 +35,8 @@ export default function Paper() {
     } else {
         return (
             <Page showSideBar={false}>
-                <StepForm
+                <PaperDetail
+                    details={data}
                     onFinish={(data) => {
                         console.log(data);
                         setEditor((prevState) => ({ show: !prevState.show, data }));
@@ -50,5 +44,15 @@ export default function Paper() {
                 />
             </Page>
         );
+    }
+}
+
+export default function Paper() {
+    const router = useRouter();
+
+    if (router.query.params) {
+        return <PaperPage params={router.query.params} />;
+    } else {
+        return null;
     }
 }
