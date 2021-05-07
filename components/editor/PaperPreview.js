@@ -38,15 +38,19 @@ const useStyles = makeStyles((theme) => ({
 
 function QuestionListRender({ list }) {
     const classes = useStyles();
-    return list.map((question) => {
-        const { text, config, options } = question;
 
-        return (
-            <Grid item xs={12}>
-                <div className={classes.question} dangerouslySetInnerHTML={{ __html: text }} />
-            </Grid>
-        );
-    });
+    return (
+        <Grid container>
+            {list.map((question, i) => {
+                const { text } = question;
+                return (
+                    <Grid item xs={12} key={i}>
+                        <div className={classes.question} dangerouslySetInnerHTML={{ __html: text }} />
+                    </Grid>
+                );
+            })}
+        </Grid>
+    );
 }
 
 export default function PaperPreview({ onClose }) {
@@ -132,9 +136,7 @@ export default function PaperPreview({ onClose }) {
                     </Grid>
                 </Grid>
                 <Grid item xs={8}>
-                    <Grid container>
-                        <QuestionListRender list={list} />
-                    </Grid>
+                    <QuestionListRender list={list} />
                 </Grid>
             </Grid>
         </Container>

@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import { ReactQueryDevtoolsPanel } from "react-query/devtools";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";

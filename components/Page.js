@@ -15,7 +15,7 @@ import ManagementIcon from "@material-ui/icons/AccountBalance";
 import PaperIcon from "@material-ui/icons/ImportContacts";
 import StudentIcon from "@material-ui/icons/LocalLibrary";
 
-import { makeStyles, styled } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 import SideDrawerNav from "./SiderDrawerNav";
 import { drawerWidth } from "@/utils/constants";
