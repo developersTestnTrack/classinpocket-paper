@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useQuery } from "react-query";
 import { parseISO, differenceInMinutes } from "date-fns";
 
 import {
@@ -14,7 +12,6 @@ import {
     Grid,
 } from "@material-ui/core";
 
-import { getName } from "@/utils/api/all";
 import SubmitPanel from "./SubmitPanel";
 import { useEditor } from "./editorUtil";
 
@@ -22,23 +19,7 @@ export default function QuestionDetailPanel() {
     const [state, dispatch] = useEditor();
     const { question, edit, paper, list: questionList } = state;
 
-    const [list, setList] = useState({ subject: [], course: [] });
-
-    const { isLoading } = useQuery(
-        "getnames",
-        () => getName({ subjectId: state.paper.subject.subjectId, courseId: state.paper.course.courseId }),
-        {
-            refetchOnWindowFocus: false,
-            onSuccess: (result) => {
-                if (result.status) {
-                    setList({ subject: result.data.Subject, course: result.data.Course });
-                }
-            },
-        }
-    );
-
-    console.log(list);
-
+    // console.log(paper);
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -164,70 +145,58 @@ export default function QuestionDetailPanel() {
                         <div></div>
                     )}
 
-                    {isLoading ? (
-                        <ListItem>
-                            <ListItemText>
-                                <Typography variant="h5" align="center">
-                                    Fetching...
-                                </Typography>
-                            </ListItemText>
-                        </ListItem>
-                    ) : (
-                        <>
-                            <ListItem>
-                                <TextField
-                                    fullWidth
-                                    select
-                                    label="Select Subject"
-                                    size="small"
-                                    variant="outlined"
-                                    value={question.config.subjectId}
-                                    onChange={(e) => {
-                                        dispatch({
-                                            type: "UPDATE_CONFIG",
-                                            config: {
-                                                subjectId: e.target.value,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    {list.subject.map((el, i) => {
-                                        return (
-                                            <MenuItem value={el.subject_id} key={i}>
-                                                {el.subject_name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </TextField>
-                            </ListItem>
-                            <ListItem>
-                                <TextField
-                                    fullWidth
-                                    select
-                                    label="Select Course"
-                                    size="small"
-                                    variant="outlined"
-                                    value={question.config.courseId}
-                                    onChange={(e) => {
-                                        dispatch({
-                                            type: "UPDATE_CONFIG",
-                                            config: {
-                                                courseId: e.target.value,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    {list.course.map((el, i) => {
-                                        return (
-                                            <MenuItem value={el.course_id} key={i}>
-                                                {el.course_name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </TextField>
-                            </ListItem>
-                        </>
-                    )}
+                    <ListItem>
+                        <TextField
+                            fullWidth
+                            select
+                            label="Select Subject"
+                            size="small"
+                            variant="outlined"
+                            value={question.config.subjectId}
+                            onChange={(e) => {
+                                dispatch({
+                                    type: "UPDATE_CONFIG",
+                                    config: {
+                                        subjectId: e.target.value,
+                                    },
+                                });
+                            }}
+                        >
+                            {paper.subjectList.map((el, i) => {
+                                return (
+                                    <MenuItem value={el} key={i}>
+                                        {el}
+                                    </MenuItem>
+                                );
+                            })}
+                        </TextField>
+                    </ListItem>
+                    <ListItem>
+                        <TextField
+                            fullWidth
+                            select
+                            label="Select Topic"
+                            size="small"
+                            variant="outlined"
+                            value={question.config.courseId}
+                            onChange={(e) => {
+                                dispatch({
+                                    type: "UPDATE_CONFIG",
+                                    config: {
+                                        courseId: e.target.value,
+                                    },
+                                });
+                            }}
+                        >
+                            {paper.topicList.map((el, i) => {
+                                return (
+                                    <MenuItem value={el} key={i}>
+                                        {el}
+                                    </MenuItem>
+                                );
+                            })}
+                        </TextField>
+                    </ListItem>
                 </List>
             </Grid>
             <Grid item xs={12}>
