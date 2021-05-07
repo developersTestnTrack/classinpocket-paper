@@ -6,11 +6,11 @@ export const pocket = axios.create({ baseURL: url });
 
 export function generatePaper({ paper, questions }) {
     const paperGen = {
-        board_id: paper.board.boardId,
-        class_id: paper.class.classId,
-        batch_id: paper.batch.batchId,
-        subject_id: paper.subject.subjectId,
-        course_id: paper.course.courseId,
+        board: paper.board,
+        class_name: paper.class,
+        section: paper.section,
+        subject_list: paper.subjectList,
+        topic_list: paper.topicList,
         paper_name: paper.config.name,
         start_time: paper.config.startTime,
         end_time: paper.config.endTime,
@@ -20,16 +20,13 @@ export function generatePaper({ paper, questions }) {
         paper_type: paper.config.paperType,
         question_type: paper.config.questionType,
         exam_type: paper.config.examType,
-        student_id: paper.config.studentId,
-        teacher_id: paper.config.teacherId,
+        student_id: paper.studentId,
+        teacher_id: paper.teacherId,
         test_type: paper.config.testType,
         questions: questions.map((question) => {
             return {
-                board_id: paper.board.boardId,
-                class_id: paper.class.classId,
-                batch_id: paper.batch.batchId,
-                subject_id: question.config.subjectId,
-                course_id: question.config.courseId,
+                subject: question.config.subjectId,
+                topics: question.config.courseId,
                 question_cate: question.config.cat,
                 question_time: Number(question.config.time),
                 question_marks: Number(question.config.marks),
