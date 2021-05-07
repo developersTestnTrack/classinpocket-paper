@@ -13,7 +13,8 @@ const firebaseConfig = {
 
 if (firebase.apps.length === 0) {
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig, "cip");
+    firebase.initializeApp(firebaseConfig);
 }
 
 export const firestoreDB = firebase.firestore();
+export const firestoreTimeStamp = firebase.firestore.Timestamp;
