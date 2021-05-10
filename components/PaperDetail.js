@@ -6,7 +6,7 @@ import { TextField, FormControlLabel, Switch, MenuItem, Grid, Container, Button 
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 
 export default function PaperDetail({ details, onFinish }) {
-    const { subject_list, board, class_name, section, teacher_list, student_list } = details;
+    const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
 
     const [selectAll, setSelectAll] = useState(false);
     const [form, dispatch] = useReducer(
@@ -45,6 +45,7 @@ export default function PaperDetail({ details, onFinish }) {
         {
             board: board,
             class: class_name,
+            class_id: id,
             section: section,
             subjectList: subject_list,
             topicList: [],
@@ -67,7 +68,6 @@ export default function PaperDetail({ details, onFinish }) {
 
     useEffect(() => {
         console.log(form);
-        console.log(details);
     });
 
     const handleDateChange = (type, date) => {

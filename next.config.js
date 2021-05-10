@@ -9,7 +9,7 @@ const nextConfig = {
     },
     webpack: (config, { webpack }) => {
         // modify the `config` here
-        config.plugins.push(new webpack.ContextReplacementPlugin(/validatorjs[\/\\]src[\/\\]lang/, /en/));
+        config.plugins.push(new webpack.ContextReplacementPlugin(/validatorjs[/\\]src[/\\]lang/, /en/));
         return config;
     },
 };

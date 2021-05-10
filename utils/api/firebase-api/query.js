@@ -1,9 +1,7 @@
-import { firestoreDB, firestoreTimeStamp } from "./fire";
+import { firestoreDB } from "./fire";
 
 export async function getClassById({ school_id, class_id }) {
     const schoolCollection = firestoreDB.collection("schools").doc(school_id);
-    const timestamp = firestoreTimeStamp.fromDate(new Date());
-    console.log(timestamp);
     try {
         const doc = await schoolCollection.collection("classes").doc(class_id).get();
 
