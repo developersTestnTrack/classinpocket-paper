@@ -8,6 +8,7 @@ export function generatePaper({ paper, questions }) {
     const paperGen = {
         board: paper.board,
         class_name: paper.class,
+        class_id: paper.class_id,
         section: paper.section,
         subject_list: paper.subjectList,
         topic_list: paper.topicList,
