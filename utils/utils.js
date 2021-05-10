@@ -4,6 +4,41 @@ let url = process.env.NEXT_PUBLIC_API_URI;
 
 export const pocket = axios.create({ baseURL: url });
 
+export function genStudents({ student_credential_list, class_details, school_id }) {
+    return student_credential_list.map((student) => {
+        const loginId = `${student.Name[0]}${student.Mother_Name[0]}${student.Father_Name[0]}section${
+            class_details.section
+        }@${class_details.class_name.replaceAll(" ", "")}`;
+
+        return {
+            id: "",
+            class_id: class_details.id,
+            school_id: school_id,
+            class: {
+                status: class_details.status,
+                id: class_details.id,
+                class_name: class_details.class_name,
+                section: class_details.section,
+                board: class_details.board,
+                subject_list: class_details.subject_list,
+                action_status: class_details.action_status,
+                created_date: class_details.created_date,
+            },
+            reg_number: loginId,
+            login_id: loginId,
+            password: "12345",
+            name: student.Name,
+            mother_name: student.Mother_Name,
+            father_name: student.Father_Name,
+            mobile: student.Mobile,
+            email: student.Email,
+            image: "",
+            gender: "",
+            approved: true,
+        };
+    });
+}
+
 export function generatePaper({ paper, questions }) {
     const paperGen = {
         board: paper.board,

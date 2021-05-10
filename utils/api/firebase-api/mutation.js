@@ -15,3 +15,19 @@ export async function addPaper({ school_id, paper }) {
 
     return paperDocumentRef.id;
 }
+
+export async function addStudents({ school_id, student_list }) {
+    const schoolCollection = firestoreDB.collection("schools").doc(school_id);
+
+    await Promise.all(
+        student_list.map((student) => {
+            const studentDocSnapShotRef = schoolCollection.collection("students").doc();
+
+            return studentDocSnapShotRef.set({
+                ...student,
+                created_date: firestoreTimeStamp.fromDate(new Date()),
+                id: studentDocSnapShotRef.id,
+            });
+        })
+    );
+}
