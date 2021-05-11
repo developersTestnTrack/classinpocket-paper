@@ -59,8 +59,9 @@ export function generatePaper({ paper, questions }) {
         student_id: paper.studentId,
         teacher_id: paper.teacherId,
         test_type: paper.config.testType,
-        questions: questions.map((question) => {
+        questions: questions.map((question, i) => {
             return {
+                question_no: i + 1,
                 subject: question.config.subjectId,
                 topics: question.config.courseId,
                 question_cate: question.config.cat,
