@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAVFCUdcM7Ta9muRJDy7DticO0TkuTcHbE",
@@ -17,4 +18,5 @@ if (firebase.apps.length === 0) {
 }
 
 export const firestoreDB = firebase.firestore();
+export const firebaseStorage = firebase.storage();
 export const firestoreTimeStamp = firebase.firestore.Timestamp;

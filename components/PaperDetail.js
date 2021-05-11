@@ -112,6 +112,7 @@ export default function PaperDetail({ details, onFinish }) {
                         fullWidth
                         variant="outlined"
                         label="Enter Topics"
+                        placeholder="ex. friction, power, cells, chemical reactions"
                         value={form.topicList.join(" ,")}
                         onChange={(e) => {
                             dispatch({ type: "topic", value: e.target.value });
