@@ -51,6 +51,12 @@ export default function PdfUpload({ paperDetails }) {
         onMutate: () => {
             setLoader({ show: true });
         },
+        onSuccess: (data) => {
+            console.log(data);
+        },
+        onError: (err) => {
+            console.log(err);
+        },
         onSettled: () => {
             setLoader({ show: false });
         },
