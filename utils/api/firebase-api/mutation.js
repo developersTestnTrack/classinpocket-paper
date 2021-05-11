@@ -12,10 +12,20 @@ export async function uploadPdfPaper({ paper, question_pdf_blob, solution_pdf_bl
         // upload both pdf to bucket
         const pdfUploadTask = await Promise.all([
             paperStorageRef
-                .child(`${getTime(new Date())}${question_pdf_blob.name}`, { contentType: "application/pdf" })
+                .child(
+                    `question_pdf_${getTime(new Date())}${question_pdf_blob.name}`.replaceAll(" ", "").toLowerCase(),
+                    {
+                        contentType: "application/pdf",
+                    }
+                )
                 .put(question_pdf_blob),
             paperStorageRef
-                .child(`${getTime(new Date())}${solution_pdf_blob.name}`, { contentType: "application/pdf" })
+                .child(
+                    `solution_pdf_${getTime(new Date())}${solution_pdf_blob.name}`.replaceAll(" ", "").toLowerCase(),
+                    {
+                        contentType: "application/pdf",
+                    }
+                )
                 .put(solution_pdf_blob),
         ]);
 
