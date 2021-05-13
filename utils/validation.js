@@ -1,24 +1,79 @@
 import Validator from "validatorjs";
+import validate from "validate.js";
 
-export function validatePackage(pack) {
+export function validatePaperDetails(paperDetails) {
     const rules = {
-        boardId: "required|string",
-        classId: "required|string",
-        packageName: "required|string",
-        packageRate: "required|numeric",
-        packageDescription: "required|string",
-        packageStatus: "required|string",
-        packageImage: "present",
-        packageEndDate: "required",
-        paperList: "array",
+        "config.name": {
+            presence: { allowEmpty: false, message: "Paper name is required" },
+            type: "string",
+        },
+        "config.submissionTime": {
+            presence: { allowEmpty: false, message: "submission is required" },
+            type: "string",
+        },
+        "config.questionType": {
+            presence: { allowEmpty: false, message: "Question type is required" },
+            type: "string",
+        },
+        "config.paperType": {
+            presence: { allowEmpty: false, message: "Paper type is required" },
+            type: "string",
+        },
+        "config.paperRejoin": {
+            presence: { allowEmpty: false, message: "Paper rejoin is required" },
+            type: "string",
+        },
+        "config.examType": {
+            presence: { allowEmpty: false, message: "Exam type is required" },
+            type: "string",
+        },
+        "config.totalMarks": {
+            presence: { allowEmpty: false, message: "Total marks is required" },
+            type: "string",
+        },
+        "config.testType": {
+            presence: { allowEmpty: false, message: "Test type is required" },
+            type: "string",
+        },
+        board: {
+            presence: { allowEmpty: false, message: "board name is required" },
+            type: "string",
+        },
+        class: {
+            presence: { allowEmpty: false, message: "class name is required" },
+            type: "string",
+        },
+        class_id: {
+            presence: { allowEmpty: false, message: "class id is required" },
+            type: "string",
+        },
+        section: { presence: { allowEmpty: false, message: "section name is required" }, type: "string" },
+        teacherId: { presence: { allowEmpty: false, message: "one teacher is required" }, type: "string" },
+        subjectList: {
+            presence: { allowEmpty: false, message: "subject field is required" },
+            type: "array",
+            length: {
+                minimum: 1,
+                message: "select atleast one subject",
+            },
+        },
+        topicList: {
+            presence: { allowEmpty: false, message: "topic field is required" },
+            type: "array",
+            length: {
+                minimum: 1,
+                message: "select atleast one topic",
+            },
+        },
     };
 
-    const validate = new Validator(pack, rules);
+    const result = validate(paperDetails, rules, { format: "flat" });
 
-    return {
-        pass: validate.passes(),
-        errors: validate.errors.all(),
-    };
+    if (result && result.length > 0) {
+        return { hasError: true, msgs: result };
+    } else {
+        return { hasError: false, msgs: [] };
+    }
 }
 
 export function validateQuestion(question, type) {

@@ -14,7 +14,9 @@ const PaperDetail = dynamic(() => import("@/components/PaperDetail"));
 
 function PaperPage({ params }) {
     const [editor, setEditor] = useState({ show: false, data: {} });
-    const { data, isLoading } = useQuery("classes", () => getClassById({ school_id: params[0], class_id: params[1] }));
+    const { data, isLoading } = useQuery("classes", () => getClassById({ school_id: params[0], class_id: params[1] }), {
+        refetchOnWindowFocus: false,
+    });
 
     if (isLoading) {
         return <Progress />;

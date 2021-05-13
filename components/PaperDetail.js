@@ -1,13 +1,16 @@
-import { useState, useReducer, useEffect } from "react";
+import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import formatISO from "date-fns/formatISO";
 
 import { TextField, FormControlLabel, Switch, MenuItem, Grid, Container, Button } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 
+import Snack from "@/components/Snack";
+import { validatePaperDetails } from "@/utils/validation";
+
 export default function PaperDetail({ details, onFinish }) {
     const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
-
+    const [snack, setSnack] = useState({ open: false, msg: "", status: "idle" });
     const [selectAll, setSelectAll] = useState(false);
     const [form, dispatch] = useReducer(
         (state, action) => {
@@ -66,10 +69,6 @@ export default function PaperDetail({ details, onFinish }) {
         }
     );
 
-    useEffect(() => {
-        console.log(form);
-    });
-
     const handleDateChange = (type, date) => {
         if (type === "start") {
             dispatch({ type: "config", value: { startTime: formatISO(date) } });
@@ -83,7 +82,7 @@ export default function PaperDetail({ details, onFinish }) {
     return (
         <Container>
             <Grid container spacing={4}>
-                <Grid item xs={12}></Grid>
+                <Grid item xs={12} />
                 <Grid item md={6}>
                     <TextField
                         fullWidth
@@ -332,6 +331,7 @@ export default function PaperDetail({ details, onFinish }) {
                         fullWidth
                         select
                         SelectProps={{ multiple: true }}
+                        disabled={selectAll}
                         variant="outlined"
                         label="Select Student"
                         value={form.studentId}
@@ -346,11 +346,11 @@ export default function PaperDetail({ details, onFinish }) {
                         ))}
                     </TextField>
                 </Grid>
-                <Grid item md={6}></Grid>
+                <Grid item md={6} />
                 <Grid item md={6}>
                     <FormControlLabel
                         label="Select All"
-                        control={<Switch />}
+                        control={<Switch color="primary" />}
                         value={selectAll}
                         onChange={() => {
                             dispatch({ type: "student", value: [] });
@@ -359,12 +359,34 @@ export default function PaperDetail({ details, onFinish }) {
                     />
                 </Grid>
                 <Grid item md={6}>
-                    <Button color="primary" variant="contained" onClick={() => onFinish(form)}>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => {
+                            console.log(form);
+                            const validation = validatePaperDetails(form);
+
+                            if (validation.hasError) {
+                                console.log(validation.msgs);
+                                setSnack({ open: true, status: "error", msg: "Please fill all the fields" });
+                            } else {
+                                onFinish(form);
+                            }
+                        }}
+                    >
                         Finish
                     </Button>
                 </Grid>
-                <Grid item md={6}></Grid>
+                <Grid item md={6} />
             </Grid>
+            <Snack
+                open={snack.open}
+                onClose={() => {
+                    setSnack((prevState) => ({ ...prevState, open: false }));
+                }}
+                status={snack.status}
+                msg={snack.msg}
+            />
         </Container>
     );
 }
