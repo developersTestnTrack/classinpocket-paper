@@ -39,7 +39,7 @@ export async function uploadPdfPaper({ paper, question_pdf_blob, solution_pdf_bl
             id: paperDocRef.id,
             start_time: firestoreTimeStamp.fromDate(parseISO(paper.start_time)),
             end_time: firestoreTimeStamp.fromDate(parseISO(paper.end_time)),
-            pdf: { ...paper.pdf, pdf_paper: question_pdf_url, solution_pdf: solution_pdf_url },
+            pdf: { ...paper.pdf, paper_pdf: question_pdf_url, solution_pdf: solution_pdf_url },
         });
 
         return paperDocRef.id;

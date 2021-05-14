@@ -1,12 +1,6 @@
 import AWS from "aws-sdk";
 import { v4 as uuid } from "uuid";
 
-AWS.config.update({
-    region: "ap-south-1",
-    accessKey: "AKIAX7RF22LFG3IJVBIF",
-    secretKey: "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",
-});
-
 const s3 = new AWS.S3({
     region: "ap-south-1",
     credentials: {

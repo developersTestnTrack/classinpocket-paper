@@ -21,14 +21,6 @@ import { Progress } from "@/components/Common";
 import { openFile } from "@/utils/utils";
 import { uploadPdfPaper } from "@/utils/api/firebase-api/mutation";
 
-// const PdfPreviewContainer = styled("div")({
-//     width: "100%",
-//     height: 500,
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     flexDirection: "column",
-// });
 const Paper = styled(MuiPaper)(({ theme }) => ({ padding: theme.spacing(2), display: "flex" }));
 
 export default function PdfUpload({ paperDetails }) {
@@ -286,17 +278,3 @@ export default function PdfUpload({ paperDetails }) {
         </Container>
     );
 }
-// <Grid item xs={4}>
-//     <PdfPreviewContainer>
-//         {!file ? (
-//             <>
-//                 <Typography variant="h6">Privew</Typography>
-//                 <Button variant="contained" color="primary" onClick={() => onClickUpload()}>
-//                     Upload
-//                 </Button>
-//             </>
-//         ) : (
-//             <Typography variant="h6">{file.name}</Typography>
-//         )}
-//     </PdfPreviewContainer>
-// </Grid>

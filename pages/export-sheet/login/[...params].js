@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "react-query";
 import { useRouter } from "next/router";
 
 import { Container, Grid, Button, Paper as MuiPaper, Typography } from "@material-ui/core";
-import { styled } from "@material-ui/core/styles";
+import { styled, useTheme } from "@material-ui/core/styles";
 
 import { openFile, genStudents } from "@/utils/utils";
 import { getClassById } from "@/utils/api/firebase-api/query";
@@ -19,6 +19,7 @@ const Paper = styled(MuiPaper)(({ theme }) => ({ padding: theme.spacing(2), disp
 
 function CredentialsExportPage({ router }) {
     const { params } = router.query;
+    const theme = useTheme();
     const [file, setfile] = useState({ data: [], name: "", isSelect: false });
     const [snack, setSnackState] = useState({ open: false, msg: "", status: "idle" });
 
@@ -48,7 +49,7 @@ function CredentialsExportPage({ router }) {
         <Page showSideBar={false}>
             <Container maxWidth="lg">
                 <Grid container spacing={4}>
-                    <Grid item md={12}></Grid>
+                    <Grid item md={12} />
                     <Grid item md={12}>
                         <Paper>
                             <Button
@@ -63,6 +64,9 @@ function CredentialsExportPage({ router }) {
                                 }}
                             >
                                 Select File
+                            </Button>
+                            <Button style={{ marginLeft: theme.spacing(2) }} variant="contained" color="primary">
+                                Download Example file
                             </Button>
                             <div style={{ flex: 1 }}>
                                 {file.isSelect ? (
