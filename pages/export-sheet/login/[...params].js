@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import xlsxParser from "xlsx-parse-json";
 import { useQuery, useMutation } from "react-query";
 import { useRouter } from "next/router";
-
 import { Container, Grid, Button, Paper as MuiPaper, Typography } from "@material-ui/core";
 import { styled, useTheme } from "@material-ui/core/styles";
 
@@ -65,7 +64,17 @@ function CredentialsExportPage({ router }) {
                             >
                                 Select File
                             </Button>
-                            <Button style={{ marginLeft: theme.spacing(2) }} variant="contained" color="primary">
+                            <Button
+                                style={{ marginLeft: theme.spacing(2) }}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    const anchorElemnet = document.createElement("a");
+                                    anchorElemnet.setAttribute("download", "example_student_csv.csv");
+                                    anchorElemnet.href = "/students.csv";
+                                    anchorElemnet.click();
+                                }}
+                            >
                                 Download Example file
                             </Button>
                             <div style={{ flex: 1 }}>
