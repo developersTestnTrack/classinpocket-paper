@@ -9,6 +9,8 @@ import {
     Typography,
     Toolbar,
     Button,
+    Tooltip,
+    Zoom,
 } from "@material-ui/core";
 
 import { styled } from "@material-ui/core/styles";
@@ -25,9 +27,11 @@ function TableToolBar({ children, onClick, ...rest }) {
             <ToolbarHeading variant="h6" id="tableTitle">
                 {children}
             </ToolbarHeading>
-            <Button color="primary" variant="contained" onClick={onClick} {...rest}>
-                Upload
-            </Button>
+            <Tooltip title={`Please use example csv file to upload`} TransitionComponent={Zoom}>
+                <Button color="primary" variant="contained" onClick={onClick} {...rest}>
+                    Upload
+                </Button>
+            </Tooltip>
         </Toolbar>
     );
 }
