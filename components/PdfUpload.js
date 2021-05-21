@@ -45,6 +45,7 @@ export default function PdfUpload({ paperDetails }) {
         },
         onSuccess: (data) => {
             console.log(data);
+            window.location.reload();
         },
         onError: (err) => {
             console.log(err);
