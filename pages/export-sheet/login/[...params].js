@@ -33,6 +33,12 @@ function CredentialsExportPage({ router }) {
         onSuccess: () => {
             setSnackState({ open: true, msg: "Successfull uploaded file", status: "success" });
         },
+        onError: () => {
+            setSnackState({ open: true, msg: "Something went wrong please try again", status: "error" });
+        },
+        onSettled: () => {
+            setfile({ data: [], name: "", isSelect: false });
+        },
     });
 
     useEffect(() => {
