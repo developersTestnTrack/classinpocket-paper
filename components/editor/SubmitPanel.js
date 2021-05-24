@@ -1,6 +1,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
-// import { useMutation } from "react-query";
+import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 
 import {
@@ -18,7 +18,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useEditor } from "./editorUtil";
 import { Progress } from "@/components/Common";
 
-// import { addNewPaper } from "@/utils/api/paper";
 import { generatePaper } from "@/utils/utils";
 import { addPaper } from "@/utils/api/firebase-api/mutation";
 
@@ -54,41 +53,28 @@ export default function SubmitPanel() {
 
     const { list, paper } = state;
 
-    // const { mutate } = useMutation("submit", addNewPaper, {
-    //     onMutate: () => {
-    //         setDialogState({ open: true, msg: "Please wait it will take some time" });
-    //     },
-    //     onSuccess: (result) => {
-    //         console.log("successfully submitted");
-    //         if (result.status) {
-    //             setDialogState({ open: true, msg: result.msg });
-    //             // router.push("/paper/list/");
-    //         } else {
-    //             setDialogState({ open: true, msg: result.msg });
-    //         }
-    //     },
-    //     onError: () => {
-    //         console.log("something went wrong !!!");
-    //         setDialogState({ open: true, msg: "something went wrong !!!" });
-    //     },
-    // });
+    const { mutate } = useMutation("submit", addPaper, {
+        onMutate: () => {
+            setDialogState({ open: true, msg: "Please wait it will take some time" });
+        },
+        onSuccess: () => {
+            console.log("successfully submitted");
+            setDialogState({ open: true, msg: "successfully submitted" });
+            window.location.reload();
+        },
+        onError: () => {
+            console.log("something went wrong !!!");
+            setDialogState({ open: true, msg: "something went wrong !!!" });
+        },
+    });
 
     const onClickSubmit = () => {
         const genPaper = generatePaper({ paper, questions: list });
 
         console.log(genPaper);
-        console.log(params[0]);
-
-        addPaper({ school_id: params[0], paper: genPaper })
-            .then((id) => {
-                console.log(id);
-            })
-            .catch((err) => console.log(err));
-
-        // if (genPaper.questions.length > 0) {
-        //     console.log(genPaper);
-        //     mutate(genPaper);
-        // }
+        if (genPaper.questions.length > 0) {
+            mutate({ school_id: params[0], paper: genPaper });
+        }
     };
 
     const onClickClose = () => {
