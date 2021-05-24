@@ -22,3 +22,33 @@ export async function getClassById({ school_id, class_id }) {
         throw new Error("Error in fetching classes.");
     }
 }
+
+export async function getPaper({ schoolId, paperId }) {
+    const schoolCollection = firestoreDB.collection("schools").doc(schoolId);
+    const paper = await schoolCollection.collection("papers").doc(paperId).get();
+    const questions = await schoolCollection.collection("papers").doc(paperId).collection("questions").get();
+
+    const questionsList = [];
+
+    questions.forEach((doc) => {
+        questionsList.push({ questionNumber: doc.get("question_no"), id: doc.id });
+    });
+
+    return {
+        paper: paper.data(),
+        questions: questionsList.sort((a, b) => a.questionNumber - b.questionNumber),
+        totalQuestions: questions.size,
+    };
+}
+
+export async function getQuestion({ schoolId, paperId, questionId }) {
+    const schoolCollection = firestoreDB.collection("schools").doc(schoolId);
+    const question = await schoolCollection
+        .collection("papers")
+        .doc(paperId)
+        .collection("questions")
+        .doc(questionId)
+        .get();
+
+    return question.data();
+}
