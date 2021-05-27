@@ -128,7 +128,12 @@ function QuestionView({ questionId, questionNumber, schoolId, paperId, paperType
 }
 
 const useStyles = makeStyles((theme) => ({
-    container: {},
+    container: {
+        height: "90vh",
+    },
+    grid: {
+        height: "100%",
+    },
     paper: {
         padding: theme.spacing(1),
         marginBottom: theme.spacing(1),
@@ -145,7 +150,7 @@ function PaperView({ paperId, schoolId }) {
 
     return (
         <Container classes={{ root: classes.container }} maxWidth="xl">
-            <Grid container spacing={2}>
+            <Grid className={classes.grid} container spacing={2}>
                 <Grid item xs={2}>
                     <Paper className={classes.paper}>
                         <Typography variant="h6" align="center">
@@ -190,18 +195,24 @@ function PaperView({ paperId, schoolId }) {
                         </Typography>
                     </Paper>
                 </Grid>
-                <Grid item xs={10}>
-                    {data.questions.map(({ id, questionNumber }) => (
-                        <QuestionView
-                            key={id}
-                            schoolId={schoolId}
-                            paperId={paperId}
-                            questionId={id}
-                            questionNumber={questionNumber}
-                            paperType={data.paper.paper_type.toLowerCase()}
-                        />
-                    ))}
-                </Grid>
+                {data.paper.question_type === "Pdf" ? (
+                    <Grid item xs={10}>
+                        <iframe src={data.paper.pdf.paper_pdf} title="pdf viewer" width="100%" height="100%" />
+                    </Grid>
+                ) : (
+                    <Grid item xs={10}>
+                        {data.questions.map(({ id, questionNumber }) => (
+                            <QuestionView
+                                key={id}
+                                schoolId={schoolId}
+                                paperId={paperId}
+                                questionId={id}
+                                questionNumber={questionNumber}
+                                paperType={data.paper.paper_type.toLowerCase()}
+                            />
+                        ))}
+                    </Grid>
+                )}
             </Grid>
         </Container>
     );
