@@ -79,23 +79,28 @@ export default function PaperTable({ list }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
-                            <TableRow key={i}>
-                                <TableCell align="center" component="th" scope="row">
-                                    {++i}
-                                </TableCell>
-                                <TableCell align="center">{row.paper_name}</TableCell>
-                                <TableCell align="center">{format(row.start_time.toDate(), "do MMM yyy")}</TableCell>
-                                <TableCell align="center">{row.paper_total_marks || "No marks"}</TableCell>
-                                <TableCell align="center">{row.teacher_id?.name || "No name"}</TableCell>
-                                <TableCell align="center">{getSubjectName(row.subject)}</TableCell>
-                                <TableCell align="center">{row.paper_type}</TableCell>
-                                <TableCell align="center">{row.question_type}</TableCell>
-                                <TableCell align="center">
-                                    <DeleteBtn onClick={() => onClickDelete(row._id)} />
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {list
+                            .sort((a, b) => b.start_time.toDate() - a.start_time.toDate())
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, i) => (
+                                <TableRow key={i}>
+                                    <TableCell align="center" component="th" scope="row">
+                                        {++i}
+                                    </TableCell>
+                                    <TableCell align="center">{row.paper_name}</TableCell>
+                                    <TableCell align="center">
+                                        {format(row.start_time.toDate(), "do MMM yyy")}
+                                    </TableCell>
+                                    <TableCell align="center">{row.paper_total_marks || "No marks"}</TableCell>
+                                    <TableCell align="center">{row.teacher_id?.name || "No name"}</TableCell>
+                                    <TableCell align="center">{getSubjectName(row.subject)}</TableCell>
+                                    <TableCell align="center">{row.paper_type}</TableCell>
+                                    <TableCell align="center">{row.question_type}</TableCell>
+                                    <TableCell align="center">
+                                        <DeleteBtn onClick={() => onClickDelete(row._id)} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         <TablePagination
                             rowsPerPageOptions={[5, 10]}
                             count={list.length}
