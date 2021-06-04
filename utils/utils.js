@@ -6,9 +6,9 @@ export const pocket = axios.create({ baseURL: url });
 
 export function genStudents({ student_credential_list, class_details, school_id }) {
     return student_credential_list.map((student) => {
-        const loginId = `${student.Name[0]}${student.Mother_Name[0]}${student.Father_Name[0]}section${
-            class_details.section
-        }@${class_details.class_name.replaceAll(" ", "")}`.toLowerCase();
+        const loginId = `${student.Name[0]}${student.Mother_Name[0]}${student.Father_Name[0]}section${class_details.section}@${class_details.class_name}`
+            .toLowerCase()
+            .replaceAll(" ", "");
 
         return {
             id: "",
