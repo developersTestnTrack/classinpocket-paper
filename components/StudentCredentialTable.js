@@ -28,9 +28,11 @@ function TableToolBar({ children, onClick, ...rest }) {
                 {children}
             </ToolbarHeading>
             <Tooltip title={`Please use example csv file to upload`} TransitionComponent={Zoom}>
-                <Button color="primary" variant="contained" onClick={onClick} {...rest}>
-                    Upload
-                </Button>
+                <span>
+                    <Button color="primary" variant="contained" onClick={onClick} {...rest}>
+                        Upload
+                    </Button>
+                </span>
             </Tooltip>
         </Toolbar>
     );
@@ -64,7 +66,7 @@ export default function PaperTable({ list, title = "Papers", onClickUpload, disa
                         </Typography>
                     </TextContainer>
                 ) : (
-                    <Table aria-label="student credentials list table">
+                    <Table aria-label="student credentials list table" size="small">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">Sr. No.</TableCell>
