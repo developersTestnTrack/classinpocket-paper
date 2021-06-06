@@ -71,7 +71,7 @@ function PaperListPage({ params }) {
     console.log(list);
 
     return (
-        <Page showSideBar={true}>
+        <Page showSideBar={false}>
             <Container maxWidth="lg">
                 <Tabs
                     centered
