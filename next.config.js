@@ -4,7 +4,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const nextConfig = {
-    webpack5: true,
     webpack: (config, { webpack }) => {
         // modify the `config` here
         config.plugins.push(new webpack.ContextReplacementPlugin(/validatorjs[/\\]src[/\\]lang/, /en/));
