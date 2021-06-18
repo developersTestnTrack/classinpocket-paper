@@ -220,9 +220,6 @@ export default function PaperDetail({ details, onFinish }) {
                         <MenuItem value="Pdf" key="Pdf">
                             Pdf
                         </MenuItem>
-                        <MenuItem value="Library" key="Library">
-                            Library
-                        </MenuItem>
                         <MenuItem value="Individual" key="Individual">
                             Individual
                         </MenuItem>

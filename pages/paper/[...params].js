@@ -1,6 +1,5 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 
 import Page from "@/components/Page";
@@ -49,12 +48,12 @@ function PaperPage({ params }) {
     }
 }
 
-export default function Paper() {
-    const router = useRouter();
+export function getServerSideProps({ params }) {
+    return {
+        props: { params: params.params },
+    };
+}
 
-    if (router.query.params) {
-        return <PaperPage params={router.query.params} />;
-    } else {
-        return null;
-    }
+export default function Paper({ params }) {
+    return <PaperPage params={params} />;
 }

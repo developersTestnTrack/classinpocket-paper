@@ -5,7 +5,7 @@ import { isToday, isFuture, isPast } from "date-fns";
 
 import { Tabs, Tab, Box } from "@material-ui/core";
 
-import Page from "../../../components/Page";
+import Page from "./Page";
 import { useRouter } from "next/router";
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
 import PaperTable from "@/components/PaperTable";
