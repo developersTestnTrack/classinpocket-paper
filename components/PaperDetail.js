@@ -1,6 +1,7 @@
 import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import formatISO from "date-fns/formatISO";
+import add from "date-fns/add";
 
 import { TextField, FormControlLabel, Switch, MenuItem, Grid, Container, Button } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
@@ -63,6 +64,9 @@ export default function PaperDetail({ details, onFinish }) {
                 examType: "",
                 totalMarks: "",
                 testType: "",
+                datetime: new Date(),
+                duration: "",
+                numberOfQuestoins: "",
             },
             teacherId: "",
             studentId: [],
@@ -71,7 +75,7 @@ export default function PaperDetail({ details, onFinish }) {
 
     const handleDateChange = (type, date) => {
         if (type === "start") {
-            dispatch({ type: "config", value: { startTime: formatISO(date) } });
+            dispatch({ type: "config", value: { startTime: formatISO(date), datetime: date } });
         }
 
         if (type === "end") {
@@ -83,6 +87,39 @@ export default function PaperDetail({ details, onFinish }) {
         <Container>
             <Grid container spacing={4}>
                 <Grid item xs={12} />
+                <Grid item md={6}>
+                    <TextField
+                        fullWidth
+                        label="Paper Name"
+                        variant="outlined"
+                        value={form.config.name}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "config",
+                                value: { name: e.target.value },
+                            });
+                        }}
+                    />
+                </Grid>
+                <Grid item md={6}>
+                    <TextField
+                        fullWidth
+                        label="Total Marks"
+                        variant="outlined"
+                        value={form.config.totalMarks}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            const numberRegx = /^(\s*|\d+)$/;
+
+                            if (value.match(numberRegx)) {
+                                dispatch({
+                                    type: "config",
+                                    value: { totalMarks: value },
+                                });
+                            }
+                        }}
+                    />
+                </Grid>
                 <Grid item md={6}>
                     <TextField
                         fullWidth
@@ -131,16 +168,22 @@ export default function PaperDetail({ details, onFinish }) {
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item md={3}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <DateTimePicker
-                            fullWidth
-                            label="Paper End Time"
-                            inputVariant="outlined"
-                            value={form.config.endTime}
-                            name="end"
-                            onChange={(date) => handleDateChange("end", date)}
-                        />
-                    </MuiPickersUtilsProvider>
+                    <TextField
+                        fullWidth
+                        label="Paper Durations"
+                        placeholder="In Min"
+                        variant="outlined"
+                        value={form.config.duration}
+                        onChange={(event) => {
+                            const time = event.target.value;
+                            const numberRegx = /^(\s*|\d+)$/;
+
+                            if (time.match(numberRegx)) {
+                                const end = add(form.config.datetime, { minutes: Number(time) });
+                                dispatch({ type: "config", value: { duration: time, endTime: formatISO(end) } });
+                            }
+                        }}
+                    />
                 </Grid>
                 <Grid item md={3}>
                     <TextField
@@ -272,40 +315,19 @@ export default function PaperDetail({ details, onFinish }) {
                         </MenuItem>
                     </TextField>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={3}>
                     <TextField
                         fullWidth
-                        label="Total Marks"
                         variant="outlined"
-                        value={form.config.totalMarks}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            const numberRegx = /^(\s*|\d+)$/;
-
-                            if (value.match(numberRegx)) {
-                                dispatch({
-                                    type: "config",
-                                    value: { totalMarks: value },
-                                });
-                            }
+                        placeholder="Questions"
+                        label="Number of Questions"
+                        value={form.config.numberOfQuestoins}
+                        onChange={(event) => {
+                            dispatch({ type: "config", value: { numberOfQuestoins: event.target.value } });
                         }}
                     />
                 </Grid>
-                <Grid item md={6}>
-                    <TextField
-                        fullWidth
-                        label="Paper Name"
-                        variant="outlined"
-                        value={form.config.name}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "config",
-                                value: { name: e.target.value },
-                            });
-                        }}
-                    />
-                </Grid>
-                <Grid item md={6}>
+                <Grid item md={3}>
                     <TextField
                         fullWidth
                         select
