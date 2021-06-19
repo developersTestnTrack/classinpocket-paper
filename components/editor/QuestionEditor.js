@@ -13,6 +13,8 @@ const EditorContainer = styled("div")(({ theme }) => ({
 }));
 
 export default function QuestionEditor({ paperDetails }) {
+    console.log(paperDetails);
+
     return (
         <EditorGlobal
             initialState={{

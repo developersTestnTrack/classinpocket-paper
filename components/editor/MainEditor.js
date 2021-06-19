@@ -61,7 +61,7 @@ export default function MainEditor({ nextInitialState }) {
                         <div className={classes.btns}>
                             <Button
                                 className={classes.btn}
-                                variant="outlined"
+                                variant="contained"
                                 color="primary"
                                 onClick={() => {
                                     dispatch({
@@ -75,7 +75,7 @@ export default function MainEditor({ nextInitialState }) {
                             </Button>
                             <Button
                                 className={classes.btn}
-                                variant="outlined"
+                                variant="contained"
                                 color="primary"
                                 onClick={() => {
                                     dispatch({
@@ -88,12 +88,13 @@ export default function MainEditor({ nextInitialState }) {
                             </Button>
                         </div>
                     ) : (
-                        <Button variant="outlined" color="primary" onClick={onClickAddBtn}>
-                            Add
+                        <Button variant="contained" color="primary" onClick={onClickAddBtn}>
+                            Next Question
                         </Button>
                     )}
                 </PaperHeader>
                 <SunEditor
+                    showInline
                     placeholder="Enter your question here"
                     setContents={question.text}
                     onChange={(content) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 
@@ -9,7 +9,6 @@ import {
     Grid,
     Container,
     Paper as MuiPaper,
-    InputAdornment,
     Dialog,
     DialogContent,
     DialogContentText,
@@ -28,7 +27,7 @@ export default function PdfUpload({ paperDetails }) {
     const { params } = router.query;
 
     const [pdf, setPdf] = useState({
-        numberOfQuestion: "",
+        numberOfQuestion: paperDetails.config.numberOfQuestions,
         perQuestionMarks: [],
         paperPdf: "",
         solutionPdf: "",
@@ -55,7 +54,7 @@ export default function PdfUpload({ paperDetails }) {
         },
     });
 
-    const createList = () => {
+    useEffect(() => {
         const newArray = [];
 
         for (let index = 1; index <= Number(pdf.numberOfQuestion); index++) {
@@ -63,7 +62,7 @@ export default function PdfUpload({ paperDetails }) {
         }
 
         setQuestionMarksList(newArray);
-    };
+    }, []);
 
     const onClickSubmit = async () => {
         const pdfConfig = {
@@ -171,7 +170,7 @@ export default function PdfUpload({ paperDetails }) {
                         </Grid>
 
                         {/* Enter video solution link */}
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -180,42 +179,6 @@ export default function PdfUpload({ paperDetails }) {
                                 value={pdf.solutionVideo}
                                 onChange={(e) => {
                                     setPdf((prevState) => ({ ...prevState, solutionVideo: e.target.value }));
-                                }}
-                            />
-                        </Grid>
-
-                        {/* Enter total number of questions */}
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Question Number"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button
-                                                color="primary"
-                                                variant="contained"
-                                                onClick={() => {
-                                                    createList();
-                                                }}
-                                            >
-                                                add
-                                            </Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                value={pdf.numberOfQuestion}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    const numberRegx = /^(\s*|\d+)$/;
-
-                                    if (value.match(numberRegx)) {
-                                        setPdf((prevState) => ({
-                                            ...prevState,
-                                            numberOfQuestion: e.target.value,
-                                        }));
-                                    }
                                 }}
                             />
                         </Grid>

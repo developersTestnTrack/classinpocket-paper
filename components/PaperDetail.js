@@ -1,18 +1,48 @@
+import { forwardRef } from "react";
+import dynamic from "next/dynamic";
 import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import formatISO from "date-fns/formatISO";
 import add from "date-fns/add";
 
-import { TextField, FormControlLabel, Switch, MenuItem, Grid, Container, Button } from "@material-ui/core";
+import {
+    TextField,
+    FormControlLabel,
+    Switch,
+    MenuItem,
+    Grid,
+    Container,
+    Button,
+    Dialog,
+    Slide,
+} from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 
 import Snack from "@/components/Snack";
+import { Progress } from "@/components/Common";
 import { validatePaperDetails } from "@/utils/validation";
 
-export default function PaperDetail({ details, onFinish }) {
+const QuestionEditor = dynamic(() => import("@/components/editor/QuestionEditor"), {
+    loading: function loading() {
+        return <Progress />;
+    },
+});
+const PdfUpload = dynamic(() => import("@/components/PdfUpload"), {
+    loading: function loading() {
+        return <Progress />;
+    },
+});
+
+const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+export default function PaperDetail({ details }) {
     const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
     const [snack, setSnack] = useState({ open: false, msg: "", status: "idle" });
     const [selectAll, setSelectAll] = useState(false);
+    const [openDialog, setDialog] = useState(false);
+
     const [form, dispatch] = useReducer(
         (state, action) => {
             switch (action.type) {
@@ -55,18 +85,18 @@ export default function PaperDetail({ details, onFinish }) {
             topicList: [],
             config: {
                 name: "",
-                startTime: formatISO(new Date()),
-                endTime: formatISO(new Date()),
-                submissionTime: "",
+                submissionTime: "10",
                 questionType: "",
-                paperType: "",
-                paperRejoin: "",
+                paperType: "Quizo",
+                paperRejoin: "2",
                 examType: "",
                 totalMarks: "",
                 testType: "",
-                datetime: new Date(),
                 duration: "",
-                numberOfQuestoins: "",
+                numberOfQuestions: "",
+                startTime: formatISO(new Date()),
+                endTime: formatISO(new Date()),
+                datetime: new Date(),
             },
             teacherId: "",
             studentId: [],
@@ -260,12 +290,20 @@ export default function PaperDetail({ details, onFinish }) {
                             });
                         }}
                     >
-                        <MenuItem value="Pdf" key="Pdf">
-                            Pdf
-                        </MenuItem>
-                        <MenuItem value="Individual" key="Individual">
-                            Individual
-                        </MenuItem>
+                        {form.config.paperType === "Quizo" ? (
+                            <MenuItem value="Individual" key="Individual">
+                                Individual
+                            </MenuItem>
+                        ) : (
+                            [
+                                <MenuItem value="Pdf" key="Pdf">
+                                    Pdf
+                                </MenuItem>,
+                                <MenuItem value="Individual" key="Individual">
+                                    Individual
+                                </MenuItem>,
+                            ]
+                        )}
                     </TextField>
                 </Grid>
                 <Grid item md={3}>
@@ -321,9 +359,9 @@ export default function PaperDetail({ details, onFinish }) {
                         variant="outlined"
                         placeholder="Questions"
                         label="Number of Questions"
-                        value={form.config.numberOfQuestoins}
+                        value={form.config.numberOfQuestions}
                         onChange={(event) => {
-                            dispatch({ type: "config", value: { numberOfQuestoins: event.target.value } });
+                            dispatch({ type: "config", value: { numberOfQuestions: event.target.value } });
                         }}
                     />
                 </Grid>
@@ -389,7 +427,7 @@ export default function PaperDetail({ details, onFinish }) {
                                 console.log(validation.msgs);
                                 setSnack({ open: true, status: "error", msg: "Please fill all the fields" });
                             } else {
-                                onFinish(form);
+                                setDialog(true);
                             }
                         }}
                     >
@@ -398,6 +436,22 @@ export default function PaperDetail({ details, onFinish }) {
                 </Grid>
                 <Grid item md={6} />
             </Grid>
+            <Dialog
+                fullScreen
+                TransitionComponent={Transition}
+                open={openDialog}
+                onClose={() => {
+                    setDialog(false);
+                }}
+            >
+                <Container maxWidth="xl">
+                    {form.config.questionType === "Pdf" ? (
+                        <PdfUpload paperDetails={form} />
+                    ) : (
+                        <QuestionEditor paperDetails={form} />
+                    )}
+                </Container>
+            </Dialog>
             <Snack
                 open={snack.open}
                 onClose={() => {

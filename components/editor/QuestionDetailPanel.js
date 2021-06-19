@@ -19,7 +19,6 @@ export default function QuestionDetailPanel() {
     const [state, dispatch] = useEditor();
     const { question, edit, paper, list: questionList } = state;
 
-    // console.log(paper);
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
