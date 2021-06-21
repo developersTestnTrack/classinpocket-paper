@@ -2,8 +2,7 @@ import { forwardRef } from "react";
 import dynamic from "next/dynamic";
 import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import formatISO from "date-fns/formatISO";
-import add from "date-fns/add";
+import { parseISO, add, formatISO } from "date-fns";
 
 import {
     TextField,
@@ -20,7 +19,7 @@ import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 
 import Snack from "@/components/Snack";
 import { Progress } from "@/components/Common";
-import { validatePaperDetails } from "@/utils/validation";
+import { validatePaperForm } from "@/utils/validation";
 
 const QuestionEditor = dynamic(() => import("@/components/editor/QuestionEditor"), {
     loading: function loading() {
@@ -96,7 +95,7 @@ export default function PaperDetail({ details }) {
                 numberOfQuestions: "",
                 startTime: formatISO(new Date()),
                 endTime: formatISO(new Date()),
-                datetime: new Date(),
+                datetime: formatISO(new Date()),
             },
             teacherId: "",
             studentId: [],
@@ -105,7 +104,7 @@ export default function PaperDetail({ details }) {
 
     const handleDateChange = (type, date) => {
         if (type === "start") {
-            dispatch({ type: "config", value: { startTime: formatISO(date), datetime: date } });
+            dispatch({ type: "config", value: { startTime: formatISO(date), datetime: formatISO(date) } });
         }
 
         if (type === "end") {
@@ -209,7 +208,7 @@ export default function PaperDetail({ details }) {
                             const numberRegx = /^(\s*|\d+)$/;
 
                             if (time.match(numberRegx)) {
-                                const end = add(form.config.datetime, { minutes: Number(time) });
+                                const end = add(parseISO(form.config.datetime), { minutes: Number(time) });
                                 dispatch({ type: "config", value: { duration: time, endTime: formatISO(end) } });
                             }
                         }}
@@ -264,7 +263,7 @@ export default function PaperDetail({ details }) {
                         onChange={(e) => {
                             dispatch({
                                 type: "config",
-                                value: { paperType: e.target.value },
+                                value: { paperType: e.target.value, questionType: "" },
                             });
                         }}
                     >
@@ -420,12 +419,10 @@ export default function PaperDetail({ details }) {
                         color="primary"
                         variant="contained"
                         onClick={() => {
-                            console.log(form);
-                            const validation = validatePaperDetails(form);
-
-                            if (validation.hasError) {
-                                console.log(validation.msgs);
-                                setSnack({ open: true, status: "error", msg: "Please fill all the fields" });
+                            const errors = validatePaperForm(form);
+                            if (errors.length !== 0) {
+                                console.log(errors);
+                                setSnack({ open: true, status: "error", msg: errors[0] });
                             } else {
                                 setDialog(true);
                             }

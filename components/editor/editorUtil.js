@@ -7,12 +7,7 @@ export const PaperHeader = styled("div")(({ theme }) => ({
     paddingBottom: theme.spacing(1),
 }));
 
-export const buttonList = [
-    ["paragraphStyle", "blockquote", "bold", "underline", "italic", "table", "list", "align", "removeFormat"],
-    ["outdent", "indent"],
-    ["math"],
-    ["image"],
-];
+export const buttonList = [["table", "list", "align", "removeFormat"], ["outdent", "indent"], ["math"], ["image"]];
 
 export const editorHW = {
     main: {

@@ -94,7 +94,6 @@ export default function MainEditor({ nextInitialState }) {
                     )}
                 </PaperHeader>
                 <SunEditor
-                    showInline
                     placeholder="Enter your question here"
                     setContents={question.text}
                     onChange={(content) => {
@@ -104,6 +103,16 @@ export default function MainEditor({ nextInitialState }) {
                         minHeight: question.config.cat !== "MCQ" ? 600 : editorHW.main.minHeight,
                         katex: katex,
                         buttonList,
+                    }}
+                    onImageUploadBefore={(files, info, uploadHandler) => {
+                        const file = files[0];
+
+                        if (file.size / 1024 > 50) {
+                            window.alert("image size too big");
+                            uploadHandler();
+                        } else {
+                            uploadHandler(files);
+                        }
                     }}
                 />
             </Grid>

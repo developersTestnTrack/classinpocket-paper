@@ -1,79 +1,225 @@
 import Validator from "validatorjs";
-import validate from "validate.js";
 
-export function validatePaperDetails(paperDetails) {
-    const rules = {
-        "config.name": {
-            presence: { allowEmpty: false, message: "Paper name is required" },
-            type: "string",
-        },
-        "config.submissionTime": {
-            presence: { allowEmpty: false, message: "submission is required" },
-            type: "string",
-        },
-        "config.questionType": {
-            presence: { allowEmpty: false, message: "Question type is required" },
-            type: "string",
-        },
-        "config.paperType": {
-            presence: { allowEmpty: false, message: "Paper type is required" },
-            type: "string",
-        },
-        "config.paperRejoin": {
-            presence: { allowEmpty: false, message: "Paper rejoin is required" },
-            type: "string",
-        },
-        "config.examType": {
-            presence: { allowEmpty: false, message: "Exam type is required" },
-            type: "string",
-        },
-        "config.totalMarks": {
-            presence: { allowEmpty: false, message: "Total marks is required" },
-            type: "string",
-        },
-        "config.testType": {
-            presence: { allowEmpty: false, message: "Test type is required" },
-            type: "string",
-        },
-        board: {
-            presence: { allowEmpty: false, message: "board name is required" },
-            type: "string",
-        },
-        class: {
-            presence: { allowEmpty: false, message: "class name is required" },
-            type: "string",
-        },
-        class_id: {
-            presence: { allowEmpty: false, message: "class id is required" },
-            type: "string",
-        },
-        section: { presence: { allowEmpty: false, message: "section name is required" }, type: "string" },
-        teacherId: { presence: { allowEmpty: false, message: "one teacher is required" }, type: "string" },
-        subjectList: {
-            presence: { allowEmpty: false, message: "subject field is required" },
-            type: "array",
-            length: {
-                minimum: 1,
-                message: "select atleast one subject",
-            },
-        },
-        topicList: {
-            presence: { allowEmpty: false, message: "topic field is required" },
-            type: "array",
-            length: {
-                minimum: 1,
-                message: "select atleast one topic",
-            },
-        },
+const configObjectValidate = (config) => {
+    const errors = [];
+    const configKeys = Object.keys(config);
+    const configMustKeys = {
+        name: "name",
+        numberOfQuestions: "numberOfQuestions",
+        paperRejoin: "paperRejoin",
+        paperType: "paperType",
+        questionType: "questionType",
+        submissionTime: "submissionTime",
+        testType: "testType",
+        totalMarks: "totalMarks",
+        examType: "examType",
+        startTime: "startTime",
+        endTime: "endTime",
+        duration: "duration",
+        datetime: "datetime",
     };
 
-    const result = validate(paperDetails, rules, { format: "flat" });
-
-    if (result && result.length > 0) {
-        return { hasError: true, msgs: result };
-    } else {
-        return { hasError: false, msgs: [] };
+    if (!configKeys.every((ele) => Object.values(configMustKeys).includes(ele))) {
+        return errors.push("must include all the important keys in config object");
     }
+
+    for (const [key, value] of Object.entries(config)) {
+        switch (key) {
+            case configMustKeys.name: {
+                if (typeof value !== "string") {
+                    errors.push("paper name should be string");
+                } else {
+                    if (value.length === 0) errors.push("paper name should not empty");
+                }
+                break;
+            }
+            case configMustKeys.numberOfQuestions: {
+                if (typeof value !== "string") {
+                    errors.push("number of question should be string");
+                } else {
+                    if (value.length === 0) errors.push("number of quesions should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.paperRejoin: {
+                if (typeof value !== "string") {
+                    errors.push("paper rejoin should be string");
+                } else {
+                    if (value.length === 0) errors.push("paper rejoin should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.questionType: {
+                if (typeof value !== "string") {
+                    errors.push("question type should be string");
+                } else {
+                    if (value.length === 0) errors.push("question type should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.submissionTime: {
+                if (typeof value !== "string") {
+                    errors.push("submission time should be string");
+                } else {
+                    if (value.length === 0) errors.push("submission time should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.testType: {
+                if (typeof value !== "string") {
+                    errors.push("test type should be string");
+                } else {
+                    if (value.length === 0) errors.push("test type should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.totalMarks: {
+                if (typeof value !== "string") {
+                    errors.push("total marks should be string");
+                } else {
+                    if (value.length === 0) errors.push("total marks should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.examType: {
+                if (typeof value !== "string") {
+                    errors.push("exam type should be string");
+                } else {
+                    if (value.length === 0) errors.push("exam type should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.startTime: {
+                if (typeof value !== "string") {
+                    errors.push("start time should be string");
+                } else {
+                    if (value.length === 0) errors.push("start tiem should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.endTime: {
+                if (typeof value !== "string") {
+                    errors.push("end time should be string");
+                } else {
+                    if (value.length === 0) errors.push("end time should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.duration: {
+                if (typeof value !== "string") {
+                    errors.push("duration should be string");
+                } else {
+                    if (value.length === 0) errors.push("duratoin should not be empty");
+                }
+                break;
+            }
+            case configMustKeys.datetime: {
+                if (typeof value !== "string") errors.push("datetime should be string");
+                break;
+            }
+        }
+    }
+    return errors;
+};
+
+export function validatePaperForm(payload) {
+    const errors = [];
+    const keys = Object.keys(payload);
+    const mustkeys = {
+        board: "board",
+        klass: "class",
+        classId: "class_id",
+        config: "config",
+        section: "section",
+        subjectList: "subjectList",
+        topicList: "topicList",
+        studentId: "studentId",
+        teacherId: "teacherId",
+    };
+
+    //check if every key exists
+    if (!keys.every((ele) => Object.values(mustkeys).includes(ele))) {
+        errors.push("must include all the important keys");
+        return errors;
+    }
+
+    for (const [key, value] of Object.entries(payload)) {
+        switch (key) {
+            case mustkeys.board: {
+                if (typeof value !== "string") {
+                    errors.push("board must be a string");
+                } else {
+                    if (value.length === 0) errors.push("board should not be empty");
+                }
+                break;
+            }
+            case mustkeys.klass: {
+                if (typeof value !== "string") {
+                    errors.push("class must be a string");
+                } else {
+                    if (value.length === 0) errors.push("class should not be empty");
+                }
+                break;
+            }
+            case mustkeys.classId: {
+                if (typeof value !== "string") {
+                    errors.push("class_id must be string");
+                } else {
+                    if (value.length === 0) errors.push("class_id should not be empty");
+                }
+                break;
+            }
+            case mustkeys.section: {
+                if (typeof value !== "string") {
+                    errors.push("section must be string");
+                } else {
+                    if (value.length === 0) errors.push("secion should not be empty");
+                }
+                break;
+            }
+            case mustkeys.subjectList: {
+                if (!Array.isArray(value)) {
+                    errors.push("subject list must be array");
+                } else {
+                    if (value.length === 0) errors.push("subject list should not be empty");
+                }
+                break;
+            }
+            case mustkeys.topicList: {
+                if (!Array.isArray(value)) {
+                    errors.push("topic list must be array");
+                } else {
+                    if (value.length === 0) errors.push("topic list should not be empty");
+                }
+                break;
+            }
+            case mustkeys.studentId: {
+                if (!Array.isArray(value)) {
+                    errors.push("student list must be array");
+                }
+                break;
+            }
+            case mustkeys.teacherId: {
+                if (typeof value !== "string") {
+                    errors.push("teacher must be string");
+                } else {
+                    if (value.length === 0) errors.push("teacher should not be empty");
+                }
+                break;
+            }
+            case mustkeys.config: {
+                if (typeof value !== "object") {
+                    errors.push("config must be object");
+                } else {
+                    const err = configObjectValidate(value);
+                    err.forEach((el) => errors.push(el));
+                }
+                break;
+            }
+        }
+    }
+
+    return errors;
 }
 
 export function validateQuestion(question, type) {
