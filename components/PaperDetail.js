@@ -433,15 +433,8 @@ export default function PaperDetail({ details }) {
                 </Grid>
                 <Grid item md={6} />
             </Grid>
-            <Dialog
-                fullScreen
-                TransitionComponent={Transition}
-                open={openDialog}
-                onClose={() => {
-                    setDialog(false);
-                }}
-            >
-                <Container maxWidth="xl">
+            <Dialog fullScreen TransitionComponent={Transition} open={openDialog}>
+                <Container style={{ backgroundColor: "#eceff1" }} maxWidth="xl">
                     {form.config.questionType === "Pdf" ? (
                         <PdfUpload paperDetails={form} />
                     ) : (
