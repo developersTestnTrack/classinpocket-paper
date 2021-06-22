@@ -21,9 +21,11 @@ export default function QuestionDetailPanel() {
 
     return (
         <Grid container spacing={2}>
+            {/* 1st section */}
             <Grid item xs={12}>
                 <List
                     component={Paper}
+                    aria-labelledby="details-list"
                     subheader={
                         <ListSubheader component="div" id="details-list">
                             <Typography variant="h5" align="center">
@@ -198,6 +200,8 @@ export default function QuestionDetailPanel() {
                     </ListItem>
                 </List>
             </Grid>
+
+            {/* 2nd section */}
             <Grid item xs={12}>
                 <List component={Paper} disablePadding>
                     <ListItem>
@@ -224,6 +228,8 @@ export default function QuestionDetailPanel() {
                     </ListItem>
                 </List>
             </Grid>
+
+            {/* 3rd section */}
             <Grid item xs={12}>
                 {edit.isEditing ? <div></div> : <SubmitPanel />}
             </Grid>
