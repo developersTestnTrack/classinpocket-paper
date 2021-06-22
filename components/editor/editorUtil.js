@@ -42,7 +42,10 @@ export function questionEditorReducer(state, action) {
             const hasStatuskey = Object.keys(action.option).includes("status");
 
             const newoptions = options.map((el) => {
+                //check for status key for updating status
+                // otherwise update something else
                 if (hasStatuskey) {
+                    // check if status has Multiple or Single
                     if (type === "Multiple") {
                         if (el.rank === action.option.rank) {
                             return { ...el, ...action.option };
