@@ -27,7 +27,7 @@ import { useEditor } from "./editorUtil";
 
 const useStyles = makeStyles((theme) => ({
     list: {
-        height: theme.spacing(110),
+        height: "95vh",
         maxHeight: theme.spacing(115),
         overflowY: "auto",
     },
