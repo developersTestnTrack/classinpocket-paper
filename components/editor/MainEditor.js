@@ -1,17 +1,13 @@
-import { useState } from "react";
-
-import SunEditor from "suneditor-react";
-import "suneditor/dist/css/suneditor.min.css";
-import katex from "katex";
-import "katex/dist/katex.min.css";
+import { useState, useRef } from "react";
 
 import { Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Snack from "../Snack";
 import RenderOptions from "./RenderOptions";
-import { PaperHeader, buttonList, useEditor, editorHW } from "./editorUtil";
+import { editorHW, PaperHeader, useEditor } from "./editorUtil";
 import { validateQuestion } from "@/utils/validation";
+import Editor from "./Editor";
 
 const useStyles = makeStyles((theme) => ({
     btns: {
@@ -26,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MainEditor({ nextInitialState }) {
+    const ref = useRef();
     const [state, dispatch] = useEditor();
     const [snackState, setSnackState] = useState({ open: false, status: "error", msg: "Please fill all the fields" });
-
     const classes = useStyles();
 
     const { question, list, edit, paper } = state;
@@ -48,7 +44,7 @@ export default function MainEditor({ nextInitialState }) {
     };
 
     return (
-        <Grid container spacing={1}>
+        <Grid container style={{ height: "95vh", overflowY: "scroll" }} spacing={1}>
             <Grid item xs={12}>
                 <PaperHeader>
                     {edit.isEditing ? (
@@ -93,31 +89,34 @@ export default function MainEditor({ nextInitialState }) {
                         </Button>
                     )}
                 </PaperHeader>
-                <SunEditor
+                <Editor
+                    getSunEditorInstance={(refEditor) => {
+                        ref.current = refEditor;
+                    }}
                     placeholder="Enter your question here"
                     setContents={question.text}
+                    setOptions={{
+                        minHeight: question.config.cat !== "MCQ" ? 600 : editorHW.main.minHeight,
+                    }}
                     onChange={(content) => {
                         dispatch({ type: "UPDATE_QUESTION_TEXT", text: content });
                     }}
-                    setOptions={{
-                        minHeight: question.config.cat !== "MCQ" ? 600 : editorHW.main.minHeight,
-                        katex: katex,
-                        buttonList,
-                    }}
-                    onImageUploadBefore={(files, info, uploadHandler) => {
+                    onImageUploadBefore={(files, _info, uploadHandler) => {
                         const file = files[0];
 
                         if (file.size / 1024 > 50) {
-                            window.alert("image size too big");
+                            window.alert("image size too big, image should be less then 50kb");
                             uploadHandler();
                         } else {
                             uploadHandler(files);
                         }
                     }}
+                    onBlur={() => {
+                        console.log(ref.current.getContents(true));
+                    }}
                 />
             </Grid>
             {question.config.cat === "MCQ" && <RenderOptions />}
-
             <Snack
                 open={snackState.open}
                 onClose={() => setSnackState((prevState) => ({ ...prevState, open: false }))}
