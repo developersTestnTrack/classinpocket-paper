@@ -13,12 +13,11 @@ const EditorContainer = styled("div")(({ theme }) => ({
 }));
 
 export default function QuestionEditor({ paperDetails }) {
-    console.log(paperDetails);
-
     return (
         <EditorGlobal
             initialState={{
                 question: {
+                    id: String(Date.now()),
                     text: "",
                     config: {
                         time: "",
@@ -54,6 +53,7 @@ export default function QuestionEditor({ paperDetails }) {
                         <MainEditor
                             nextInitialState={{
                                 question: {
+                                    id: String(Date.now()),
                                     text: "",
                                     config: {
                                         time: "",

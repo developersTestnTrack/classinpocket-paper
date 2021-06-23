@@ -112,7 +112,7 @@ export function questionEditorReducer(state, action) {
         case "ADD_QUESTION": {
             const { list, question, edit, paper } = state;
             return {
-                question: { ...action.nextInitialState },
+                question: { ...action.nextInitialState, id: String(Date.now()) },
                 list: [...list, { ...question }],
                 edit,
                 paper,

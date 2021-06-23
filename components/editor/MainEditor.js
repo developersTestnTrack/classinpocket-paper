@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,6 +28,10 @@ export default function MainEditor({ nextInitialState }) {
     const classes = useStyles();
 
     const { question, list, edit, paper } = state;
+
+    useEffect(() => {
+        console.log(list);
+    });
 
     const onClickAddBtn = () => {
         const { pass, errors } = validateQuestion(question, paper.config.paperType);
