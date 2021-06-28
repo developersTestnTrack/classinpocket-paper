@@ -10,6 +10,7 @@ import {
     MenuItem,
     ListItemText,
     Grid,
+    Divider,
 } from "@material-ui/core";
 
 import SubmitPanel from "./SubmitPanel";
@@ -38,7 +39,7 @@ export default function QuestionDetailPanel() {
                         <TextField
                             fullWidth
                             size="small"
-                            label="Time"
+                            label="Question Time"
                             placeholder="Question Time in Min"
                             variant="outlined"
                             value={question.config.time}
@@ -61,7 +62,7 @@ export default function QuestionDetailPanel() {
                         <TextField
                             fullWidth
                             size="small"
-                            label="Marks"
+                            label="Question Marks"
                             placeholder="Question Marks"
                             variant="outlined"
                             value={question.config.marks}
@@ -80,7 +81,7 @@ export default function QuestionDetailPanel() {
                             }}
                         />
                     </ListItem>
-                    <ListItem>
+                    {/* <ListItem>
                         <TextField
                             fullWidth
                             size="small"
@@ -97,12 +98,12 @@ export default function QuestionDetailPanel() {
                                 });
                             }}
                         />
-                    </ListItem>
+                    </ListItem> */}
                     <ListItem>
                         <TextField
                             fullWidth
                             size="small"
-                            label="Video"
+                            label="Video Solution Link"
                             placeholder="Video Solution Link"
                             variant="outlined"
                             value={question.config.video}
@@ -215,6 +216,7 @@ export default function QuestionDetailPanel() {
                             </Typography>
                         </ListItemText>
                     </ListItem>
+                    <Divider />
                     <ListItem>
                         <ListItemText>
                             <Typography variant="h6" align="center">

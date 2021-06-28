@@ -30,20 +30,20 @@ export default function MainEditor({ nextInitialState }) {
     const { question, list, edit, paper } = state;
 
     useEffect(() => {
-        console.log(list);
+        console.log(state);
     });
 
     const onClickAddBtn = () => {
-        const { pass, errors } = validateQuestion(question, paper.config.paperType);
+        const errors = validateQuestion(question, paper, list);
 
-        if (pass) {
+        if (errors.length === 0) {
             dispatch({
                 type: "ADD_QUESTION",
                 nextInitialState: nextInitialState.question,
             });
         } else {
             console.log(errors);
-            setSnackState((prevState) => ({ ...prevState, open: true }));
+            setSnackState(() => ({ open: true, status: "error", msg: errors[0] }));
         }
     };
 
@@ -98,11 +98,12 @@ export default function MainEditor({ nextInitialState }) {
                         ref.current = refEditor;
                     }}
                     placeholder="Enter your question here"
-                    setContents={question.text}
                     setOptions={{
                         minHeight: question.config.cat !== "MCQ" ? 600 : editorHW.main.minHeight,
                     }}
+                    setContents={question.text}
                     onChange={(content) => {
+                        console.log(content);
                         dispatch({ type: "UPDATE_QUESTION_TEXT", text: content });
                     }}
                     onImageUploadBefore={(files, _info, uploadHandler) => {
@@ -114,9 +115,6 @@ export default function MainEditor({ nextInitialState }) {
                         } else {
                             uploadHandler(files);
                         }
-                    }}
-                    onBlur={() => {
-                        console.log(ref.current.getContents(true));
                     }}
                 />
             </Grid>

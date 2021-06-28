@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import dynamic from "next/dynamic";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
@@ -25,19 +25,11 @@ const PaperPreview = dynamic(() => import("./PaperPreview"));
 
 const useStyles = makeStyles((theme) => ({
     listBtnPreview: {
+        backgroundColor: theme.palette.primary.light,
+        borderRadius: "4px",
+        color: "black",
         "&:hover": {
             backgroundColor: theme.palette.primary.light,
-            color: "white",
-            borderTopLeftRadius: "3px",
-            borderTopRightRadius: "3px",
-        },
-    },
-    listBtnSubmit: {
-        "&:hover": {
-            backgroundColor: theme.palette.primary.light,
-            color: "white",
-            borderBottomLeftRadius: "3px",
-            borderBottomRightRadius: "3px",
         },
     },
 }));
@@ -71,9 +63,10 @@ export default function SubmitPanel() {
     const onClickSubmit = () => {
         const genPaper = generatePaper({ paper, questions: list });
 
-        console.log(genPaper);
-        if (genPaper.questions.length > 0) {
+        if (genPaper.questions.length === state.paper.numberOfQuestions) {
             mutate({ school_id: params[0], paper: genPaper });
+        } else {
+            console.log("error");
         }
     };
 
@@ -82,26 +75,23 @@ export default function SubmitPanel() {
     };
 
     return (
-        <>
+        <Fragment>
             <List component={Paper} disablePadding>
                 <ListItem button className={classes.listBtnPreview} onClick={() => setPreviewPaper(true)}>
                     <ListItemText>
                         <Typography variant="h6" align="center">
-                            Preview
-                        </Typography>
-                    </ListItemText>
-                </ListItem>
-                <ListItem button className={classes.listBtnSubmit} onClick={onClickSubmit}>
-                    <ListItemText>
-                        <Typography variant="h6" align="center">
-                            Submit
+                            Finish
                         </Typography>
                     </ListItemText>
                 </ListItem>
             </List>
+
+            {/* paper preview panel */}
             <Dialog fullScreen open={previewPaper}>
-                <PaperPreview onClose={onClickClose} paper={paper} list={list} />
+                <PaperPreview onClose={onClickClose} paper={paper} list={list} submit={onClickSubmit} />
             </Dialog>
+
+            {/* paper submit confirmation */}
             <Dialog
                 open={dialogState.open}
                 onClose={() => setDialogState((prevState) => ({ ...prevState, open: false }))}
@@ -111,6 +101,6 @@ export default function SubmitPanel() {
                     <DialogContentText>{dialogState.msg}</DialogContentText>
                 </DialogContent>
             </Dialog>
-        </>
+        </Fragment>
     );
 }

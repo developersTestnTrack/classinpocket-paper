@@ -1,6 +1,6 @@
 import { useState, Fragment } from "react";
 import { Container as DndContainer, Draggable } from "react-smooth-dnd";
-// import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { usePopupState, bindTrigger, bindMenu } from "material-ui-popup-state/hooks";
 import clsx from "clsx";
 import {
     ListItem,
@@ -66,21 +66,61 @@ const useStyles = makeStyles((theme) => ({
     highlightListItem: {
         color: "blue",
     },
+    dragHandle: {
+        cursor: "move",
+    },
 }));
+
+function ListMoreBtn({ onClickView, onClickDelete, onClickEdit }) {
+    const popupState = usePopupState({ variant: "popover", popupId: "listmore" });
+    return (
+        <Fragment>
+            <IconButton size="small" {...bindTrigger(popupState)}>
+                <MoreIcon />
+            </IconButton>
+
+            <Menu {...bindMenu(popupState)}>
+                <MenuItem
+                    dense
+                    onClick={() => {
+                        onClickView();
+                    }}
+                >
+                    <ListItemIcon>
+                        <VisibilityIcon />
+                    </ListItemIcon>
+                    <ListItemText>View</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    dense
+                    onClick={() => {
+                        onClickEdit();
+                    }}
+                >
+                    <ListItemIcon>
+                        <EditIcon />
+                    </ListItemIcon>
+                    <ListItemText>Edit</ListItemText>
+                </MenuItem>
+                <MenuItem
+                    dense
+                    onClick={() => {
+                        onClickDelete();
+                    }}
+                >
+                    <ListItemIcon>
+                        <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
+                </MenuItem>
+            </Menu>
+        </Fragment>
+    );
+}
 
 export default function PreviewList() {
     const classes = useStyles();
     const [state, dispatch] = useEditor();
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     const [dailogState, setDailogState] = useState({ open: false, question: null });
 
     const { list, paper } = state;
@@ -95,62 +135,42 @@ export default function PreviewList() {
                         <Typography variant="h5" align="center">
                             Preview List
                         </Typography>
+                        <Typography variant="h6" align="center">
+                            {list.length}/{paper.config.numberOfQuestions}
+                        </Typography>
                     </ListSubheader>
                 }
             >
-                <DndContainer>
+                <DndContainer
+                    dropPlaceholder
+                    onDrop={(dropResult) => {
+                        dispatch({
+                            type: "UPDATE_LIST_ORDER",
+                            value: { addedIndex: dropResult.addedIndex, removedIndex: dropResult.removedIndex },
+                        });
+                    }}
+                >
                     {list.map((q, i) => {
                         return (
                             <Draggable key={q.id}>
-                                <ListItem button key={i}>
+                                <ListItem key={q.id} button>
                                     <ListItemText primary={`Question ${i + 1}`} />
                                     <ListItemSecondaryAction>
-                                        <IconButton size="small" onClick={handleClick}>
-                                            <MoreIcon />
-                                        </IconButton>
-
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl}
-                                            keepMounted
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleClose}
-                                        >
-                                            <MenuItem
-                                                onClick={() => {
-                                                    setDailogState({ open: true, question: q });
-                                                }}
-                                            >
-                                                <ListItemIcon>
-                                                    <VisibilityIcon />
-                                                </ListItemIcon>
-                                                <ListItemText>View</ListItemText>
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() => {
-                                                    dispatch({
-                                                        type: "ENABLE_EDIT",
-                                                        selectedQuestion: q,
-                                                        index: i,
-                                                    });
-                                                }}
-                                            >
-                                                <ListItemIcon>
-                                                    <EditIcon />
-                                                </ListItemIcon>
-                                                <ListItemText>Edit</ListItemText>
-                                            </MenuItem>
-                                            <MenuItem
-                                                onClick={() => {
-                                                    dispatch({ type: "DELETE_QUESTION", index: i });
-                                                }}
-                                            >
-                                                <ListItemIcon>
-                                                    <DeleteIcon />
-                                                </ListItemIcon>
-                                                <ListItemText>Delete</ListItemText>
-                                            </MenuItem>
-                                        </Menu>
+                                        <ListMoreBtn
+                                            onClickView={() => {
+                                                setDailogState({ open: true, question: q });
+                                            }}
+                                            onClickEdit={() => {
+                                                dispatch({
+                                                    type: "ENABLE_EDIT",
+                                                    selectedQuestion: q,
+                                                    index: i,
+                                                });
+                                            }}
+                                            onClickDelete={() => {
+                                                dispatch({ type: "DELETE_QUESTION", index: i });
+                                            }}
+                                        />
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             </Draggable>

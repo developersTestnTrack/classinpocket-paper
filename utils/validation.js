@@ -1,5 +1,3 @@
-import Validator from "validatorjs";
-
 const configObjectValidate = (config) => {
     const errors = [];
     const configKeys = Object.keys(config);
@@ -222,42 +220,100 @@ export function validatePaperForm(payload) {
     return errors;
 }
 
-export function validateQuestion(question, type) {
-    let rules;
+export function validateQuestion(question, paper, list) {
+    const { text, config, options } = question;
 
-    if (type === "Examania") {
-        rules = {
-            text: "required|string",
-            "config.time": "required|string",
-            "config.marks": "required|string",
-            "config.cat": "required|string",
-            "config.type": "required|string",
-            "config.pdf": "required|string",
-            "config.video": "required|string",
-            "config.subjectId": "required|string",
-            "config.courseId": "required|string",
-        };
-    } else {
-        rules = {
-            text: "required|string",
-            "config.time": "required|string",
-            "config.marks": "required|string",
-            "config.cat": "required|string",
-            "config.type": "required|string",
-            "config.pdf": "required|string",
-            "config.video": "required|string",
-            "config.subjectId": "required|string",
-            "config.courseId": "required|string",
-            "options.*.rank": "required|numeric",
-            "options.*.status": "required|boolean",
-            "options.*.text": "required|string",
-        };
+    const errors = [];
+
+    //check if  question text is entered
+    if (text.length === 0 || text === "<p><br></p>") {
+        errors.push("Please enter question");
     }
 
-    const validate = new Validator(question, rules);
+    //validate config object
+    for (const [key, value] of Object.entries(config)) {
+        switch (key) {
+            case "time": {
+                if (value.length === 0) {
+                    errors.push("Please enter time");
+                }
+                break;
+            }
+            case "marks": {
+                if (value.length === 0) {
+                    errors.push("Please enter marks");
+                }
+                break;
+            }
+            case "cat": {
+                if (value.length === 0) {
+                    errors.push("Please enter category");
+                }
+                break;
+            }
+            case "type": {
+                if (value.length === 0) {
+                    errors.push("Please enter type");
+                }
+                break;
+            }
+            case "pdf": {
+                if (value.length === 0) {
+                    errors.push("Please enter pdf link");
+                }
+                break;
+            }
+            case "video": {
+                if (value.length === 0) {
+                    errors.push("Please endter video link");
+                }
+                break;
+            }
+            case "subjectId": {
+                if (value.length === 0) {
+                    errors.push("Please select subject");
+                }
+                break;
+            }
+            case "courseId": {
+                if (value.length === 0) {
+                    errors.push("Please select topic");
+                }
+                break;
+            }
+        }
+    }
 
-    return {
-        pass: validate.passes(),
-        errors: validate.errors.all(),
-    };
+    if (paper.config.paperType === "Quizo") {
+        //check if text is enterd in options
+        options.forEach((ele) => {
+            if (ele.length === 0) {
+                errors.push("Please enter option");
+            }
+        });
+
+        //check if all the status are false
+        if (options.every((ele) => !ele.status)) {
+            errors.push("Please select any one option");
+        }
+    }
+
+    //check for total length of question list
+    if (list.length >= paper.config.numberOfQuestions) {
+        errors.push("Number of question exceed");
+    }
+
+    //validate total marks
+    const currentTotalMarks = list.reduce((acc, curr) => acc + curr.config.marks, 0);
+    if (config.marks + currentTotalMarks > paper.config.totalMarks) {
+        errors.push("Total Marks exceed");
+    }
+
+    //validate total time
+    const currentTotalTime = list.reduce((acc, curr) => acc + curr.config.time, 0);
+    if (config.time + currentTotalTime > paper.config.duration) {
+        errors.push("Total Time exceed");
+    }
+
+    return errors;
 }

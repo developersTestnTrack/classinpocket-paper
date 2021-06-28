@@ -34,6 +34,7 @@ export function questionEditorReducer(state, action) {
                 },
             };
         }
+
         case "UPDATE_OPTION": {
             const { question } = state;
             const { options, config } = question;
@@ -76,6 +77,7 @@ export function questionEditorReducer(state, action) {
                 },
             };
         }
+
         case "UPDATE_CONFIG": {
             const { question } = state;
             const hasTypeKey = Object.keys(action.config).includes("type");
@@ -109,15 +111,17 @@ export function questionEditorReducer(state, action) {
                 };
             }
         }
+
         case "ADD_QUESTION": {
             const { list, question, edit, paper } = state;
             return {
-                question: { ...action.nextInitialState, id: String(Date.now()) },
-                list: [...list, { ...question }],
+                question: { ...action.nextInitialState },
+                list: [...list, { ...question, id: String(Date.now()) }],
                 edit,
                 paper,
             };
         }
+
         case "DELETE_QUESTION": {
             const { list } = state;
             const { index } = action;
@@ -137,6 +141,7 @@ export function questionEditorReducer(state, action) {
                 list: newList,
             };
         }
+
         case "SAVE_EDIT": {
             const { question, initialState } = action;
             const { list, edit, paper } = state;
@@ -156,6 +161,7 @@ export function questionEditorReducer(state, action) {
                 paper,
             };
         }
+
         case "ENABLE_EDIT": {
             const { list, paper } = state;
             const { index, selectedQuestion } = action;
@@ -172,6 +178,7 @@ export function questionEditorReducer(state, action) {
                 paper,
             };
         }
+
         case "DISABLE_EDIT": {
             const { initialState } = action;
             const { list, paper } = state;
@@ -181,6 +188,19 @@ export function questionEditorReducer(state, action) {
                 edit: { isEditing: false, index: 0 },
                 list,
                 paper,
+            };
+        }
+
+        case "UPDATE_LIST_ORDER": {
+            const { list } = state;
+            const tempList = [...list];
+            const { removedIndex, addedIndex } = action.value;
+            const [deletedItem] = tempList.splice(removedIndex, 1);
+            tempList.splice(addedIndex, 0, deletedItem);
+
+            return {
+                ...state,
+                list: tempList,
             };
         }
     }

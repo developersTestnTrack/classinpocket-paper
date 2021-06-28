@@ -1,144 +1,40 @@
-import { Typography, Container, IconButton, Grid, TextField } from "@material-ui/core";
+import { Typography, Container, IconButton, Button } from "@material-ui/core";
 import { Close as CloseIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useEditor } from "./editorUtil";
+import PaperPreviewPanel from "../PaperPreviewPanel";
+import { generatePaper } from "@/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
-    container: {
-        paddingTop: theme.spacing(0.5),
-    },
-    question: {
-        width: "100%",
-        border: "1px solid black",
-        borderRadius: "10px",
-        padding: theme.spacing(1),
-        minHeight: theme.spacing(30),
-        overflow: "auto",
-        marginBottom: theme.spacing(1),
-    },
-    options: {
-        width: "100%",
-        border: "1px solid black",
-        borderRadius: "10px",
-        padding: theme.spacing(1),
-        minHeight: theme.spacing(20),
-    },
-    highlightOption: {
-        width: "100%",
-        border: "5px solid green",
-        borderRadius: "10px",
-        padding: theme.spacing(1),
-        minHeight: theme.spacing(20),
-    },
-    headerText: {
-        marginBottom: theme.spacing(3),
+    offset: { flexGrow: 1 },
+    nav: {
+        display: "flex",
+        flexGrow: 1,
+        padding: theme.spacing(1, 1),
     },
 }));
 
-function QuestionListRender({ list }) {
+export default function PaperPreview({ onClose, list, paper, submit }) {
     const classes = useStyles();
+    const previewPaper = generatePaper({ paper, questions: list });
+    console.log(generatePaper({ paper, questions: list }));
 
     return (
-        <Grid container>
-            {list.map((question, i) => {
-                const { text } = question;
-                return (
-                    <Grid item xs={12} key={i}>
-                        <div className={classes.question} dangerouslySetInnerHTML={{ __html: text }} />
-                    </Grid>
-                );
-            })}
-        </Grid>
-    );
-}
-
-export default function PaperPreview({ onClose }) {
-    const classes = useStyles();
-    const [state] = useEditor();
-    const { list, paper } = state;
-    console.log(list, paper);
-
-    return (
-        <Container maxWidth="xl" className={classes.container}>
-            <IconButton onClick={onClose}>
-                <CloseIcon />
-            </IconButton>
-            <Typography variant="h4" align="center" className={classes.headerText}>
-                Paper Preview
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={2}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Paper Name"
-                                disabled
-                                defaultValue={paper.config.name}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Exam Name"
-                                disabled
-                                defaultValue={paper.config.examType}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Paper Duration"
-                                disabled
-                                defaultValue={paper.config.paperDuration}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Paper Type"
-                                disabled
-                                defaultValue={paper.config.paperType}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Question Type"
-                                disabled
-                                defaultValue={paper.config.questionType}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Test Type"
-                                disabled
-                                defaultValue={paper.config.testType}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Paper Total Marks"
-                                disabled
-                                defaultValue={paper.config.totalMarks}
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item xs={8}>
-                    <QuestionListRender list={list} />
-                </Grid>
-            </Grid>
+        <Container maxWidth="xl">
+            <div className={classes.nav}>
+                <IconButton onClick={onClose}>
+                    <CloseIcon />
+                </IconButton>
+                <Typography variant="h4" align="center" className={classes.offset}>
+                    Paper Preview
+                </Typography>
+                <div>
+                    <Button variant="contained" color="primary" size="large" onClick={() => submit()}>
+                        Submit
+                    </Button>
+                </div>
+            </div>
+            <PaperPreviewPanel data={{ paper: previewPaper }} />
         </Container>
     );
 }

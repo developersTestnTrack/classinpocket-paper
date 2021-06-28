@@ -17,6 +17,7 @@ export default function RenderOptions() {
             <PaperHeader>
                 <Typography variant="h6">Option: {option.rank}</Typography>
                 <Switch
+                    color="primary"
                     checked={option.status}
                     onChange={() => {
                         dispatch({
@@ -37,6 +38,16 @@ export default function RenderOptions() {
                         type: "UPDATE_OPTION",
                         option: { rank: option.rank, text: content },
                     });
+                }}
+                onImageUploadBefore={(files, _info, uploadHandler) => {
+                    const file = files[0];
+
+                    if (file.size / 1024 > 50) {
+                        window.alert("image size too big, image should be less then 50kb");
+                        uploadHandler();
+                    } else {
+                        uploadHandler(files);
+                    }
                 }}
             />
         </Grid>

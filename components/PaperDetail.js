@@ -419,6 +419,7 @@ export default function PaperDetail({ details }) {
                         color="primary"
                         variant="contained"
                         onClick={() => {
+                            console.log(form);
                             const errors = validatePaperForm(form);
                             if (errors.length !== 0) {
                                 console.log(errors);
