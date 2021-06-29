@@ -16,6 +16,7 @@ import {
     Slide,
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
+import ChipInput from "material-ui-chip-input";
 
 import Snack from "@/components/Snack";
 import { Progress } from "@/components/Common";
@@ -56,7 +57,7 @@ export default function PaperDetail({ details }) {
                 case "topic": {
                     return {
                         ...state,
-                        topicList: action.value.split(",").map((s) => s.trim().toUpperCase()),
+                        topicList: action.value,
                     };
                 }
 
@@ -149,7 +150,7 @@ export default function PaperDetail({ details }) {
                         }}
                     />
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={12}>
                     <TextField
                         fullWidth
                         select
@@ -172,15 +173,15 @@ export default function PaperDetail({ details }) {
                         })}
                     </TextField>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
+                <Grid item xs={12}>
+                    <ChipInput
                         fullWidth
                         variant="outlined"
                         label="Enter Topics"
                         placeholder="ex. friction, power, cells, chemical reactions"
-                        value={form.topicList.join(" ,")}
-                        onChange={(e) => {
-                            dispatch({ type: "topic", value: e.target.value });
+                        defaultValue={form.topicList}
+                        onChange={(value) => {
+                            dispatch({ type: "topic", value: value });
                         }}
                     />
                 </Grid>
@@ -434,8 +435,14 @@ export default function PaperDetail({ details }) {
                 </Grid>
                 <Grid item md={6} />
             </Grid>
-            <Dialog fullScreen TransitionComponent={Transition} open={openDialog}>
-                <Container style={{ backgroundColor: "#eceff1" }} maxWidth="xl">
+            <Dialog
+                keepMounted={false}
+                fullScreen
+                TransitionComponent={Transition}
+                open={openDialog}
+                onClose={() => setDialog(false)}
+            >
+                <Container style={{ backgroundColor: "#eceff1", minHeight: "100vh" }} maxWidth="xl">
                     {form.config.questionType === "Pdf" ? (
                         <PdfUpload paperDetails={form} />
                     ) : (
