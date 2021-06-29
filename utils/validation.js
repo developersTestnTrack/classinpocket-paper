@@ -299,19 +299,19 @@ export function validateQuestion(question, paper, list) {
     }
 
     //check for total length of question list
-    if (list.length >= paper.config.numberOfQuestions) {
+    if (list.length >= Number(paper.config.numberOfQuestions)) {
         errors.push("Number of question exceed");
     }
 
     //validate total marks
-    const currentTotalMarks = list.reduce((acc, curr) => acc + curr.config.marks, 0);
-    if (config.marks + currentTotalMarks > paper.config.totalMarks) {
+    const currentTotalMarks = list.reduce((acc, curr) => acc + Number(curr.config.marks), 0);
+    if (Number(config.marks) + currentTotalMarks > Number(paper.config.totalMarks)) {
         errors.push("Total Marks exceed");
     }
 
     //validate total time
-    const currentTotalTime = list.reduce((acc, curr) => acc + curr.config.time, 0);
-    if (config.time + currentTotalTime > paper.config.duration) {
+    const currentTotalTime = list.reduce((acc, curr) => acc + Number(curr.config.time), 0);
+    if (Number(config.time) + currentTotalTime > Number(paper.config.duration)) {
         errors.push("Total Time exceed");
     }
 
