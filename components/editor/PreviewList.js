@@ -123,7 +123,7 @@ export default function PreviewList() {
     const [state, dispatch] = useEditor();
     const [dailogState, setDailogState] = useState({ open: false, question: null });
 
-    const { list, paper } = state;
+    const { list, paper, edit } = state;
     return (
         <Fragment>
             <List
@@ -141,42 +141,64 @@ export default function PreviewList() {
                     </ListSubheader>
                 }
             >
-                <DndContainer
-                    dropPlaceholder
-                    onDrop={(dropResult) => {
-                        dispatch({
-                            type: "UPDATE_LIST_ORDER",
-                            value: { addedIndex: dropResult.addedIndex, removedIndex: dropResult.removedIndex },
-                        });
-                    }}
-                >
-                    {list.map((q, i) => {
-                        return (
-                            <Draggable key={q.id}>
-                                <ListItem key={q.id} button>
-                                    <ListItemText primary={`Question ${i + 1}`} />
-                                    <ListItemSecondaryAction>
-                                        <ListMoreBtn
-                                            onClickView={() => {
-                                                setDailogState({ open: true, question: q });
-                                            }}
-                                            onClickEdit={() => {
-                                                dispatch({
-                                                    type: "ENABLE_EDIT",
-                                                    selectedQuestion: q,
-                                                    index: i,
-                                                });
-                                            }}
-                                            onClickDelete={() => {
-                                                dispatch({ type: "DELETE_QUESTION", index: i });
-                                            }}
-                                        />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            </Draggable>
-                        );
-                    })}
-                </DndContainer>
+                {edit.isEditing ? (
+                    <div
+                        style={{
+                            height: "90%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                        }}
+                    >
+                        <Typography variant="h4" align="center">
+                            Save
+                        </Typography>
+                        <Typography variant="h4" align="center">
+                            or
+                        </Typography>
+                        <Typography variant="h4" align="center">
+                            Close
+                        </Typography>
+                    </div>
+                ) : (
+                    <DndContainer
+                        dropPlaceholder
+                        onDrop={(dropResult) => {
+                            dispatch({
+                                type: "UPDATE_LIST_ORDER",
+                                value: { addedIndex: dropResult.addedIndex, removedIndex: dropResult.removedIndex },
+                            });
+                        }}
+                    >
+                        {list.map((q, i) => {
+                            return (
+                                <Draggable key={q.id}>
+                                    <ListItem key={q.id} button>
+                                        <ListItemText primary={`Question ${i + 1}`} />
+                                        <ListItemSecondaryAction>
+                                            <ListMoreBtn
+                                                onClickView={() => {
+                                                    setDailogState({ open: true, question: q });
+                                                }}
+                                                onClickEdit={() => {
+                                                    dispatch({
+                                                        type: "ENABLE_EDIT",
+                                                        selectedQuestion: q,
+                                                        index: i,
+                                                    });
+                                                }}
+                                                onClickDelete={() => {
+                                                    dispatch({ type: "DELETE_QUESTION", index: i });
+                                                }}
+                                            />
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                </Draggable>
+                            );
+                        })}
+                    </DndContainer>
+                )}
             </List>
             <Dialog fullScreen open={dailogState.open}>
                 <div className={classes.header}>
