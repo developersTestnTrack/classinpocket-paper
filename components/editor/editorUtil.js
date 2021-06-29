@@ -4,7 +4,7 @@ import { styled } from "@material-ui/core/styles";
 export const PaperHeader = styled("div")(({ theme }) => ({
     display: "flex",
     justifyContent: "space-between",
-    paddingBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
 }));
 
 export const buttonList = [["table", "list", "align", "removeFormat"], ["outdent", "indent"], ["math"], ["image"]];
