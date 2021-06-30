@@ -1,12 +1,18 @@
 import { useQuery } from "react-query";
 
-import Page from "@/components/Page";
 import { Progress } from "@/components/Common";
 import PaperDetail from "@/components/PaperDetail";
 
 import { getClassById } from "@/utils/api/firebase-api/query";
+import { Container, Typography } from "@material-ui/core";
 
-function PaperPage({ params }) {
+export function getServerSideProps({ params }) {
+    return {
+        props: { params: params.params },
+    };
+}
+
+export default function PaperPage({ params }) {
     const { data, isLoading } = useQuery("classes", () => getClassById({ school_id: params[0], class_id: params[1] }), {
         refetchOnWindowFocus: false,
     });
@@ -15,19 +21,18 @@ function PaperPage({ params }) {
         return <Progress />;
     }
 
-    return (
-        <Page showSideBar={false}>
-            <PaperDetail details={data} />
-        </Page>
-    );
-}
+    if (data.teacher_list.length === 0 || data.student_list.length === 0) {
+        return (
+            <Container
+                maxWidth="xl"
+                style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}
+            >
+                <Typography component="p" variant="h4">
+                    No teacher or student available
+                </Typography>
+            </Container>
+        );
+    }
 
-export function getServerSideProps({ params }) {
-    return {
-        props: { params: params.params },
-    };
-}
-
-export default function Paper({ params }) {
-    return <PaperPage params={params} />;
+    return <PaperDetail details={data} />;
 }

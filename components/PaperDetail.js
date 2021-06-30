@@ -38,6 +38,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 export default function PaperDetail({ details }) {
+    console.log(details);
     const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
     const [snack, setSnack] = useState({ open: false, msg: "", status: "idle" });
     const [selectAll, setSelectAll] = useState(false);

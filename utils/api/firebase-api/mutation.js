@@ -68,20 +68,16 @@ export async function addPaper({ school_id, paper }) {
 
 export async function addStudents({ school_id, student_list }) {
     const schoolCollection = firestoreDB.collection("schools").doc(school_id);
-    const studentsIds = [];
+    const batch = firestoreDB.batch();
 
-    await Promise.all(
-        student_list.map((student) => {
-            const studentDocSnapShotRef = schoolCollection.collection("students").doc();
-            studentsIds.push(studentDocSnapShotRef.id);
+    student_list.forEach((student) => {
+        const studentDocSnapShotRef = schoolCollection.collection("students").doc();
+        batch.set(studentDocSnapShotRef, {
+            ...student,
+            id: studentDocSnapShotRef.id,
+            created_date: firestoreTimeStamp.fromDate(new Date()),
+        });
+    });
 
-            return studentDocSnapShotRef.set({
-                ...student,
-                created_date: firestoreTimeStamp.fromDate(new Date()),
-                id: studentDocSnapShotRef.id,
-            });
-        })
-    );
-
-    return studentsIds;
+    return batch.commit();
 }

@@ -148,7 +148,7 @@ export default function PaperPreviewPanel({ data }) {
                         </Typography>
                         <Typography align="center">Paper Title: {data.paper.paper_name}</Typography>
                         <Typography align="center">Paper Rejoin: {data.paper.paper_rejoin}</Typography>
-                        <Typography align="center">Submission Time: {data.paper.submission_time} min</Typography>
+                        <Typography align="center">Submission Time: {data.paper.submission_time}min</Typography>
                         <Typography align="center">Total Marks: {data.paper.paper_total_marks}</Typography>
                         <Typography align="center">
                             Duration:{" "}
@@ -187,7 +187,7 @@ export default function PaperPreviewPanel({ data }) {
                         {data.paper.questions.map((question, i) => (
                             <QuestionView
                                 key={i}
-                                questionNumber={question.questionNumber}
+                                questionNumber={question.question_no}
                                 paperType={data.paper.paper_type.toLowerCase()}
                                 data={question}
                             />

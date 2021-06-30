@@ -20,7 +20,7 @@ export default function PaperPreview({ onClose, list, paper, submit }) {
     console.log(generatePaper({ paper, questions: list }));
 
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" style={{ backgroundColor: "#eceff1", minHeight: "100vh" }}>
             <div className={classes.nav}>
                 <IconButton onClick={onClose}>
                     <CloseIcon />

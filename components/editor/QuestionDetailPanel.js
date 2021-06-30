@@ -1,17 +1,6 @@
 import { parseISO, differenceInMinutes } from "date-fns";
 
-import {
-    Typography,
-    List,
-    Paper,
-    ListSubheader,
-    ListItem,
-    TextField,
-    MenuItem,
-    ListItemText,
-    Grid,
-    Divider,
-} from "@material-ui/core";
+import { Typography, List, Paper, ListItem, TextField, MenuItem, ListItemText, Grid, Divider } from "@material-ui/core";
 
 import SubmitPanel from "./SubmitPanel";
 import { useEditor } from "./editorUtil";
@@ -24,17 +13,7 @@ export default function QuestionDetailPanel() {
         <Grid container spacing={2}>
             {/* 1st section */}
             <Grid item xs={12}>
-                <List
-                    component={Paper}
-                    aria-labelledby="details-list"
-                    subheader={
-                        <ListSubheader component="div" id="details-list">
-                            <Typography variant="h5" align="center">
-                                Question Details
-                            </Typography>
-                        </ListSubheader>
-                    }
-                >
+                <List component={Paper} aria-labelledby="details-list">
                     <ListItem>
                         <TextField
                             fullWidth

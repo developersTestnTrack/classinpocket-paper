@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, Fragment } from "react";
+import { useState, useRef } from "react";
+// import { Scrollbars } from "react-custom-scrollbars";
 
-import { Grid, Typography, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Typography, Button, Switch } from "@material-ui/core";
+import { makeStyles, styled } from "@material-ui/core/styles";
 
 import Snack from "../Snack";
-import RenderOptions from "./RenderOptions";
-import { editorHW, PaperHeader, useEditor } from "./editorUtil";
+import { editorHW, useEditor } from "./editorUtil";
 import { validateQuestion } from "@/utils/validation";
 import Editor from "./Editor";
 
@@ -21,17 +21,76 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const PaperHeader = styled("div")(({ theme }) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: theme.spacing(2),
+}));
+
+const OptionHeader = styled("div")(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    display: "flex",
+    justifyContent: "space-between",
+}));
+
+function RenderOptions() {
+    const [state, dispatch] = useEditor();
+
+    const {
+        question: { options },
+    } = state;
+
+    return options.map((option, i) => (
+        <Grid item md={12} lg={12} key={i}>
+            <OptionHeader>
+                <Typography variant="h5">Option: {option.rank}</Typography>
+                <Switch
+                    color="primary"
+                    checked={option.status}
+                    onChange={() => {
+                        dispatch({
+                            type: "UPDATE_OPTION",
+                            option: { rank: option.rank, status: !option.status },
+                        });
+                    }}
+                />
+            </OptionHeader>
+            <Editor
+                placeholder="Enter your option here"
+                setContents={option.text}
+                setOptions={{
+                    minHeight: editorHW.main.minHeight,
+                }}
+                onChange={(content) => {
+                    dispatch({
+                        type: "UPDATE_OPTION",
+                        option: { rank: option.rank, text: content },
+                    });
+                }}
+                onImageUploadBefore={(files, _info, uploadHandler) => {
+                    const file = files[0];
+
+                    if (file.size / 1024 > 50) {
+                        window.alert("image size too big, image should be less then 50kb");
+                        uploadHandler();
+                    } else {
+                        uploadHandler(files);
+                    }
+                }}
+            />
+        </Grid>
+    ));
+}
+
 export default function MainEditor({ nextInitialState }) {
     const ref = useRef();
     const [state, dispatch] = useEditor();
     const [snackState, setSnackState] = useState({ open: false, status: "error", msg: "Please fill all the fields" });
     const classes = useStyles();
 
-    const { question, list, edit, paper } = state;
+    console.log(state);
 
-    useEffect(() => {
-        console.log(state);
-    });
+    const { question, list, edit, paper } = state;
 
     const onClickAddBtn = () => {
         const errors = validateQuestion(question, paper, list);
@@ -48,7 +107,7 @@ export default function MainEditor({ nextInitialState }) {
     };
 
     return (
-        <Fragment>
+        <>
             <PaperHeader>
                 {edit.isEditing ? (
                     <Typography variant="h4">Edit</Typography>
@@ -92,7 +151,7 @@ export default function MainEditor({ nextInitialState }) {
                     </Button>
                 )}
             </PaperHeader>
-            <Grid container style={{ maxHeight: "90vh", overflowY: "scroll" }} spacing={1}>
+            <Grid container spacing={1} style={{ maxHeight: "90vh", overflowY: "scroll" }}>
                 <Grid item xs={12}>
                     <Editor
                         getSunEditorInstance={(refEditor) => {
@@ -126,6 +185,6 @@ export default function MainEditor({ nextInitialState }) {
                 msg={snackState.msg}
                 status={snackState.status}
             />
-        </Fragment>
+        </>
     );
 }

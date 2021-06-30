@@ -1,15 +1,5 @@
-import axios from "axios";
-
-let url = process.env.NEXT_PUBLIC_API_URI;
-
-export const pocket = axios.create({ baseURL: url });
-
 export function genStudents({ student_credential_list, class_details, school_id }) {
     return student_credential_list.map((student) => {
-        const loginId = `${student.Name[0]}${student.Mother_Name[0]}${student.Father_Name[0]}section${class_details.section}@${class_details.class_name}`
-            .toLowerCase()
-            .replaceAll(" ", "");
-
         return {
             id: "",
             class_id: class_details.id,
@@ -24,8 +14,8 @@ export function genStudents({ student_credential_list, class_details, school_id 
                 action_status: class_details.action_status,
                 created_date: class_details.created_date,
             },
-            reg_number: loginId,
-            login_id: loginId,
+            reg_number: Date.now(),
+            login_id: student.Mobile,
             password: "12345",
             name: student.Name,
             mother_name: student.Mother_Name,
@@ -96,129 +86,4 @@ export async function openFile() {
         );
         input.click();
     });
-}
-
-export function Filter({ board = [], klass = [], batch = [], subject = [], course = [] }) {
-    const list = {
-        board,
-        klass,
-        batch,
-        subject,
-        course,
-    };
-
-    function getClasses(board) {
-        if (typeof board === "string") {
-            const tempClassList = list.klass.filter((el) => el.board_id === board);
-            return tempClassList;
-        }
-    }
-
-    function getBatches(klass) {
-        if (typeof klass === "string") {
-            const tempBatchList = list.batch.filter((el) => el.class_id === klass);
-            return tempBatchList;
-        }
-    }
-
-    function getSubjects(batch) {
-        if (typeof batch === "string") {
-            const tempSubjectList = list.subject.filter((el) => el.batch_id === batch);
-            return tempSubjectList;
-        }
-    }
-
-    function getCourses(subject) {
-        if (typeof subject === "string") {
-            const tempCourseList = list.course.filter((el) => el.subject_id === subject);
-            return tempCourseList;
-        } else if (Array.isArray(subject)) {
-            let tempCourseList = [];
-
-            subject.forEach((el1) => {
-                let li = list.course.filter((el2) => el1 === el2.subject_id);
-                tempCourseList.push(li);
-            });
-
-            return tempCourseList.flat();
-        }
-    }
-
-    return { getClasses, getBatches, getSubjects, getCourses, list };
-}
-
-export function newFilter({ board = [], klass = [], batch = [], subject = [], course = [] }) {
-    const list = {
-        board,
-        klass,
-        batch,
-        subject,
-        course,
-    };
-
-    function getClasses(boardIds) {
-        if (typeof boardIds === "string") {
-            const tempClassList = list.klass.filter((el) => el.board_id === boardIds);
-            return tempClassList;
-        } else if (Array.isArray(boardIds)) {
-            const tempClassList = [];
-
-            boardIds.forEach((b) => {
-                const li = list.klass.filter((el) => el.board_id === b);
-                tempClassList.push(li);
-            });
-
-            return tempClassList.flat();
-        }
-    }
-
-    function getBatches(klassIds) {
-        if (typeof klassIds === "string") {
-            const tempBatchList = list.batch.filter((el) => el.class_id === klassIds);
-            return tempBatchList;
-        } else if (Array.isArray(klassIds)) {
-            const tempBatchList = [];
-
-            klassIds.forEach((k) => {
-                const li = list.batch.filter((el) => el.class_id === k);
-                tempBatchList.push(li);
-            });
-
-            return tempBatchList.flat();
-        }
-    }
-
-    function getSubjects(batchIds) {
-        if (typeof batchIds === "string") {
-            const tempSubjectList = list.subject.filter((el) => el.batch_id === batchIds);
-            return tempSubjectList;
-        } else if (Array.isArray(batchIds)) {
-            const tempSubjectList = [];
-
-            batchIds.forEach((b) => {
-                const li = list.subject.filter((el) => el.batch_id === b);
-                tempSubjectList.push(li);
-            });
-
-            return tempSubjectList.flat();
-        }
-    }
-
-    function getCourses(subjectIds) {
-        if (typeof subjectIds === "string") {
-            const tempCourseList = list.course.filter((el) => el.subject_id === subjectIds);
-            return tempCourseList;
-        } else if (Array.isArray(subjectIds)) {
-            const tempCourseList = [];
-
-            subjectIds.forEach((el1) => {
-                const li = list.course.filter((el2) => el1 === el2.subject_id);
-                tempCourseList.push(li);
-            });
-
-            return tempCourseList.flat();
-        }
-    }
-
-    return { getClasses, getBatches, getSubjects, getCourses, list };
 }

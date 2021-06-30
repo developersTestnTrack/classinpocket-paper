@@ -40,7 +40,7 @@ export default function SubmitPanel() {
 
     const classes = useStyles();
     const [state] = useEditor();
-    const [dialogState, setDialogState] = useState({ open: false, msg: "" });
+    const [dialogState, setDialogState] = useState({ open: false, msg: "", status: "idle" });
     const [previewPaper, setPreviewPaper] = useState(false);
 
     const { list, paper } = state;
@@ -61,12 +61,14 @@ export default function SubmitPanel() {
     });
 
     const onClickSubmit = () => {
+        console.log(state);
         const genPaper = generatePaper({ paper, questions: list });
 
-        if (genPaper.questions.length === state.paper.numberOfQuestions) {
+        if (genPaper.questions.length === Number(paper.config.numberOfQuestions)) {
             mutate({ school_id: params[0], paper: genPaper });
         } else {
             console.log("error");
+            setDialogState(() => ({ open: true, msg: "Complete the number of questions", status: "error" }));
         }
     };
 
@@ -97,7 +99,7 @@ export default function SubmitPanel() {
                 onClose={() => setDialogState((prevState) => ({ ...prevState, open: false }))}
             >
                 <DialogContent>
-                    <Progress />
+                    {dialogState.status !== "error" && <Progress />}
                     <DialogContentText>{dialogState.msg}</DialogContentText>
                 </DialogContent>
             </Dialog>

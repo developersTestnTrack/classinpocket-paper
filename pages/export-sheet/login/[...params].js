@@ -1,30 +1,37 @@
-import { useEffect, useState } from "react";
-import xlsxParser from "xlsx-parse-json";
+import { useState } from "react";
 import { useQuery, useMutation } from "react-query";
-import { useRouter } from "next/router";
 import { Container, Grid, Button, Paper as MuiPaper, Typography } from "@material-ui/core";
 import { styled, useTheme } from "@material-ui/core/styles";
+import Papa from "papaparse";
 
 import { openFile, genStudents } from "@/utils/utils";
 import { getClassById } from "@/utils/api/firebase-api/query";
 import { addStudents } from "@/utils/api/firebase-api/mutation";
 
 import { Progress } from "@/components/Common";
-import Page from "@/components/Page";
 import StudentCredentialTable from "@/components/StudentCredentialTable";
 import Snack from "@/components/Snack";
 
 const Paper = styled(MuiPaper)(({ theme }) => ({ padding: theme.spacing(2), display: "flex" }));
 
-function CredentialsExportPage({ router }) {
-    const { params } = router.query;
+export function getServerSideProps({ params }) {
+    return {
+        props: { params: params.params },
+    };
+}
+
+export default function ExportLoginPage({ params }) {
     const theme = useTheme();
     const [file, setfile] = useState({ data: [], name: "", isSelect: false });
     const [snack, setSnackState] = useState({ open: false, msg: "", status: "idle" });
 
-    const { data, isLoading } = useQuery(["get class", params[0], params[1]], () => {
-        return getClassById({ school_id: params[0], class_id: params[1] });
-    });
+    const { data, isLoading } = useQuery(
+        ["get class", params[0], params[1]],
+        () => {
+            return getClassById({ school_id: params[0], class_id: params[1] });
+        },
+        { refetchOnWindowFocus: false }
+    );
 
     const { mutate, isLoading: isMutateLoading } = useMutation("addStudents", addStudents, {
         onMutate: () => {
@@ -41,17 +48,12 @@ function CredentialsExportPage({ router }) {
         },
     });
 
-    useEffect(() => {
-        console.log(data);
-        console.log(file);
-    });
-
     if (isLoading) {
         return <Progress />;
     }
 
     return (
-        <Page showSideBar={false}>
+        <>
             <Container maxWidth="lg">
                 <Grid container spacing={4}>
                     <Grid item md={12} />
@@ -62,8 +64,13 @@ function CredentialsExportPage({ router }) {
                                 color="primary"
                                 onClick={() => {
                                     openFile().then((file) => {
-                                        xlsxParser.onFileSelection(file).then((data) => {
-                                            setfile({ data: data.Sheet1, name: file.name, isSelect: true });
+                                        Papa.parse(file, {
+                                            header: true,
+                                            skipEmptyLines: true,
+                                            complete: (result) => {
+                                                // console.log(result);
+                                                setfile({ data: result.data, name: file.name, isSelect: true });
+                                            },
                                         });
                                     });
                                 }}
@@ -131,16 +138,6 @@ function CredentialsExportPage({ router }) {
                 status={snack.status}
                 msg={snack.msg}
             />
-        </Page>
+        </>
     );
-}
-
-export default function ExportLoginPage() {
-    const router = useRouter();
-    const { params } = router.query;
-
-    if (!params) {
-        return <Progress />;
-    }
-    return <CredentialsExportPage router={router} />;
 }

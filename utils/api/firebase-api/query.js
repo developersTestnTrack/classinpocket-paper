@@ -3,6 +3,7 @@ import { firestoreDB } from "./fire";
 export async function getClassById({ school_id, class_id }) {
     const schoolCollection = firestoreDB.collection("schools").doc(school_id);
     try {
+        const schoolDocRef = await schoolCollection.get();
         const doc = await schoolCollection.collection("classes").doc(class_id).get();
 
         const studentListQuerySnapShot = await schoolCollection
@@ -17,7 +18,7 @@ export async function getClassById({ school_id, class_id }) {
         const student_list = studentListQuerySnapShot.docs.map((doc) => doc.data());
         const teacher_list = teacherListQuerySnapShot.docs.map((doc) => doc.data());
 
-        return { ...doc.data(), student_list, teacher_list };
+        return { ...doc.data(), paper_cat_list: schoolDocRef.get("paper_cat_list") ?? [], student_list, teacher_list };
     } catch {
         throw new Error("Error in fetching classes.");
     }
