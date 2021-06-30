@@ -62,13 +62,27 @@ export default function SubmitPanel() {
 
     const onClickSubmit = () => {
         console.log(state);
+        const errors = [];
         const genPaper = generatePaper({ paper, questions: list });
+        const totalMarks = list.reduce((acc, curr) => acc + Number(curr.config.marks), 0);
+        const totalTime = list.reduce((acc, curr) => acc + Number(curr.config.time), 0);
 
-        if (genPaper.questions.length === Number(paper.config.numberOfQuestions)) {
-            mutate({ school_id: params[0], paper: genPaper });
+        if (totalMarks < Number(paper.config.totalMarks)) {
+            errors.push("Total marks doesn't match");
+        }
+
+        if (totalTime < Number(paper.config.duration)) {
+            errors.push("Total time doesn't match");
+        }
+
+        if (genPaper.questions.length < Number(paper.config.numberOfQuestions)) {
+            errors.push(`Total number of question is less then ${paper.config.numberOfQuestions}`);
+        }
+
+        if (errors.length > 0) {
+            setDialogState(() => ({ open: true, msg: errors[0], status: "error" }));
         } else {
-            console.log("error");
-            setDialogState(() => ({ open: true, msg: "Complete the number of questions", status: "error" }));
+            mutate({ school_id: params[0], paper: genPaper });
         }
     };
 
