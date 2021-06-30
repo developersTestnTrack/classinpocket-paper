@@ -15,6 +15,7 @@ import {
     Dialog,
     Slide,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import ChipInput from "material-ui-chip-input";
 
@@ -37,8 +38,14 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const useStyles = makeStyles((theme) => ({
+    list: {
+        maxHeight: theme.spacing(35),
+    },
+}));
 export default function PaperDetail({ details }) {
     console.log(details);
+    const classes = useStyles();
     const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
     const [snack, setSnack] = useState({ open: false, msg: "", status: "idle" });
     const [selectAll, setSelectAll] = useState(false);
@@ -343,15 +350,11 @@ export default function PaperDetail({ details }) {
                             });
                         }}
                     >
-                        <MenuItem value="Chapter Wise" key="Chapter Wise">
-                            Chapter Wise
-                        </MenuItem>
-                        <MenuItem value="Mock Wise" key="Mock Wise">
-                            Mock Wise
-                        </MenuItem>
-                        <MenuItem value="Book Wise" key="Book Wise">
-                            Book Wise
-                        </MenuItem>
+                        {details.paper_cat_list.map((ele) => (
+                            <MenuItem value={ele} key={ele}>
+                                {ele}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Grid>
                 <Grid item md={3}>
@@ -388,7 +391,11 @@ export default function PaperDetail({ details }) {
                     <TextField
                         fullWidth
                         select
-                        SelectProps={{ multiple: true }}
+                        SelectProps={{
+                            multiple: true,
+                            displayEmpty: true,
+                            MenuProps: { classes: { list: classes.list } },
+                        }}
                         disabled={selectAll}
                         variant="outlined"
                         label="Select Student"
