@@ -18,7 +18,6 @@ import {
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Page from "@/components/Page";
 import { getPaper, getQuestion } from "@/utils/api/firebase-api/query";
 
 const useStylesForQuestionView = makeStyles((theme) => ({
@@ -225,9 +224,5 @@ export default function PaperPreview() {
         return null;
     }
 
-    return (
-        <Page showSideBar={false}>
-            <PaperView schoolId={router.query.params[0]} paperId={router.query.params[1]} />
-        </Page>
-    );
+    return <PaperView schoolId={router.query.params[0]} paperId={router.query.params[1]} />;
 }
