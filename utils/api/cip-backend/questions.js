@@ -1,6 +1,6 @@
 import fetch from "isomorphic-unfetch";
 
-const uri = "http://localhost:3000/api/question/add";
+const uri = "https://classinpocket-backend.herokuapp.com/api/question/add";
 
 /**
  *
