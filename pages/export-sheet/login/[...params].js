@@ -84,7 +84,7 @@ export default function ExportLoginPage({ params }) {
                                 onClick={() => {
                                     const anchorElemnet = document.createElement("a");
                                     anchorElemnet.setAttribute("download", "example_student_csv.csv");
-                                    anchorElemnet.href = "/students.csv";
+                                    anchorElemnet.href = "/student.csv";
                                     anchorElemnet.click();
                                 }}
                             >

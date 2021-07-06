@@ -1,5 +1,3 @@
-import { parseISO, differenceInMinutes } from "date-fns";
-
 import { Typography, List, Paper, ListItem, TextField, MenuItem, ListItemText, Grid, Divider } from "@material-ui/core";
 
 import SubmitPanel from "./SubmitPanel";
@@ -203,7 +201,7 @@ export default function QuestionDetailPanel() {
                             </Typography>
                             <Typography variant="h6" align="center">
                                 {questionList.reduce((acc, curr) => acc + Number(curr.config.time), 0)}/
-                                {differenceInMinutes(parseISO(paper.config.endTime), parseISO(paper.config.startTime))}
+                                {Number(paper.config.duration)}
                             </Typography>
                         </ListItemText>
                     </ListItem>
