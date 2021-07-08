@@ -127,6 +127,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function Iframe({ url, key }) {
+    return <iframe key={key} src={url} title="pdf viewer" width="100%" height="100%" />;
+}
+
 export default function PaperPreviewPanel({ data }) {
     const classes = useStyles();
     console.log(data);
@@ -180,7 +184,7 @@ export default function PaperPreviewPanel({ data }) {
                 </Grid>
                 {data.paper.question_type === "Pdf" ? (
                     <Grid item xs={10}>
-                        <iframe src={data.paper.pdf.paper_pdf} title="pdf viewer" width="100%" height="100%" />
+                        <Iframe url={data.paper.pdf.paper_pdf} key={Date.now()} />
                     </Grid>
                 ) : (
                     <Grid item xs={10}>

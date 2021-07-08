@@ -14,7 +14,7 @@ export function genStudents({ student_credential_list, class_details, school_id 
                 action_status: class_details.action_status,
                 created_date: class_details.created_date,
             },
-            reg_number: Date.now(),
+            reg_number: Date.now().toString(),
             login_id: student.Mobile,
             password: "12345",
             name: student.Name,
