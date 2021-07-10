@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     header: {
         width: "100%",
         marginTop: theme.spacing(2),
-        paddingLeft: theme.spacing(12),
+        paddingLeft: theme.spacing(1),
     },
     question: {
         width: "100%",
@@ -123,6 +123,8 @@ export default function PreviewList() {
     const [dailogState, setDailogState] = useState({ open: false, question: null });
 
     const { list, edit } = state;
+
+    console.log(dailogState.question);
     return (
         <Fragment>
             <List
@@ -132,7 +134,7 @@ export default function PreviewList() {
                 subheader={
                     <ListSubheader component="div" id="preview-list">
                         <Typography variant="h5" align="center">
-                            Preview List
+                            Preview
                         </Typography>
                     </ListSubheader>
                 }
@@ -197,6 +199,7 @@ export default function PreviewList() {
                 <Container>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
+                            <Typography variant="h4">Question</Typography>
                             <div
                                 className={classes.question}
                                 dangerouslySetInnerHTML={{ __html: dailogState.question?.text }}
@@ -204,7 +207,8 @@ export default function PreviewList() {
                         </Grid>
                         {dailogState.question?.options.map((option, i) => {
                             return (
-                                <Grid item xs={6} key={i}>
+                                <Grid item xs={12} key={i}>
+                                    <Typography variant="h6">Option: {option.rank}</Typography>
                                     <div
                                         className={clsx(classes.options, {
                                             [classes.highlightOption]: option.status,

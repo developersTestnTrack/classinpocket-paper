@@ -1,6 +1,6 @@
 import fetch from "isomorphic-unfetch";
 
-const uri = "https://classinpocket-backend.herokuapp.com/api/question/add";
+const uri = "http://localhost:5001/classinpocket-f5907/us-central1/httpstrigger-backend/api";
 
 /**
  *
@@ -10,14 +10,17 @@ const uri = "https://classinpocket-backend.herokuapp.com/api/question/add";
  * @returns {Promise<string>} return successfully message from api
  */
 export async function submitQuestions(body) {
-    const response = await fetch(uri, {
+    const response = await fetch(`${uri}/question/add`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
     });
-    const result = await response.text();
 
-    return result;
+    if (response.ok) {
+        return await response.text();
+    } else {
+        throw new Error(response);
+    }
 }

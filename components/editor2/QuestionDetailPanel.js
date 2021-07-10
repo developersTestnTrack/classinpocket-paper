@@ -16,7 +16,7 @@ export default function QuestionDetailPanel() {
                         <TextField
                             fullWidth
                             select
-                            label="Select Topic"
+                            label="Difficulty"
                             size="small"
                             variant="outlined"
                             value={question.config.difficulty_level}
@@ -38,7 +38,7 @@ export default function QuestionDetailPanel() {
                         <TextField
                             fullWidth
                             size="small"
-                            label="Video Solution Link"
+                            label="Link"
                             placeholder="Video Solution Link"
                             variant="outlined"
                             value={question.config.video}
@@ -57,7 +57,7 @@ export default function QuestionDetailPanel() {
                             fullWidth
                             select
                             SelectProps={{ multiple: true }}
-                            label="Select Topic"
+                            label="Topic"
                             size="small"
                             variant="outlined"
                             value={question.config.topic}

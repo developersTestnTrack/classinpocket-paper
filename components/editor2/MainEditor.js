@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import { useState, useRef } from "react";
 
 import { Grid, Typography, Button, Switch } from "@material-ui/core";
@@ -5,7 +6,7 @@ import { makeStyles, styled } from "@material-ui/core/styles";
 
 import Snack from "../Snack";
 import { editorHW, useEditor } from "./editorUtil";
-import Editor from "./Editor";
+const Editor = dynamic(() => import("./Editor"), { ssr: false });
 
 const useStyles = makeStyles((theme) => ({
     btns: {

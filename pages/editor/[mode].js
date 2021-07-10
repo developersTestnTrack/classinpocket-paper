@@ -7,6 +7,7 @@ import { firestoreDB } from "@/utils/api/firebase-api/fire";
 
 export async function getServerSideProps({ params }) {
     const docRef = await firestoreDB.collection("classinpocket").doc(params.mode).get();
+    console.log(docRef.data());
     return {
         props: { mode: params.mode, payload: JSON.parse(JSON.stringify(docRef.data())) },
     };
@@ -72,6 +73,16 @@ export default function Editor({ mode, payload }) {
         console.log(formState);
     });
 
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+
+    const PaperProps = {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    };
+
     return (
         <Container>
             <Grid container spacing={4}>
@@ -82,6 +93,11 @@ export default function Editor({ mode, payload }) {
                         variant="outlined"
                         label="Board"
                         select
+                        SelectProps={{
+                            MenuProps: {
+                                PaperProps: PaperProps,
+                            },
+                        }}
                         value={formState.board}
                         onChange={(e) => {
                             dispatch({ type: "BOARD", value: e.target.value });
@@ -100,6 +116,11 @@ export default function Editor({ mode, payload }) {
                         variant="outlined"
                         label="Class"
                         select
+                        SelectProps={{
+                            MenuProps: {
+                                PaperProps: PaperProps,
+                            },
+                        }}
                         value={formState.klass}
                         onChange={(e) => {
                             dispatch({ type: "KLASS", value: e.target.value });
@@ -118,6 +139,11 @@ export default function Editor({ mode, payload }) {
                         variant="outlined"
                         label="Subject"
                         select
+                        SelectProps={{
+                            MenuProps: {
+                                PaperProps: PaperProps,
+                            },
+                        }}
                         value={formState.subject}
                         onChange={(e) => {
                             dispatch({ type: "SUBJECT", value: e.target.value });
