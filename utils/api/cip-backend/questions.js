@@ -1,6 +1,6 @@
 import fetch from "isomorphic-unfetch";
 
-const uri = "http://localhost:5001/classinpocket-f5907/us-central1/httpstrigger-backend/api";
+const uri = "https://us-central1-classinpocket-f5907.cloudfunctions.net/httpstrigger-backend/api";
 
 /**
  *
