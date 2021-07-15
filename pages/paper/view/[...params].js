@@ -168,8 +168,8 @@ function PaperView({ paperId, schoolId }) {
                         <Typography align="center">Submission Time: {data.paper.submission_time} min</Typography>
                         <Typography align="center">Total Marks: {data.paper.paper_total_marks}</Typography>
                         <Typography align="center">
-                            Duration: {differenceInMinutes(data.paper.end_time.toDate(), data.paper.end_time.toDate())}{" "}
-                            min
+                            Duration:{" "}
+                            {differenceInMinutes(data.paper.end_time.toDate(), data.paper.start_time.toDate())} min
                         </Typography>
                         <Typography align="center">Subject: {data.paper.subject_list.join(", ")}</Typography>
                         <Typography align="center">Topic: {data.paper.topic_list.join(", ")}</Typography>
