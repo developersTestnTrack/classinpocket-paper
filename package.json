@@ -31,7 +31,8 @@
         "react-smooth-dnd": "^0.11.1",
         "react-swipeable-views": "^0.14.0",
         "suneditor": "^2.40.0",
-        "suneditor-react": "^3.1.2"
+        "suneditor-react": "^3.1.2",
+        "yup": "^0.32.9"
     },
     "devDependencies": {
         "@next/bundle-analyzer": "^10.0.9",
