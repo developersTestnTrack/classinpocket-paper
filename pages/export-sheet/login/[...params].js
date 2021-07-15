@@ -7,6 +7,7 @@ import Papa from "papaparse";
 import { openFile, genStudents } from "@/utils/utils";
 import { getClassById } from "@/utils/api/firebase-api/query";
 import { addStudents } from "@/utils/api/firebase-api/mutation";
+import { validateCsvData } from "@/utils/validation";
 
 import { Progress } from "@/components/Common";
 import StudentCredentialTable from "@/components/StudentCredentialTable";
@@ -68,8 +69,17 @@ export default function ExportLoginPage({ params }) {
                                             header: true,
                                             skipEmptyLines: true,
                                             complete: (result) => {
-                                                // console.log(result);
-                                                setfile({ data: result.data, name: file.name, isSelect: true });
+                                                console.log(result);
+
+                                                if (validateCsvData(result.data)) {
+                                                    setfile({ data: result.data, name: file.name, isSelect: true });
+                                                } else {
+                                                    setSnackState(() => ({
+                                                        open: true,
+                                                        msg: "Please check your csv file. Some fields are required.",
+                                                        status: "error",
+                                                    }));
+                                                }
                                             },
                                         });
                                     });
