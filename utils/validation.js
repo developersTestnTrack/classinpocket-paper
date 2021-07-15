@@ -1,3 +1,17 @@
+import * as yup from "yup";
+
+export function validateCsvData(data) {
+    const schema = yup.object({
+        Name: yup.string().required(),
+        Mobile: yup.string().required(),
+        Email: yup.string().required().email(),
+    });
+
+    // Validate Details Object
+    const isEveryDataValidate = data.every((ele) => schema.isValidSync(ele));
+    return isEveryDataValidate;
+}
+
 const configObjectValidate = (config) => {
     const errors = [];
     const configKeys = Object.keys(config);
