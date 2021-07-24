@@ -24,3 +24,13 @@ export async function submitQuestions(body) {
         throw new Error(response);
     }
 }
+
+export async function getAllQuestions() {
+    const response = await fetch(`${uri}/question/`);
+
+    if (response.ok) {
+        return await response.json();
+    } else {
+        throw new Error(response);
+    }
+}

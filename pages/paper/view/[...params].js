@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import clsx from "clsx";
 import format from "date-fns/format";
@@ -60,12 +60,24 @@ function QuestionView({ questionId, questionNumber, schoolId, paperId, paperType
         getQuestion({ schoolId, paperId, questionId })
     );
 
+    const [expanded, setExpanded] = useState(true);
+
+    // const handleChange = (panel) => (event, isExpanded) => {
+    //     setExpanded(isExpanded ? panel : false);
+    // };
+
     if (isLoading) {
         return null;
     }
 
     return (
-        <Accordion TransitionProps={{ unmountOnExit: true }}>
+        <Accordion
+            expanded={expanded}
+            onChange={() => {
+                setExpanded((prevState) => !prevState);
+            }}
+            TransitionProps={{ unmountOnExit: true }}
+        >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography
                     variant="h6"
@@ -128,7 +140,7 @@ function QuestionView({ questionId, questionNumber, schoolId, paperId, paperType
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        height: "90vh",
+        padding: theme.spacing(1, 1),
     },
     grid: {
         height: "100%",
@@ -217,12 +229,13 @@ function PaperView({ paperId, schoolId }) {
     );
 }
 
-export default function PaperPreview() {
-    const router = useRouter();
+export default function PaperPreview({ params }) {
+    console.log(params);
+    return <PaperView schoolId={params[0]} paperId={params[1]} />;
+}
 
-    if (!router.query.params) {
-        return null;
-    }
-
-    return <PaperView schoolId={router.query.params[0]} paperId={router.query.params[1]} />;
+export function getServerSideProps({ params }) {
+    return {
+        props: { params: params.params },
+    };
 }

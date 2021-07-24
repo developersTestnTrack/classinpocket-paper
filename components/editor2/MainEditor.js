@@ -1,3 +1,4 @@
+import * as yup from "yup";
 import dynamic from "next/dynamic";
 import { useState, useRef } from "react";
 
@@ -169,7 +170,7 @@ export default function MainEditor({ nextInitialState }) {
                         }}
                     />
                 </Grid>
-                {question.config.question_cat !== "subjective" && <RenderOptions />}
+                {state.paper.hasOption && <RenderOptions />}
             </Grid>
             <Snack
                 open={snackState.open}

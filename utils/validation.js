@@ -1,5 +1,20 @@
 import * as yup from "yup";
 
+export function validateLibEditorFormData(data) {
+    const schema = yup.object({
+        board: yup.string().required(),
+        klass: yup.string().required(),
+        subject: yup.string().required(),
+        chapter: yup.string().required(),
+        topic: yup.array().min(1).required(),
+        marks: yup.string().required(),
+        question_cat: yup.string().required(),
+        hasOption: yup.boolean().required(),
+    });
+
+    return schema.isValidSync(data);
+}
+
 export function validateCsvData(data) {
     const schema = yup.object({
         Name: yup.string().required(),

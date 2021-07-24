@@ -122,9 +122,9 @@ export default function PreviewList() {
     const [state, dispatch] = useEditor();
     const [dailogState, setDailogState] = useState({ open: false, question: null });
 
-    const { list, edit } = state;
+    const { list, edit, paper } = state;
 
-    console.log(dailogState.question);
+    console.log(paper);
     return (
         <Fragment>
             <List
@@ -205,19 +205,20 @@ export default function PreviewList() {
                                 dangerouslySetInnerHTML={{ __html: dailogState.question?.text }}
                             />
                         </Grid>
-                        {dailogState.question?.options.map((option, i) => {
-                            return (
-                                <Grid item xs={12} key={i}>
-                                    <Typography variant="h6">Option: {option.rank}</Typography>
-                                    <div
-                                        className={clsx(classes.options, {
-                                            [classes.highlightOption]: option.status,
-                                        })}
-                                        dangerouslySetInnerHTML={{ __html: option.text }}
-                                    />
-                                </Grid>
-                            );
-                        })}
+                        {paper.hasOption &&
+                            dailogState.question?.options.map((option, i) => {
+                                return (
+                                    <Grid item xs={12} key={i}>
+                                        <Typography variant="h6">Option: {option.rank}</Typography>
+                                        <div
+                                            className={clsx(classes.options, {
+                                                [classes.highlightOption]: option.status,
+                                            })}
+                                            dangerouslySetInnerHTML={{ __html: option.text }}
+                                        />
+                                    </Grid>
+                                );
+                            })}
                     </Grid>
                 </Container>
             </Dialog>

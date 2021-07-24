@@ -1,15 +1,21 @@
-import { useEffect, useReducer, useState } from "react";
-import { Container, Grid, TextField, MenuItem, Button, Dialog } from "@material-ui/core";
-import ChipInput from "material-ui-chip-input";
+import { useReducer, useState } from "react";
+import { Container, Grid, TextField, MenuItem, Button, Dialog, FormControlLabel, Switch } from "@material-ui/core";
 
 import QuestionEditor from "@/components/editor2/QuestionEditor";
+import Snack from "@/components/Snack";
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
+import { validateLibEditorFormData } from "@/utils/validation";
 
 export async function getServerSideProps({ params }) {
     const docRef = await firestoreDB.collection("classinpocket").doc(params.mode).get();
-    console.log(docRef.data());
+    const lib = await firestoreDB.collection("library").doc("Library topics").get();
+
     return {
-        props: { mode: params.mode, payload: JSON.parse(JSON.stringify(docRef.data())) },
+        props: {
+            mode: params.mode,
+            payload: JSON.parse(JSON.stringify(docRef.data())),
+            lib: JSON.parse(JSON.stringify(lib.data())),
+        },
     };
 }
 
@@ -22,36 +28,43 @@ export async function getServerSideProps({ params }) {
  * @param {string[]} editor.payload.class_list - class list
  * @param {string[]} editor.payload.subject_list - subject list
  * @param {string[]} editor.payload.paper_cat_list - paper catagory list
+ * @param {Object} editor.lib - lib data
  */
-export default function Editor({ mode, payload }) {
+export default function Editor({ lib }) {
     const [openDialog, setDialog] = useState(false);
+    const [snack, setSnackState] = useState({ open: false, msg: "", status: "idle" });
+
+    console.log(lib);
 
     const [formState, dispatch] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "BOARD": {
-                    return { ...state, board: action.value };
+                    return { ...state, board: action.value, klass: "", subject: "", chapter: "", topic: [] };
                 }
                 case "KLASS": {
-                    return { ...state, klass: action.value };
+                    return { ...state, klass: action.value, subject: "", chapter: "", topic: [] };
                 }
                 case "SUBJECT": {
-                    return { ...state, subject: action.value };
-                }
-                case "PAPER_CAT": {
-                    return { ...state, paper_cat: action.value };
+                    return { ...state, subject: action.value, chapter: "", topic: [] };
                 }
                 case "CHAPTER": {
-                    return { ...state, chapter: action.value };
+                    return { ...state, chapter: action.value, topic: [] };
                 }
                 case "TOPIC": {
                     return { ...state, topic: action.value };
+                }
+                case "PAPER_CAT": {
+                    return { ...state, paper_cat: action.value };
                 }
                 case "MARKS": {
                     return { ...state, marks: action.value };
                 }
                 case "QUESTION_CAT": {
                     return { ...state, question_cat: action.value };
+                }
+                case "OPTIONS": {
+                    return { ...state, hasOption: action.value };
                 }
             }
         },
@@ -64,14 +77,9 @@ export default function Editor({ mode, payload }) {
             topic: [],
             marks: "",
             question_cat: "",
+            hasOption: false,
         }
     );
-
-    useEffect(() => {
-        console.log(mode);
-        console.log(payload);
-        console.log(formState);
-    });
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -82,6 +90,8 @@ export default function Editor({ mode, payload }) {
             width: 250,
         },
     };
+
+    console.log(formState);
 
     return (
         <Container>
@@ -103,11 +113,26 @@ export default function Editor({ mode, payload }) {
                             dispatch({ type: "BOARD", value: e.target.value });
                         }}
                     >
-                        {payload.board_list.map((board) => (
-                            <MenuItem key={board} value={board}>
-                                {board}
-                            </MenuItem>
-                        ))}
+                        {lib.board_list
+                            .map((obj) => obj.board)
+                            .sort((a, b) => {
+                                var nameA = a.toUpperCase(); // ignore upper and lowercase
+                                var nameB = b.toUpperCase(); // ignore upper and lowercase
+                                if (nameA < nameB) {
+                                    return -1;
+                                }
+                                if (nameA > nameB) {
+                                    return 1;
+                                }
+
+                                // names must be equal
+                                return 0;
+                            })
+                            .map((board) => (
+                                <MenuItem key={board} value={board}>
+                                    {board}
+                                </MenuItem>
+                            ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={6}>
@@ -126,11 +151,18 @@ export default function Editor({ mode, payload }) {
                             dispatch({ type: "KLASS", value: e.target.value });
                         }}
                     >
-                        {payload.class_list.map((klass) => (
-                            <MenuItem key={klass} value={klass}>
-                                {klass}
-                            </MenuItem>
-                        ))}
+                        {formState.board.length > 0 ? (
+                            lib.class_list
+                                .filter((obj) => obj.board === formState.board)
+                                .map((obj) => obj.class)
+                                .map((klass) => (
+                                    <MenuItem key={klass} value={klass}>
+                                        {klass}
+                                    </MenuItem>
+                                ))
+                        ) : (
+                            <MenuItem value="no value">No board selected</MenuItem>
+                        )}
                     </TextField>
                 </Grid>
                 <Grid item xs={6}>
@@ -149,11 +181,18 @@ export default function Editor({ mode, payload }) {
                             dispatch({ type: "SUBJECT", value: e.target.value });
                         }}
                     >
-                        {payload.subject_list.map((subject) => (
-                            <MenuItem key={subject} value={subject}>
-                                {subject}
-                            </MenuItem>
-                        ))}
+                        {formState.klass.length > 0 ? (
+                            lib.subject_list
+                                .filter((obj) => obj.board === formState.board && obj.class === formState.klass)
+                                .map((obj) => obj.subject)
+                                .map((subject) => (
+                                    <MenuItem key={subject} value={subject}>
+                                        {subject}
+                                    </MenuItem>
+                                ))
+                        ) : (
+                            <MenuItem value="no value">No class selected</MenuItem>
+                        )}
                     </TextField>
                 </Grid>
                 <Grid item xs={6}>
@@ -167,7 +206,7 @@ export default function Editor({ mode, payload }) {
                             dispatch({ type: "PAPER_CAT", value: e.target.value });
                         }}
                     >
-                        {payload.paper_cat_list.map((paperCat) => (
+                        {lib.paper_cat_list.map((paperCat) => (
                             <MenuItem key={paperCat} value={paperCat}>
                                 {paperCat}
                             </MenuItem>
@@ -185,12 +224,23 @@ export default function Editor({ mode, payload }) {
                             dispatch({ type: "QUESTION_CAT", value: e.target.value });
                         }}
                     >
-                        {payload.questions_cat_list.map((questionCat) => (
+                        {lib.questions_cat_list.map((questionCat) => (
                             <MenuItem key={questionCat} value={questionCat}>
                                 {questionCat}
                             </MenuItem>
                         ))}
                     </TextField>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                color="primary"
+                                checked={formState.hasOption}
+                                onChange={() => dispatch({ type: "OPTIONS", value: !formState.hasOption })}
+                                name="options"
+                            />
+                        }
+                        label="Render Options"
+                    />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
@@ -213,6 +263,7 @@ export default function Editor({ mode, payload }) {
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
+                        select
                         fullWidth
                         variant="outlined"
                         label="Chapter"
@@ -221,32 +272,84 @@ export default function Editor({ mode, payload }) {
                         onChange={(e) => {
                             dispatch({ type: "CHAPTER", value: e.target.value });
                         }}
-                    />
+                    >
+                        {formState.subject.length > 0 ? (
+                            lib.chapter_list
+                                .filter(
+                                    (obj) =>
+                                        obj.board === formState.board &&
+                                        obj.class === formState.klass &&
+                                        obj.subject === formState.subject
+                                )
+                                .map((obj) => obj.chapter)
+                                .map((chapter) => (
+                                    <MenuItem key={chapter} value={chapter}>
+                                        {chapter}
+                                    </MenuItem>
+                                ))
+                        ) : (
+                            <MenuItem value="no value">No subject selected</MenuItem>
+                        )}
+                    </TextField>
                 </Grid>
                 <Grid item xs={6}>
-                    <ChipInput
+                    <TextField
+                        select
+                        SelectProps={{ multiple: true }}
                         fullWidth
                         variant="outlined"
                         label="Topic"
                         placeholder="Enter Topics"
-                        defaultValue={formState.topic}
-                        onChange={(value) => {
-                            dispatch({ type: "TOPIC", value });
+                        value={formState.topic}
+                        onChange={(e) => {
+                            dispatch({ type: "TOPIC", value: e.target.value });
                         }}
-                    />
+                    >
+                        {formState.chapter.length > 0 ? (
+                            lib.topic_list
+                                .filter(
+                                    (obj) =>
+                                        obj.board === formState.board &&
+                                        obj.class === formState.klass &&
+                                        obj.subject === formState.subject &&
+                                        obj.chapter === formState.chapter
+                                )
+                                .map((obj) => obj.topic)
+                                .map((topic) => (
+                                    <MenuItem key={topic} value={topic}>
+                                        {topic}
+                                    </MenuItem>
+                                ))
+                        ) : (
+                            <MenuItem value="no value">No chapter selected</MenuItem>
+                        )}
+                    </TextField>
                 </Grid>
                 <Grid item xs={12}>
                     <Button
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                            setDialog(true);
+                            const valid = validateLibEditorFormData(formState);
+                            if (valid) {
+                                setDialog(true);
+                            } else {
+                                setSnackState({ open: true, msg: "Please check all the flields", status: "error" });
+                            }
                         }}
                     >
                         Submit
                     </Button>
                 </Grid>
             </Grid>
+            <Snack
+                open={snack.open}
+                onClose={() => {
+                    setSnackState((prevState) => ({ ...prevState, open: false }));
+                }}
+                status={snack.status}
+                msg={snack.msg}
+            />
             <Dialog keepMounted={false} fullScreen open={openDialog} onClose={() => setDialog(false)}>
                 <QuestionEditor details={formState} />
             </Dialog>

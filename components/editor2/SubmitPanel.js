@@ -102,7 +102,7 @@ export default function SubmitPanel() {
     const onClickSubmit = () => {
         console.log(genrateQuestionList(list));
         setDialogState({ open: true, msg: "something went wrong please download file.", status: "error" });
-        mutate({ number_of_questions: list.length, list: genrateQuestionList(list) });
+        // mutate({ number_of_questions: list.length, list: genrateQuestionList(list) });
     };
 
     const onClickClose = () => {

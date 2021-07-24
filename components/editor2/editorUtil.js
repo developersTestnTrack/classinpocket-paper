@@ -30,8 +30,7 @@ export function questionEditorReducer(state, action) {
 
         case "UPDATE_OPTION": {
             const { question } = state;
-            const { options, config } = question;
-            const { question_cat } = config;
+            const { options } = question;
 
             const hasStatuskey = Object.keys(action.option).includes("status");
 
@@ -40,18 +39,20 @@ export function questionEditorReducer(state, action) {
                 // otherwise update something else
                 if (hasStatuskey) {
                     // check if status has Multiple or Single
-                    if (question_cat === "mcq-multiple") {
-                        if (el.rank === action.option.rank) {
-                            return { ...el, ...action.option };
-                        } else {
-                            return el;
-                        }
+                    // if (question_cat === "mcq-multiple") {
+                    //
+                    // } else {
+                    //     if (el.rank === action.option.rank) {
+                    //         return { ...el, ...action.option };
+                    //     } else {
+                    //         return { ...el, status: false };
+                    //     }
+                    // }
+
+                    if (el.rank === action.option.rank) {
+                        return { ...el, ...action.option };
                     } else {
-                        if (el.rank === action.option.rank) {
-                            return { ...el, ...action.option };
-                        } else {
-                            return { ...el, status: false };
-                        }
+                        return el;
                     }
                 } else {
                     if (el.rank === action.option.rank) {
