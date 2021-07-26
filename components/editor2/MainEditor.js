@@ -1,4 +1,3 @@
-import * as yup from "yup";
 import dynamic from "next/dynamic";
 import { useState, useRef } from "react";
 

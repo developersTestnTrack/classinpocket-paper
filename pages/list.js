@@ -54,6 +54,7 @@ function MoreBtn(props) {
                     dense
                     onClick={() => {
                         props.onClickEdit();
+                        popupState.toggle();
                     }}
                 >
                     Edit
@@ -62,6 +63,7 @@ function MoreBtn(props) {
                     dense
                     onClick={() => {
                         props.onClickDelete();
+                        popupState.toggle();
                     }}
                 >
                     Delete
@@ -103,7 +105,6 @@ function Pdf({ data }) {
                                             onClickDelete={() => {
                                                 const tempList = [...list];
                                                 tempList.splice(i, 1);
-
                                                 setList(tempList);
                                             }}
                                         />
@@ -154,11 +155,9 @@ export default function ListPage() {
 
     if (isLoading) {
         return (
-            <Container maxWidth="xl">
-                <Typography variant="h5" align="center">
-                    loading
-                </Typography>
-            </Container>
+            <Typography variant="h5" align="center">
+                Loading
+            </Typography>
         );
     }
 
