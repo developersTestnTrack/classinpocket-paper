@@ -6,14 +6,11 @@ import Snack from "@/components/Snack";
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
 import { validateLibEditorFormData } from "@/utils/validation";
 
-export async function getServerSideProps({ params }) {
-    const docRef = await firestoreDB.collection("classinpocket").doc(params.mode).get();
+export async function getServerSideProps() {
     const lib = await firestoreDB.collection("library").doc("Library topics").get();
 
     return {
         props: {
-            mode: params.mode,
-            payload: JSON.parse(JSON.stringify(docRef.data())),
             lib: JSON.parse(JSON.stringify(lib.data())),
         },
     };
@@ -21,20 +18,16 @@ export async function getServerSideProps({ params }) {
 
 /**
  * @param {Object} editor - The payload for editor.
- * @param {string} editor.mode - editor mode.
- * @param {Object} editor.payload - editor payload object.
- * @param {string} editor.payload.type - mode type
- * @param {string[]} editor.payload.board_list - board list
- * @param {string[]} editor.payload.class_list - class list
- * @param {string[]} editor.payload.subject_list - subject list
- * @param {string[]} editor.payload.paper_cat_list - paper catagory list
- * @param {Object} editor.lib - lib data
+ * @param {Object} editor.lib - editor payload object.
+ * @param {string} editor.lib.type - mode type
+ * @param {string[]} editor.lib.board_list - board list
+ * @param {string[]} editor.lib.class_list - class list
+ * @param {string[]} editor.lib.subject_list - subject list
+ * @param {string[]} editor.lib.paper_cat_list - paper catagory list
  */
 export default function Editor({ lib }) {
     const [openDialog, setDialog] = useState(false);
     const [snack, setSnackState] = useState({ open: false, msg: "", status: "idle" });
-
-    console.log(lib);
 
     const [formState, dispatch] = useReducer(
         (state, action) => {

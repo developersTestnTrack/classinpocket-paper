@@ -1,11 +1,10 @@
-import { useReducer, useEffect } from "react";
-import { useQuery } from "react-query";
-import { Container, Typography, Grid, CssBaseline, TextField, MenuItem, Button } from "@material-ui/core";
+import { useReducer } from "react";
+import { Container, Grid, CssBaseline, TextField, MenuItem, Button, Typography } from "@material-ui/core";
 import { Search as SearchIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { getAllQuestions } from "@/utils/api/cip-backend/questions";
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
+import QuestionList from "@/components/QuestionList";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -15,16 +14,17 @@ const useStyles = makeStyles((theme) => ({
     gridContainer: {
         paddingTop: theme.spacing(2),
     },
+    searchBtn: {
+        width: "100%",
+        margin: "0 auto",
+    },
 }));
 
 export async function getServerSideProps() {
-    const docRef = await firestoreDB.collection("classinpocket").doc("SCHOOL").get();
     const lib = await firestoreDB.collection("library").doc("Library topics").get();
 
     return {
         props: {
-            mode: "SCHOOL",
-            payload: JSON.parse(JSON.stringify(docRef.data())),
             lib: JSON.parse(JSON.stringify(lib.data())),
         },
     };
@@ -32,46 +32,44 @@ export async function getServerSideProps() {
 
 export default function SearchPage({ lib }) {
     const classes = useStyles();
-    const { data: result, isLoading } = useQuery("get all questions", getAllQuestions, { refetchOnWindowFocus: false });
-
-    useEffect(() => {
-        console.log("add");
-        window.addEventListener(
-            "beforeunload",
-            (e) => {
-                e.preventDefault();
-                return (e.returnValue = "prevent");
-            },
-            { capture: true }
-        );
-    }, []);
 
     const [state, dispatch] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "BOARD": {
-                    return { ...state, board: action.value, klass: "", subject: "", chapter: "", topic: [] };
+                    return {
+                        ...state,
+                        board: action.value,
+                        klass: "",
+                        subject: "",
+                        chapter: "",
+                        topic: [],
+                        search: false,
+                    };
                 }
                 case "KLASS": {
-                    return { ...state, klass: action.value, subject: "", chapter: "", topic: [] };
+                    return { ...state, klass: action.value, subject: "", chapter: "", topic: [], search: false };
                 }
                 case "SUBJECT": {
-                    return { ...state, subject: action.value, chapter: "", topic: [] };
+                    return { ...state, subject: action.value, chapter: "", topic: [], search: false };
                 }
                 case "CHAPTER": {
-                    return { ...state, chapter: action.value, topic: [] };
+                    return { ...state, chapter: action.value, topic: [], search: false };
                 }
                 case "TOPIC": {
-                    return { ...state, topic: action.value };
+                    return { ...state, topic: action.value, search: false };
                 }
                 case "PAPER_CAT": {
                     return { ...state, paper_cat: action.value };
                 }
                 case "MARKS": {
-                    return { ...state, marks: action.value };
+                    return { ...state, marks: action.value, search: false };
                 }
                 case "QUESTION_CAT": {
                     return { ...state, question_cat: action.value };
+                }
+                case "SEARCH": {
+                    return { ...state, search: true };
                 }
             }
         },
@@ -84,18 +82,10 @@ export default function SearchPage({ lib }) {
             topic: [],
             marks: "",
             question_cat: "",
+            search: false,
         }
     );
 
-    if (isLoading) {
-        return (
-            <Container maxWidth="xl">
-                <Typography variant="h5" align="center">
-                    Loading
-                </Typography>
-            </Container>
-        );
-    }
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
 
@@ -106,13 +96,13 @@ export default function SearchPage({ lib }) {
         },
     };
 
-    console.log(result);
     return (
         <CssBaseline>
             <Container maxWidth="lg" className={classes.container}>
-                <Grid container spacing={1} className={classes.gridContainer}>
-                    <Grid item xs={2}>
+                <Grid container spacing={2} className={classes.gridContainer}>
+                    <Grid item xs={3}>
                         <TextField
+                            size="small"
                             fullWidth
                             variant="outlined"
                             label="Board"
@@ -149,8 +139,9 @@ export default function SearchPage({ lib }) {
                                 ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <TextField
+                            size="small"
                             fullWidth
                             variant="outlined"
                             label="Class"
@@ -178,12 +169,13 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <TextField
+                            size="small"
+                            select
                             fullWidth
                             variant="outlined"
                             label="Subject"
-                            select
                             SelectProps={{
                                 MenuProps: {
                                     PaperProps: PaperProps,
@@ -207,8 +199,9 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={2}>
+                    {/* <Grid item xs={2}>
                         <TextField
+                            size="small"
                             select
                             fullWidth
                             variant="outlined"
@@ -236,9 +229,10 @@ export default function SearchPage({ lib }) {
                                 <MenuItem value="no value">No subject selected</MenuItem>
                             )}
                         </TextField>
-                    </Grid>
-                    <Grid item xs={2}>
+                    </Grid> */}
+                    {/* <Grid item xs={2}>
                         <TextField
+                            size="small"
                             select
                             SelectProps={{ multiple: true }}
                             fullWidth
@@ -268,13 +262,14 @@ export default function SearchPage({ lib }) {
                                 <MenuItem value="no value">No chapter selected</MenuItem>
                             )}
                         </TextField>
-                    </Grid>
-                    <Grid item xs={2}>
+                    </Grid> */}
+                    {/* <Grid item xs={2}>
                         <TextField
+                            size="small"
+                            select
                             fullWidth
                             variant="outlined"
                             label="Question Category"
-                            select
                             value={state.question_cat}
                             onChange={(e) => {
                                 dispatch({ type: "QUESTION_CAT", value: e.target.value });
@@ -286,19 +281,50 @@ export default function SearchPage({ lib }) {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
+                    </Grid> */}
+                    {/* <Grid item xs={2}>
+                        <TextField
+                            size="small"
+                            select
                             fullWidth
+                            variant="outlined"
+                            label="Question Marks"
+                            value={state.marks}
+                            onChange={(e) => {
+                                dispatch({ type: "MARKS", value: e.target.value });
+                            }}
+                        >
+                            {[1, 2, 3, 4, 5].map((marks) => (
+                                <MenuItem key={marks} value={marks}>
+                                    {marks}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid> */}
+
+                    <Grid item xs={3}>
+                        <Button
                             color="primary"
                             variant="contained"
                             startIcon={<SearchIcon />}
                             onClick={() => {
+                                dispatch({ type: "SEARCH" });
                                 console.log(state);
                             }}
                         >
                             Search
                         </Button>
+                    </Grid>
+                    <Grid item xs={12}></Grid>
+                    <Grid item xs={12}></Grid>
+                    <Grid item xs={12}>
+                        {state.search ? (
+                            <QuestionList filter={{ board: state.board, class: state.klass, subject: state.subject }} />
+                        ) : (
+                            <Typography variant="h5" align="center">
+                                Not available
+                            </Typography>
+                        )}
                     </Grid>
                 </Grid>
             </Container>

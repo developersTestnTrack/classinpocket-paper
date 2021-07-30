@@ -7,6 +7,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import theme from "../utils/theme";
+import "../styles/print.css";
 
 function MyApp({ Component, pageProps }) {
     useEffect(() => {
