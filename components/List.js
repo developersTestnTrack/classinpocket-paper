@@ -118,31 +118,6 @@ export default function List({ data, filter }) {
                                     <Typography component="p" className={classes.p}>
                                         Q: {i + 1}
                                     </Typography>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    {isLoading && questions === i ? (
-                                        <>
-                                            <Skeleton variant="text" width="100%" />
-                                            <br />
-                                            <Skeleton variant="text" width="100%" />
-                                            <br />
-                                            <Skeleton variant="rect" width="100%" height={200} />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div dangerouslySetInnerHTML={{ __html: question.question_text }}></div>
-                                            {question.question_options.map((option, i) => {
-                                                return (
-                                                    <div key={option._id} style={{ display: "flex" }}>
-                                                        <p style={{ marginRight: "10px" }}>({paddingOption(i)})</p>
-                                                        <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </>
-                                    )}
-                                </Grid>
-                                <Grid item xs={2}>
                                     <MoreBtn
                                         className={classes.moreIcon}
                                         onClickEdit={() => {
@@ -177,6 +152,29 @@ export default function List({ data, filter }) {
                                             );
                                         }}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {isLoading && questions === i ? (
+                                        <>
+                                            <Skeleton variant="text" width="100%" />
+                                            <br />
+                                            <Skeleton variant="text" width="100%" />
+                                            <br />
+                                            <Skeleton variant="rect" width="100%" height={200} />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div dangerouslySetInnerHTML={{ __html: question.question_text }}></div>
+                                            {question.question_options.map((option, i) => {
+                                                return (
+                                                    <div key={option._id} style={{ display: "flex" }}>
+                                                        <p style={{ marginRight: "10px" }}>({paddingOption(i)})</p>
+                                                        <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </>
+                                    )}
                                 </Grid>
                             </Grid>
                         </Grid>

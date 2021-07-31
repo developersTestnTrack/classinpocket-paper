@@ -37,6 +37,14 @@ export default function PrintPage({ ids }) {
     return (
         <CssBaseline>
             <Container>
+                <button
+                    id="print-btn"
+                    onClick={() => {
+                        window.print();
+                    }}
+                >
+                    Print
+                </button>
                 <div id="container">
                     {list.map((question, i) => {
                         return (
@@ -44,7 +52,7 @@ export default function PrintPage({ ids }) {
                                 <div>
                                     <p id="para">Q: {i + 1}</p>
                                 </div>
-                                <div>
+                                <div id="option">
                                     <div
                                         id="question-container"
                                         dangerouslySetInnerHTML={{ __html: question.question_text }}
