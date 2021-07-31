@@ -1,5 +1,15 @@
 import { useReducer } from "react";
-import { Container, Grid, CssBaseline, TextField, MenuItem, Button, Typography } from "@material-ui/core";
+import {
+    Container,
+    Grid,
+    CssBaseline,
+    TextField,
+    MenuItem,
+    Button,
+    Typography,
+    Dialog,
+    DialogTitle,
+} from "@material-ui/core";
 import { Search as SearchIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -19,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         margin: "0 auto",
     },
+    btnGroup: {
+        display: "flex",
+        justifyContent: "center",
+    },
 }));
 
 export async function getServerSideProps() {
@@ -34,6 +48,8 @@ export async function getServerSideProps() {
 export default function SearchPage({ lib }) {
     const classes = useStyles();
     const router = useRouter();
+
+    console.log(lib);
 
     const [state, dispatch] = useReducer(
         (state, action) => {
@@ -71,13 +87,16 @@ export default function SearchPage({ lib }) {
                     return { ...state, question_cat: action.value };
                 }
                 case "SEARCH": {
-                    return { ...state, search: true };
+                    return { ...state, search: true, openDialog: true };
                 }
                 case "QUESTIONS": {
                     return { ...state, questions_number: action.value, search: false };
                 }
                 case "LIST": {
                     return { ...state, questions_id_list: action.value };
+                }
+                case "DIALOG": {
+                    return { ...state, openDialog: action.value };
                 }
             }
         },
@@ -93,6 +112,7 @@ export default function SearchPage({ lib }) {
             search: false,
             questions_number: "0",
             questions_id_list: [],
+            openDialog: false,
         }
     );
 
@@ -211,68 +231,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={2}>
-                        <TextField
-                            size="small"
-                            fullWidth
-                            variant="outlined"
-                            label="Number of questions"
-                            value={state.questions_number}
-                            onChange={(e) => {
-                                dispatch({ type: "QUESTIONS", value: e.target.value });
-                            }}
-                        />
-                    </Grid>
                     <Grid item xs={12} md={4}>
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            startIcon={<SearchIcon />}
-                            onClick={() => {
-                                dispatch({ type: "SEARCH" });
-                            }}
-                        >
-                            Search
-                        </Button>
-                        <Button
-                            disabled={!state.search}
-                            color="primary"
-                            variant="contained"
-                            style={{ marginLeft: "20px" }}
-                            onClick={() => {
-                                router.push({ pathname: "/library/print", query: { ids: state.questions_id_list } });
-                            }}
-                        >
-                            Print
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12}></Grid>
-                    <Grid item xs={12}></Grid>
-                    <Grid item xs={12}>
-                        {state.search ? (
-                            <QuestionList
-                                filter={{
-                                    board: state.board,
-                                    class: state.klass,
-                                    subject: state.subject,
-                                    questions_number: state.questions_number,
-                                }}
-                                getList={(data) => {
-                                    dispatch({ type: "LIST", value: data });
-                                }}
-                            />
-                        ) : (
-                            <Typography variant="h5" align="center">
-                                Not available
-                            </Typography>
-                        )}
-                    </Grid>
-                </Grid>
-            </Container>
-        </CssBaseline>
-    );
-}
-/*                      <Grid item xs={2}>
                         <TextField
                             size="small"
                             select
@@ -302,8 +261,8 @@ export default function SearchPage({ lib }) {
                                 <MenuItem value="no value">No subject selected</MenuItem>
                             )}
                         </TextField>
-                    </Grid> 
-                    <Grid item xs={2}>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
                         <TextField
                             size="small"
                             select
@@ -335,8 +294,8 @@ export default function SearchPage({ lib }) {
                                 <MenuItem value="no value">No chapter selected</MenuItem>
                             )}
                         </TextField>
-                    </Grid> 
-                    <Grid item xs={2}>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
                         <TextField
                             size="small"
                             select
@@ -354,8 +313,8 @@ export default function SearchPage({ lib }) {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid> 
-                    <Grid item xs={2}>
+                    </Grid>
+                    {/* <Grid item xs={12} md={4}>
                         <TextField
                             size="small"
                             select
@@ -373,5 +332,85 @@ export default function SearchPage({ lib }) {
                                 </MenuItem>
                             ))}
                         </TextField>
+                    </Grid> */}
+                    <Grid item xs={12} md={2}>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            label="Number of questions"
+                            value={state.questions_number}
+                            onChange={(e) => {
+                                dispatch({ type: "QUESTIONS", value: e.target.value });
+                            }}
+                        />
                     </Grid>
+                    <Grid item xs={12} className={classes.btnGroup}>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            startIcon={<SearchIcon />}
+                            onClick={() => {
+                                dispatch({ type: "SEARCH" });
+                            }}
+                        >
+                            Search
+                        </Button>
+                        <Button
+                            disabled={!state.search}
+                            color="primary"
+                            variant="contained"
+                            style={{ marginLeft: "20px" }}
+                            onClick={() => {
+                                router.push({ pathname: "/library/print", query: { ids: state.questions_id_list } });
+                            }}
+                        >
+                            Print
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12}></Grid>
+                    <Grid item xs={12}>
+                        <Dialog
+                            fullScreen
+                            open={state.openDialog}
+                            onClose={() => dispatch({ type: "DIALOG", value: false })}
+                        >
+                            <DialogTitle>
+                                Paper Questions
+                                <Button
+                                    style={{ position: "absolute", right: 0, marginRight: "16px" }}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => dispatch({ type: "DIALOG", value: false })}
+                                >
+                                    Close
+                                </Button>
+                            </DialogTitle>
+                            <Container maxWidth="md">
+                                {state.search ? (
+                                    <QuestionList
+                                        filter={{
+                                            board: state.board,
+                                            class: state.klass,
+                                            subject: state.subject,
+                                            questions_number: state.questions_number,
+                                        }}
+                                        getList={(data) => {
+                                            dispatch({ type: "LIST", value: data });
+                                        }}
+                                    />
+                                ) : (
+                                    <Typography variant="h5" align="center">
+                                        Not available
+                                    </Typography>
+                                )}
+                            </Container>
+                        </Dialog>
+                    </Grid>
+                </Grid>
+            </Container>
+        </CssBaseline>
+    );
+}
+/*
  */

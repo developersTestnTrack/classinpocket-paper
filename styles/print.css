@@ -16,11 +16,6 @@
         min-width: 6rem;
     }
 
-    #container {
-        background-color: white;
-        padding: 0 1rem;
-    }
-
     #question-container {
         flex-grow: 1;
     }
@@ -36,6 +31,11 @@
     #print-btn {
         display: none;
     }
+}
+
+#container {
+    background-color: white;
+    padding: 0 1rem;
 }
 
 #option-container {
