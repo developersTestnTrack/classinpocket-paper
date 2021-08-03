@@ -1,5 +1,8 @@
 import { useQuery } from "react-query";
-import { Container, CssBaseline, Typography } from "@material-ui/core";
+import { Container, Typography, Button } from "@material-ui/core";
+import { Print as PrintIcon } from "@material-ui/icons";
+
+import { Progress } from "@/components/Common";
 import { fetchQuestionsByIds } from "@/utils/api/cip-backend/questions";
 
 export function getServerSideProps({ query }) {
@@ -7,7 +10,6 @@ export function getServerSideProps({ query }) {
 }
 
 export default function PrintPage({ ids }) {
-    console.log(ids);
     const { data: list, isLoading, isError } = useQuery("questions", () => fetchQuestionsByIds(ids));
 
     const paddingOption = (num) => {
@@ -27,7 +29,7 @@ export default function PrintPage({ ids }) {
     };
 
     if (isLoading) {
-        return <p>Loading</p>;
+        return <Progress />;
     }
 
     if (isError) {
@@ -35,40 +37,45 @@ export default function PrintPage({ ids }) {
     }
 
     return (
-        <CssBaseline>
-            <Container>
-                <button
-                    id="print-btn"
-                    onClick={() => {
-                        window.print();
-                    }}
-                >
-                    Print
-                </button>
-                <div id="container">
-                    {list.map((question, i) => {
-                        return (
-                            <div id="print-row" key={i}>
-                                <div>
-                                    <p id="para">Q: {i + 1}</p>
+        <Container style={{ backgroundColor: "white" }}>
+            <Button
+                id="print-btn"
+                variant="text"
+                startIcon={<PrintIcon />}
+                onClick={() => {
+                    navigator.clipboard
+                        .writeText(location.href)
+                        .then(() => {
+                            window.print();
+                        })
+                        .catch(() => {
+                            window.print();
+                        });
+                }}
+            >
+                Print
+            </Button>
+            {list.map((question, i) => {
+                return (
+                    <div id="print-row" key={i}>
+                        <div>
+                            <p id="para">Q: {i + 1}</p>
+                        </div>
+                        <div id="option">
+                            <div
+                                id="question-container"
+                                dangerouslySetInnerHTML={{ __html: question.question_text }}
+                            ></div>
+                            {question.question_options.map((option, i) => (
+                                <div key={option._id} id="option-container">
+                                    <p id="option-text">({paddingOption(i)})</p>
+                                    <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
                                 </div>
-                                <div id="option">
-                                    <div
-                                        id="question-container"
-                                        dangerouslySetInnerHTML={{ __html: question.question_text }}
-                                    ></div>
-                                    {question.question_options.map((option, i) => (
-                                        <div key={option._id} id="option-container">
-                                            <p id="option-text">({paddingOption(i)})</p>
-                                            <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </Container>
-        </CssBaseline>
+                            ))}
+                        </div>
+                    </div>
+                );
+            })}
+        </Container>
     );
 }

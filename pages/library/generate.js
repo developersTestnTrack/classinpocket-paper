@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, forwardRef } from "react";
 import {
     Container,
     Grid,
@@ -9,6 +9,7 @@ import {
     Typography,
     Dialog,
     DialogTitle,
+    Slide,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
 }));
+
+const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export async function getServerSideProps() {
     const lib = await firestoreDB.collection("library").doc("Library topics").get();
@@ -130,7 +135,7 @@ export default function SearchPage({ lib }) {
         <CssBaseline>
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={2} className={classes.gridContainer}>
-                    <Grid item xs={12} md={2}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             size="small"
                             fullWidth
@@ -169,7 +174,7 @@ export default function SearchPage({ lib }) {
                                 ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={2}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             disabled={!state.board.length}
                             size="small"
@@ -200,7 +205,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={2}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             disabled={!state.klass.length}
                             size="small"
@@ -231,7 +236,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             size="small"
                             select
@@ -262,7 +267,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={5}>
                         <TextField
                             size="small"
                             select
@@ -295,7 +300,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    {/* <Grid item xs={12} md={5}>
                         <TextField
                             size="small"
                             select
@@ -313,7 +318,7 @@ export default function SearchPage({ lib }) {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid>
+                    </Grid> */}
                     {/* <Grid item xs={12} md={4}>
                         <TextField
                             size="small"
@@ -372,6 +377,8 @@ export default function SearchPage({ lib }) {
                     <Grid item xs={12}>
                         <Dialog
                             fullScreen
+                            keepMounted={false}
+                            TransitionComponent={Transition}
                             open={state.openDialog}
                             onClose={() => dispatch({ type: "DIALOG", value: false })}
                         >

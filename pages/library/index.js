@@ -206,6 +206,24 @@ export default function Editor({ lib }) {
                         ))}
                     </TextField>
                 </Grid>
+                {/* <Grid item xs={6}>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Paper Category"
+                        select
+                        value={formState.paper_cat}
+                        onChange={(e) => {
+                            dispatch({ type: "PAPER_CAT", value: e.target.value });
+                        }}
+                    >
+                        {lib.paper_cat_list.map((paperCat) => (
+                            <MenuItem key={paperCat} value={paperCat}>
+                                {paperCat}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid> */}
                 <Grid item xs={6}>
                     <TextField
                         fullWidth

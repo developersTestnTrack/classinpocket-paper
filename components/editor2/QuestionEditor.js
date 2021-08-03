@@ -18,7 +18,6 @@ const EditorContainer = styled("div")(({ theme }) => ({
  * @param {string} editor.details.board - board name
  * @param {string} editor.details.klass - klass name
  * @param {string} editor.details.marks - question marks
- * @param {string} editor.details.paper_cat - paper category list
  * @param {string} editor.details.question_cat - paper question category list
  * @param {string} editor.details.subject - subject name
  * @param {string} editor.details.chapter chapter name
@@ -32,15 +31,14 @@ export default function QuestionEditor({ details }) {
                 board: details.board,
                 klass: details.klass,
                 subject: details.subject,
-                paper_cat: details.paper_cat,
+                chapter: details.chapter,
+                topic: [],
                 question_cat: details.question_cat,
                 marks: details.marks,
-                topic: [],
                 time: "",
                 pdf: "link",
                 video: "",
                 difficulty_level: "",
-                chapter: details.chapter,
             },
             options: [
                 { rank: 1, status: false, text: "" },

@@ -33,7 +33,23 @@
     }
 }
 
+#print-btn {
+    position: absolute;
+    right: 0;
+    margin-right: 16px;
+}
+
+p {
+    margin-top: 0;
+}
+
+#para {
+    font-size: large;
+    font-weight: bolder;
+}
+
 #container {
+    position: relative;
     background-color: white;
     padding: 0 1rem;
 }

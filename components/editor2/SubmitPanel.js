@@ -61,6 +61,7 @@ function genrateQuestionList(list) {
         pdf_solution: question.config.pdf,
         video_solution: question.config.video,
         question_options: question.options.map((option) => ({ text: option.text, value: option.status })),
+        created_date: Date.now(),
     }));
 }
 
@@ -82,7 +83,8 @@ export default function SubmitPanel() {
             setDialogState({ open: true, msg: "successfully submitted", status: "idle" });
         },
         onError: (e) => {
-            console.log(e);
+            console.log(e.json);
+            console.log(e.name);
             console.log("something went wrong !!!");
             setDialogState({ open: true, msg: "something went wrong please download file.", status: "error" });
         },

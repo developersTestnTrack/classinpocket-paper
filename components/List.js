@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,9 +5,9 @@ import { Typography, Grid, CssBaseline, Dialog, Menu, MenuItem, IconButton } fro
 import { Skeleton } from "@material-ui/lab";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import { usePopupState, bindTrigger, bindMenu } from "material-ui-popup-state/hooks";
-import { getFreshQuestion } from "@/utils/api/cip-backend/questions";
 
-const Editor = dynamic(() => import("@/components/editor/Editor"), { ssr: false });
+import { getFreshQuestion } from "@/utils/api/cip-backend/questions";
+import Editor from "@/components/editor/Editor";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -121,6 +120,11 @@ export default function List({ data, filter }) {
                                     <MoreBtn
                                         className={classes.moreIcon}
                                         onClickEdit={() => {
+                                            // const tempList = [...list];
+                                            // const [deleteItem] = tempList.splice(i, 1);
+                                            // tempList.splice(i, 0, deleteItem);
+                                            // setList(tempList);
+
                                             setEditorState({ text: question.question_text, index: i });
                                             setDailog(true);
                                         }}

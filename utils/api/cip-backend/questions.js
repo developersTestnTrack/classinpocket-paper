@@ -3,6 +3,14 @@ import fetch from "isomorphic-unfetch";
 const uri = "https://us-central1-classinpocket-f5907.cloudfunctions.net/httpstrigger-backend/api";
 // const uri = "http://localhost:5001/classinpocket-f5907/us-central1/httpstrigger-backend/api";
 
+export class CustomError extends Error {
+    constructor(name, message, json) {
+        super(message);
+        this.name = name;
+        this.json = json;
+    }
+}
+
 /**
  * @param {Object} body requset body for question api
  * @param {number} body.number_of_questions total number of questions
@@ -19,9 +27,9 @@ export async function submitQuestions(body) {
     });
 
     if (response.ok) {
-        return await response.text();
+        return await response.json();
     } else {
-        throw new Error(response);
+        throw new CustomError("ERR_REQUEST_FAILED", "Error in submitting questions", await response.json());
     }
 }
 
