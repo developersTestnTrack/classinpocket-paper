@@ -1,24 +1,14 @@
 import dynamic from "next/dynamic";
 import { useState, useRef } from "react";
 
-import { Grid, Typography, Button, Switch } from "@material-ui/core";
-import { makeStyles, styled } from "@material-ui/core/styles";
+import { Grid, Typography, Button, Switch, Container } from "@material-ui/core";
+import { styled } from "@material-ui/core/styles";
 
 import Snack from "../Snack";
+import { Progress } from "../Common";
 import { editorHW, useEditor } from "./editorUtil";
-const Editor = dynamic(() => import("./Editor"), { ssr: false });
-
-const useStyles = makeStyles((theme) => ({
-    btns: {
-        width: "100%",
-        display: "flex",
-        justifyContent: "flex-end",
-    },
-    btn: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
-}));
+// eslint-disable-next-line react/display-name
+const Editor = dynamic(() => import("./Editor"), { ssr: false, loading: () => <Progress>loading</Progress> });
 
 const PaperHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -34,12 +24,9 @@ const OptionHeader = styled("div")(({ theme }) => ({
 
 function RenderOptions() {
     const [state, dispatch] = useEditor();
+    const { question } = state;
 
-    const {
-        question: { options },
-    } = state;
-
-    return options.map((option, i) => (
+    return question.options.map((option, i) => (
         <Grid item md={12} lg={12} key={i}>
             <OptionHeader>
                 <Typography variant="h5">Option: {option.rank}</Typography>
@@ -85,9 +72,6 @@ export default function MainEditor({ nextInitialState }) {
     const ref = useRef();
     const [state, dispatch] = useEditor();
     const [snackState, setSnackState] = useState({ open: false, status: "error", msg: "Please fill all the fields" });
-    const classes = useStyles();
-
-    console.log(state);
 
     const { question, list, edit } = state;
 
@@ -98,8 +82,9 @@ export default function MainEditor({ nextInitialState }) {
         });
     };
 
+    console.log(question);
     return (
-        <>
+        <Container>
             <PaperHeader>
                 {edit.isEditing ? (
                     <Typography variant="h4">Edit</Typography>
@@ -108,9 +93,8 @@ export default function MainEditor({ nextInitialState }) {
                 )}
 
                 {edit.isEditing ? (
-                    <div className={classes.btns}>
+                    <div>
                         <Button
-                            className={classes.btn}
                             variant="contained"
                             color="primary"
                             onClick={() => {
@@ -124,7 +108,7 @@ export default function MainEditor({ nextInitialState }) {
                             Save
                         </Button>
                         <Button
-                            className={classes.btn}
+                            style={{ marginLeft: "10px" }}
                             variant="contained"
                             color="primary"
                             onClick={() => {
@@ -138,12 +122,24 @@ export default function MainEditor({ nextInitialState }) {
                         </Button>
                     </div>
                 ) : (
-                    <Button variant="contained" color="primary" onClick={onClickAddBtn}>
-                        Next Question
-                    </Button>
+                    <div>
+                        <Button variant="contained" color="primary" onClick={onClickAddBtn}>
+                            Next Question
+                        </Button>
+                        <Button
+                            style={{ marginLeft: "10px" }}
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                ref.current.setContents("");
+                            }}
+                        >
+                            clear
+                        </Button>
+                    </div>
                 )}
             </PaperHeader>
-            <Grid container spacing={1} style={{ maxHeight: "90vh", overflowY: "scroll" }}>
+            <Grid container spacing={1} style={{ overflowY: "auto", maxHeight: "80vh" }}>
                 <Grid item xs={12}>
                     <Editor
                         getSunEditorInstance={(refEditor) => {
@@ -177,6 +173,6 @@ export default function MainEditor({ nextInitialState }) {
                 msg={snackState.msg}
                 status={snackState.status}
             />
-        </>
+        </Container>
     );
 }

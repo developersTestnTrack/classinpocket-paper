@@ -5,10 +5,6 @@ import { saveAs } from "file-saver";
 import { format } from "date-fns";
 
 import {
-    List,
-    ListItem,
-    ListItemText,
-    Paper,
     Typography,
     Dialog,
     DialogContent,
@@ -45,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function genrateQuestionList(list) {
+function genrateQuestionList(list, paper) {
     return list.map((question) => ({
         board: question.config.board,
         class_name: question.config.klass,
@@ -56,11 +52,11 @@ function genrateQuestionList(list) {
         question_cat: question.config.question_cat,
         question_time: Number(question.config.time),
         question_marks: Number(question.config.marks),
-        paper_cat: question.config.paper_cat,
         difficulty_level: question.config.difficulty_level,
         pdf_solution: question.config.pdf,
         video_solution: question.config.video,
         question_options: question.options.map((option) => ({ text: option.text, value: option.status })),
+        hasOption: paper.hasOption,
         created_date: Date.now(),
     }));
 }
@@ -77,14 +73,12 @@ export default function SubmitPanel() {
         onMutate: () => {
             setDialogState({ open: true, msg: "Please wait it will take some time" });
         },
-        onSuccess: (e) => {
-            console.log(e);
+        onSuccess: () => {
             console.log("successfully submitted");
+            location.reload();
             setDialogState({ open: true, msg: "successfully submitted", status: "idle" });
         },
-        onError: (e) => {
-            console.log(e.json);
-            console.log(e.name);
+        onError: () => {
             console.log("something went wrong !!!");
             setDialogState({ open: true, msg: "something went wrong please download file.", status: "error" });
         },
@@ -92,19 +86,26 @@ export default function SubmitPanel() {
 
     const downloadQuestions = () => {
         //generate json file
-        const blobJson = new Blob(
-            [JSON.stringify({ number_of_questions: list.length, list: genrateQuestionList(list) }, undefined, 2)],
-            {
-                type: "application/json",
-            }
-        );
+        const questionPayload = {
+            number_of_questions: list.length,
+            list: genrateQuestionList(list, paper),
+            created_date: Date.now(),
+        };
+        const blobJson = new Blob([JSON.stringify(questionPayload, undefined, 2)], {
+            type: "application/json",
+        });
         saveAs(blobJson, `${format(Date.now(), "dd/MM/yyyy-HH:mm:ss")}.json`);
     };
 
     const onClickSubmit = () => {
-        console.log(genrateQuestionList(list));
-        setDialogState({ open: true, msg: "something went wrong please download file.", status: "error" });
-        mutate({ number_of_questions: list.length, list: genrateQuestionList(list) });
+        const questionPayload = {
+            number_of_questions: list.length,
+            list: genrateQuestionList(list, paper),
+            created_date: Date.now(),
+        };
+
+        console.log(questionPayload);
+        mutate(questionPayload);
     };
 
     const onClickClose = () => {
@@ -113,21 +114,17 @@ export default function SubmitPanel() {
 
     return (
         <Fragment>
-            <List component={Paper} disablePadding>
-                <ListItem
-                    button
-                    className={classes.listBtnPreview}
-                    onClick={() => {
-                        onClickSubmit();
-                    }}
-                >
-                    <ListItemText>
-                        <Typography variant="h6" align="center">
-                            Finish
-                        </Typography>
-                    </ListItemText>
-                </ListItem>
-            </List>
+            <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                size="large"
+                onClick={() => {
+                    onClickSubmit();
+                }}
+            >
+                Submit
+            </Button>
 
             {/* paper preview panel */}
             <Dialog fullScreen open={previewPaper}>

@@ -54,8 +54,6 @@ export default function SearchPage({ lib }) {
     const classes = useStyles();
     const router = useRouter();
 
-    console.log(lib);
-
     const [state, dispatch] = useReducer(
         (state, action) => {
             switch (action.type) {
@@ -267,7 +265,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={5}>
+                    <Grid item xs={12} md={8}>
                         <TextField
                             size="small"
                             select
@@ -338,7 +336,7 @@ export default function SearchPage({ lib }) {
                             ))}
                         </TextField>
                     </Grid> */}
-                    <Grid item xs={12} md={2}>
+                    <Grid item xs={12} md={4}>
                         <TextField
                             size="small"
                             fullWidth
@@ -361,17 +359,6 @@ export default function SearchPage({ lib }) {
                         >
                             Search
                         </Button>
-                        <Button
-                            disabled={!state.search}
-                            color="primary"
-                            variant="contained"
-                            style={{ marginLeft: "20px" }}
-                            onClick={() => {
-                                router.push({ pathname: "/library/print", query: { ids: state.questions_id_list } });
-                            }}
-                        >
-                            Print
-                        </Button>
                     </Grid>
                     <Grid item xs={12}></Grid>
                     <Grid item xs={12}>
@@ -392,6 +379,20 @@ export default function SearchPage({ lib }) {
                                 >
                                     Close
                                 </Button>
+                                <Button
+                                    disabled={!state.search}
+                                    style={{ marginLeft: "20px" }}
+                                    color="primary"
+                                    variant="contained"
+                                    onClick={() => {
+                                        router.push({
+                                            pathname: "/library/print",
+                                            query: { ids: state.questions_id_list },
+                                        });
+                                    }}
+                                >
+                                    Print
+                                </Button>
                             </DialogTitle>
                             <Container maxWidth="md">
                                 {state.search ? (
@@ -403,6 +404,7 @@ export default function SearchPage({ lib }) {
                                             questions_number: state.questions_number,
                                         }}
                                         getList={(data) => {
+                                            console.log(data);
                                             dispatch({ type: "LIST", value: data });
                                         }}
                                     />

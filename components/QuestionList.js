@@ -36,7 +36,15 @@ export default function QuestionList({ filter, getList }) {
     }
 
     if (data.length) {
-        return <List data={data} filter={filter} />;
+        return (
+            <List
+                data={data}
+                filter={filter}
+                getList={(list) => {
+                    getList(list.map((question) => question._id));
+                }}
+            />
+        );
     } else {
         return (
             <Typography variant="h4" align="center">

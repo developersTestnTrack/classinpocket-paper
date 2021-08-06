@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Grid, CssBaseline, Dialog, Menu, MenuItem, IconButton } from "@material-ui/core";
@@ -50,7 +50,7 @@ function MoreBtn(props) {
                 <MoreIcon />
             </IconButton>
             <Menu {...bindMenu(popupState)}>
-                <MenuItem
+                {/* <MenuItem
                     dense
                     onClick={() => {
                         props.onClickEdit();
@@ -58,8 +58,8 @@ function MoreBtn(props) {
                     }}
                 >
                     Edit
-                </MenuItem>
-                <MenuItem
+                </MenuItem> */}
+                {/* <MenuItem
                     dense
                     onClick={() => {
                         props.onClickDelete();
@@ -67,7 +67,7 @@ function MoreBtn(props) {
                     }}
                 >
                     Delete
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
                     dense
                     onClick={() => {
@@ -82,13 +82,21 @@ function MoreBtn(props) {
     );
 }
 
-export default function List({ data, filter }) {
+export default function List({ data, filter, getList }) {
     const classes = useStyles();
     const [list, setList] = useState(data);
     const [dailog, setDailog] = useState(false);
     const [editor, setEditorState] = useState({ text: "", index: 0 });
     const [questions, setQuestions] = useState(null);
-    const { mutate, isLoading } = useMutation((filter) => getFreshQuestion(filter));
+    const { mutate, isLoading } = useMutation((filter) => getFreshQuestion(filter), {
+        onSuccess: () => {
+            getList(list);
+        },
+    });
+
+    useEffect(() => {
+        setList(data);
+    }, [data]);
 
     const paddingOption = (num) => {
         switch (num) {
@@ -106,6 +114,45 @@ export default function List({ data, filter }) {
         }
     };
 
+    const editItem = (index, question) => {
+        // const tempList = [...list];
+        // const [deleteItem] = tempList.splice(i, 1);
+        // tempList.splice(i, 0, deleteItem);
+        // setList(tempList);
+
+        setEditorState({ text: question.question_text, index: index });
+        setDailog(true);
+    };
+
+    const deleteItem = (index) => {
+        const tempList = [...list];
+        tempList.splice(index, 1);
+        setList(tempList);
+    };
+
+    const refetchItem = (index) => {
+        setQuestions(index);
+        mutate(
+            {
+                board: filter.board,
+                class: filter.class,
+                subject: filter.subject,
+                question_ids: list.map((q) => q._id),
+            },
+            {
+                onSuccess: (data) => {
+                    const tempList = [...list];
+                    tempList.splice(index, 1);
+                    tempList.splice(index, 0, data[0]);
+                    setList(tempList);
+                },
+                onSettled: () => {
+                    setQuestions(null);
+                },
+            }
+        );
+    };
+
     return (
         <CssBaseline>
             <Grid container spacing={0}>
@@ -119,42 +166,9 @@ export default function List({ data, filter }) {
                                     </Typography>
                                     <MoreBtn
                                         className={classes.moreIcon}
-                                        onClickEdit={() => {
-                                            // const tempList = [...list];
-                                            // const [deleteItem] = tempList.splice(i, 1);
-                                            // tempList.splice(i, 0, deleteItem);
-                                            // setList(tempList);
-
-                                            setEditorState({ text: question.question_text, index: i });
-                                            setDailog(true);
-                                        }}
-                                        onClickDelete={() => {
-                                            const tempList = [...list];
-                                            tempList.splice(i, 1);
-                                            setList(tempList);
-                                        }}
-                                        refetch={() => {
-                                            setQuestions(i);
-                                            mutate(
-                                                {
-                                                    board: filter.board,
-                                                    class: filter.class,
-                                                    subject: filter.subject,
-                                                    question_ids: list.map((q) => q._id),
-                                                },
-                                                {
-                                                    onSuccess: (data) => {
-                                                        const tempList = [...list];
-                                                        tempList.splice(i, 1);
-                                                        tempList.splice(i, 0, data[0]);
-                                                        setList(tempList);
-                                                    },
-                                                    onSettled: () => {
-                                                        setQuestions(null);
-                                                    },
-                                                }
-                                            );
-                                        }}
+                                        onClickEdit={() => editItem(i, question)}
+                                        onClickDelete={() => deleteItem(i)}
+                                        refetch={() => refetchItem(i)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

@@ -31,20 +31,21 @@ import { useEditor } from "./editorUtil";
 
 const useStyles = makeStyles((theme) => ({
     list: {
-        height: "95vh",
+        height: "85vh",
         maxHeight: theme.spacing(115),
         overflowY: "auto",
     },
-    header: {
+    closeIcon: {
         width: "100%",
-        marginTop: theme.spacing(2),
+        paddingTop: theme.spacing(1),
         paddingLeft: theme.spacing(1),
     },
     question: {
         width: "100%",
         border: "1px solid black",
-        borderRadius: "10px",
+        borderRadius: "5px",
         padding: theme.spacing(1),
+        marginTop: theme.spacing(1),
         minHeight: theme.spacing(30),
         overflow: "auto",
     },
@@ -67,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
     },
     dragHandle: {
         cursor: "move",
+    },
+    dailog: {
+        borderRadius: 0,
     },
 }));
 
@@ -124,7 +128,6 @@ export default function PreviewList() {
 
     const { list, edit, paper } = state;
 
-    console.log(paper);
     return (
         <Fragment>
             <List
@@ -167,7 +170,7 @@ export default function PreviewList() {
                                 <ListItemSecondaryAction>
                                     <ListMoreBtn
                                         onClickView={() => {
-                                            setDailogState({ open: true, question: q });
+                                            setDailogState({ open: true, question: { ...q, index: i } });
                                         }}
                                         onClickEdit={() => {
                                             dispatch({
@@ -186,9 +189,10 @@ export default function PreviewList() {
                     })
                 )}
             </List>
-            <Dialog fullScreen open={dailogState.open}>
-                <div className={classes.header}>
+            <Dialog classes={{ paper: classes.dailog }} maxWidth="md" open={dailogState.open}>
+                <div>
                     <IconButton
+                        style={{ margin: "5px" }}
                         onClick={() => {
                             setDailogState({ open: false, question: null });
                         }}
@@ -196,10 +200,10 @@ export default function PreviewList() {
                         <CloseIcon />
                     </IconButton>
                 </div>
-                <Container>
+                <Container style={{ minHeight: "500px", padding: "0 50px" }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant="h4">Question</Typography>
+                            <Typography variant="h4">Question: {dailogState.question?.index + 1}</Typography>
                             <div
                                 className={classes.question}
                                 dangerouslySetInnerHTML={{ __html: dailogState.question?.text }}

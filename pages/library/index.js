@@ -84,8 +84,6 @@ export default function Editor({ lib }) {
         },
     };
 
-    console.log(formState);
-
     return (
         <Container>
             <Grid container spacing={4}>
@@ -188,24 +186,6 @@ export default function Editor({ lib }) {
                         )}
                     </TextField>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Paper Category"
-                        select
-                        value={formState.paper_cat}
-                        onChange={(e) => {
-                            dispatch({ type: "PAPER_CAT", value: e.target.value });
-                        }}
-                    >
-                        {lib.paper_cat_list.map((paperCat) => (
-                            <MenuItem key={paperCat} value={paperCat}>
-                                {paperCat}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Grid>
                 {/* <Grid item xs={6}>
                     <TextField
                         fullWidth
@@ -250,7 +230,7 @@ export default function Editor({ lib }) {
                                 name="options"
                             />
                         }
-                        label="Render Options"
+                        label="Options"
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -303,7 +283,7 @@ export default function Editor({ lib }) {
                         )}
                     </TextField>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                     <TextField
                         select
                         SelectProps={{ multiple: true }}
@@ -361,8 +341,10 @@ export default function Editor({ lib }) {
                 status={snack.status}
                 msg={snack.msg}
             />
-            <Dialog keepMounted={false} fullScreen open={openDialog} onClose={() => setDialog(false)}>
-                <QuestionEditor details={formState} />
+            <Dialog keepMounted={false} fullScreen open={openDialog}>
+                <Container>
+                    <QuestionEditor details={formState} />
+                </Container>
             </Dialog>
         </Container>
     );
