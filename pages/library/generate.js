@@ -265,7 +265,7 @@ export default function SearchPage({ lib }) {
                             )}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={9}>
                         <TextField
                             size="small"
                             select
@@ -336,7 +336,7 @@ export default function SearchPage({ lib }) {
                             ))}
                         </TextField>
                     </Grid> */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={3}>
                         <TextField
                             size="small"
                             fullWidth
@@ -360,7 +360,6 @@ export default function SearchPage({ lib }) {
                             Search
                         </Button>
                     </Grid>
-                    <Grid item xs={12}></Grid>
                     <Grid item xs={12}>
                         <Dialog
                             fullScreen
@@ -421,5 +420,3 @@ export default function SearchPage({ lib }) {
         </CssBaseline>
     );
 }
-/*
- */

@@ -88,15 +88,11 @@ export default function List({ data, filter, getList }) {
     const [dailog, setDailog] = useState(false);
     const [editor, setEditorState] = useState({ text: "", index: 0 });
     const [questions, setQuestions] = useState(null);
-    const { mutate, isLoading } = useMutation((filter) => getFreshQuestion(filter), {
-        onSuccess: () => {
-            getList(list);
-        },
-    });
+    const { mutate, isLoading } = useMutation((filter) => getFreshQuestion(filter));
 
     useEffect(() => {
-        setList(data);
-    }, [data]);
+        getList(list);
+    }, [list]);
 
     const paddingOption = (num) => {
         switch (num) {

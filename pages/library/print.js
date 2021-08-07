@@ -37,7 +37,7 @@ export default function PrintPage({ ids }) {
     }
 
     return (
-        <Container style={{ backgroundColor: "white" }}>
+        <Container style={{ backgroundColor: "white", minHeight: "100vh" }}>
             <Button
                 id="print-btn"
                 variant="text"

@@ -18,6 +18,7 @@ import { getFixedQuestions } from "@/utils/api/cip-backend/questions";
  */
 export default function QuestionList({ filter, getList }) {
     const { data, isLoading, isError } = useQuery(["questions", filter], () => getFixedQuestions(filter), {
+        refetchOnWindowFocus: false,
         onSuccess: (data) => {
             getList(data.map((question) => question._id));
         },
