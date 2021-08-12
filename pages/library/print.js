@@ -66,12 +66,13 @@ export default function PrintPage({ ids }) {
                                 id="question-container"
                                 dangerouslySetInnerHTML={{ __html: question.question_text }}
                             ></div>
-                            {question.question_options.map((option, i) => (
-                                <div key={option._id} id="option-container">
-                                    <p id="option-text">({paddingOption(i)})</p>
-                                    <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
-                                </div>
-                            ))}
+                            {question.hasOption &&
+                                question.question_options.map((option, i) => (
+                                    <div key={option._id} id="option-container">
+                                        <p id="option-text">({paddingOption(i)})</p>
+                                        <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
+                                    </div>
+                                ))}
                         </div>
                     </div>
                 );

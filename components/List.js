@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Grid, CssBaseline, Dialog, Menu, MenuItem, IconButton } from "@material-ui/core";
+import { Typography, Grid, CssBaseline, Menu, MenuItem, IconButton, Button } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import { usePopupState, bindTrigger, bindMenu } from "material-ui-popup-state/hooks";
 
 import { getFreshQuestion } from "@/utils/api/cip-backend/questions";
-import Editor from "@/components/editor/Editor";
+// import Editor from "@/components/editor/Editor";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -82,17 +83,14 @@ function MoreBtn(props) {
     );
 }
 
-export default function List({ data, filter, getList }) {
+export default function List({ data, filter }) {
     const classes = useStyles();
+    const router = useRouter();
     const [list, setList] = useState(data);
-    const [dailog, setDailog] = useState(false);
-    const [editor, setEditorState] = useState({ text: "", index: 0 });
+    // const [dailog, setDailog] = useState(false);
+    // const [editor, setEditorState] = useState({ text: "", index: 0 });
     const [questions, setQuestions] = useState(null);
-    const { mutate, isLoading } = useMutation((filter) => getFreshQuestion(filter));
-
-    useEffect(() => {
-        getList(list);
-    }, [list]);
+    const { mutate, isLoading } = useMutation((payload) => getFreshQuestion(payload));
 
     const paddingOption = (num) => {
         switch (num) {
@@ -110,15 +108,14 @@ export default function List({ data, filter, getList }) {
         }
     };
 
-    const editItem = (index, question) => {
-        // const tempList = [...list];
-        // const [deleteItem] = tempList.splice(i, 1);
-        // tempList.splice(i, 0, deleteItem);
-        // setList(tempList);
-
-        setEditorState({ text: question.question_text, index: index });
-        setDailog(true);
-    };
+    // const editItem = (index, question) => {
+    //     // const tempList = [...list];
+    //     // const [deleteItem] = tempList.splice(i, 1);
+    //     // tempList.splice(i, 0, deleteItem);
+    //     // setList(tempList);
+    //     // setEditorState({ text: question.question_text, index: index });
+    //     // setDailog(true);
+    // };
 
     const deleteItem = (index) => {
         const tempList = [...list];
@@ -126,14 +123,16 @@ export default function List({ data, filter, getList }) {
         setList(tempList);
     };
 
-    const refetchItem = (index) => {
+    const refetchItem = (index, q) => {
         setQuestions(index);
         mutate(
             {
                 board: filter.board,
-                class: filter.class,
+                class: filter.klass,
                 subject: filter.subject,
+                chapter: filter.chapter,
                 question_ids: list.map((q) => q._id),
+                question_marks: q.question_marks,
             },
             {
                 onSuccess: (data) => {
@@ -162,9 +161,9 @@ export default function List({ data, filter, getList }) {
                                     </Typography>
                                     <MoreBtn
                                         className={classes.moreIcon}
-                                        onClickEdit={() => editItem(i, question)}
+                                        // onClickEdit={() => editItem(i, question)}
                                         onClickDelete={() => deleteItem(i)}
-                                        refetch={() => refetchItem(i)}
+                                        refetch={() => refetchItem(i, question)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -179,14 +178,17 @@ export default function List({ data, filter, getList }) {
                                     ) : (
                                         <>
                                             <div dangerouslySetInnerHTML={{ __html: question.question_text }}></div>
-                                            {question.question_options.map((option, i) => {
-                                                return (
-                                                    <div key={option._id} style={{ display: "flex" }}>
-                                                        <p style={{ marginRight: "10px" }}>({paddingOption(i)})</p>
-                                                        <div dangerouslySetInnerHTML={{ __html: option.text }}></div>
-                                                    </div>
-                                                );
-                                            })}
+                                            {question.hasOption &&
+                                                question.question_options.map((option, i) => {
+                                                    return (
+                                                        <div key={option._id} style={{ display: "flex" }}>
+                                                            <p style={{ marginRight: "10px" }}>({paddingOption(i)})</p>
+                                                            <div
+                                                                dangerouslySetInnerHTML={{ __html: option.text }}
+                                                            ></div>
+                                                        </div>
+                                                    );
+                                                })}
                                         </>
                                     )}
                                 </Grid>
@@ -195,7 +197,23 @@ export default function List({ data, filter, getList }) {
                     );
                 })}
             </Grid>
-            <Dialog
+            <Button
+                color="primary"
+                variant="text"
+                onClick={() => {
+                    router.push({
+                        pathname: "/library/print",
+                        query: { ids: list.map((q) => q._id) },
+                    });
+                }}
+            >
+                Print
+            </Button>
+        </CssBaseline>
+    );
+}
+{
+    /* <Dialog
                 fullWidth
                 keepMounted={false}
                 maxWidth="md"
@@ -225,7 +243,5 @@ export default function List({ data, filter, getList }) {
                         setEditorState((prevState) => ({ ...prevState, text: content }));
                     }}
                 />
-            </Dialog>
-        </CssBaseline>
-    );
+            </Dialog> */
 }

@@ -33,6 +33,7 @@
         "react-swipeable-views": "^0.14.0",
         "suneditor": "^2.40.0",
         "suneditor-react": "^3.1.2",
+        "urlcat": "^2.0.4",
         "yup": "^0.32.9"
     },
     "devDependencies": {

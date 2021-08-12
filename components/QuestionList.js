@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core";
 
 import List from "./List";
 import { Progress } from "./Common";
-import { getFixedQuestions } from "@/utils/api/cip-backend/questions";
+import { getFixedFormatQuestions } from "@/utils/api/cip-backend/questions";
 
 /**
  * @callback getList
@@ -17,12 +17,21 @@ import { getFixedQuestions } from "@/utils/api/cip-backend/questions";
  * @param {getList} props.getList callback for getting question id list
  */
 export default function QuestionList({ filter, getList }) {
-    const { data, isLoading, isError } = useQuery(["questions", filter], () => getFixedQuestions(filter), {
-        refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            getList(data.map((question) => question._id));
+    const { data, isLoading, isError } = useQuery(
+        ["fetch questions", filter],
+        () => {
+            return getFixedFormatQuestions({
+                board: filter.board,
+                class_name: filter.klass,
+                subject: filter.subject,
+                chapter: filter.chapter,
+                total_marks: filter.marks,
+            });
         },
-    });
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 
     if (isLoading) {
         return <Progress />;

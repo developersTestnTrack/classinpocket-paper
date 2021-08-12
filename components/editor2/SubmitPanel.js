@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function genrateQuestionList(list, paper) {
+    console.log(paper);
     return list.map((question) => ({
         board: question.config.board,
         class_name: question.config.klass,
