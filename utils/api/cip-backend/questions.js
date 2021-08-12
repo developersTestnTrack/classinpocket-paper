@@ -1,7 +1,7 @@
 import fetch from "isomorphic-unfetch";
 
-// const uri = "https://us-central1-classinpocket-f5907.cloudfunctions.net/httpstrigger-backend/api";
-const uri = "http://localhost:5001/classinpocket-f5907/us-central1/httpstrigger-backend/api";
+const uri = "https://us-central1-classinpocket-f5907.cloudfunctions.net/httpstrigger-backend/api";
+// const uri = "http://localhost:5001/classinpocket-f5907/us-central1/httpstrigger-backend/api";
 
 export class CustomError extends Error {
     constructor(name, message, json) {
