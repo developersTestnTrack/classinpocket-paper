@@ -3,10 +3,10 @@ import Grid from "@material-ui/core/Grid";
 import { Container } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
-import { EditorGlobal } from "@/components/editor2/editorUtil";
-import MainEditor from "@/components/editor2/MainEditor";
-import QuestionDetailPanel from "@/components/editor2/QuestionDetailPanel";
-import PreviewList from "@/components/editor2/PreviewList";
+import { EditorGlobal } from "@/components/lib-section/editor2/editorUtil";
+import MainEditor from "@/components/lib-section/editor2/MainEditor";
+import QuestionDetailPanel from "@/components/lib-section/editor2/QuestionDetailPanel";
+import PreviewList from "@/components/lib-section/editor2/PreviewList";
 
 const EditorContainer = styled("div")(({ theme }) => ({
     padding: theme.spacing(2, 0, 4, 0),

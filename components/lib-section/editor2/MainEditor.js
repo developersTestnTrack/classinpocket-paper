@@ -4,8 +4,8 @@ import { useState, useRef } from "react";
 import { Grid, Typography, Button, Switch, Container } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
-import Snack from "../Snack";
-import { Progress } from "../Common";
+import Snack from "../../Snack";
+import { Progress } from "../../Common";
 import { editorHW, useEditor } from "./editorUtil";
 // eslint-disable-next-line react/display-name
 const Editor = dynamic(() => import("./Editor"), { ssr: false, loading: () => <Progress>loading</Progress> });

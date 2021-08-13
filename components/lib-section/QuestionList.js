@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { Typography } from "@material-ui/core";
 
 import List from "./List";
-import { Progress } from "./Common";
+import { Progress } from "../Common";
 import { getFixedFormatQuestions } from "@/utils/api/cip-backend/questions";
 
 /**
