@@ -4,7 +4,7 @@ import { Search as SearchIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
-import QuestionList from "@/components/QuestionList";
+import QuestionList from "@/components/lib-section/QuestionList";
 
 const useStyles = makeStyles((theme) => ({
     container: {

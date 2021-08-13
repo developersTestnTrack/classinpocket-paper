@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
 import { Container, Grid, TextField, MenuItem, Button, Dialog, FormControlLabel, Switch } from "@material-ui/core";
 
-import QuestionEditor from "@/components/editor2/QuestionEditor";
+import QuestionEditor from "@/components/lib-section/editor2/QuestionEditor";
 import Snack from "@/components/Snack";
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
 import { validateLibEditorFormData } from "@/utils/validation";
