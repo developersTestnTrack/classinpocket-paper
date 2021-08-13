@@ -1,15 +1,41 @@
-import dynamic from "next/dynamic";
-import { Container, Typography } from "@material-ui/core";
+import { useState } from "react";
+import { useMutation } from "react-query";
+import { Container, Typography, Button } from "@material-ui/core";
 
-const PDFViewer = dynamic(() => import("@/components/PdfView"), { ssr: false });
+import { Progress } from "@/components/Common";
+import { submitQuestions } from "@/utils/api/cip-backend/questions";
 
 export default function Home() {
+    const [state, setState] = useState(null);
+    const { mutate, isLoading } = useMutation((payload) => submitQuestions(payload));
+
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth="md">
             <Typography variant="h5" align="center">
                 Please go to admin panel
             </Typography>
-            <PDFViewer />
+            <input
+                id="input"
+                type="file"
+                onChange={(e) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setState(JSON.parse(reader.result));
+                    };
+
+                    reader.readAsText(e.target.files[0]);
+                }}
+            />
+            <Button
+                variant="text"
+                onClick={() => {
+                    console.log(state);
+                    mutate(state);
+                }}
+            >
+                submit
+            </Button>
+            {isLoading && <Progress />}
         </Container>
     );
 }

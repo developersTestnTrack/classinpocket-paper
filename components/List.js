@@ -150,6 +150,24 @@ export default function List({ data, filter }) {
 
     return (
         <CssBaseline>
+            <Button
+                style={{ position: "absolute", top: 18, right: 100 }}
+                color="primary"
+                variant="text"
+                onClick={() => {
+                    console.log(filter);
+                    router.push({
+                        pathname: "/library/print",
+                        query: {
+                            ids: list.map((q) => q._id),
+                            details: JSON.stringify(filter),
+                        },
+                    });
+                }}
+            >
+                Go to print page
+            </Button>
+
             <Grid container spacing={0}>
                 {list.map((question, i) => {
                     return (
@@ -197,18 +215,6 @@ export default function List({ data, filter }) {
                     );
                 })}
             </Grid>
-            <Button
-                color="primary"
-                variant="text"
-                onClick={() => {
-                    router.push({
-                        pathname: "/library/print",
-                        query: { ids: list.map((q) => q._id) },
-                    });
-                }}
-            >
-                Print
-            </Button>
         </CssBaseline>
     );
 }

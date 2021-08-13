@@ -20,12 +20,14 @@ export async function getServerSideProps() {
  * @param {Object} editor - The payload for editor.
  * @param {Object} editor.lib - editor payload object.
  * @param {string} editor.lib.type - mode type
- * @param {string[]} editor.lib.board_list - board list
- * @param {string[]} editor.lib.class_list - class list
- * @param {string[]} editor.lib.subject_list - subject list
+ * @param {{board: string}[]} editor.lib.board_list - board list
+ * @param {{class: string, board: string}[]} editor.lib.class_list - class list
+ * @param {{board: string, class: string, subject: string}[]} editor.lib.subject_list - subject list
+ * @param {{board: string, class: string, subject: string, chapter: string}[]} editor.lib.chapter_list - subject list
+ * @param {{board: string, class: string, subject: string, chapter: string, topic: string}[]} editor.lib.topic_list - topic list
  * @param {string[]} editor.lib.paper_cat_list - paper catagory list
  */
-export default function Editor({ lib }) {
+export default function LibEditor({ lib }) {
     const [openDialog, setDialog] = useState(false);
     const [snack, setSnackState] = useState({ open: false, msg: "", status: "idle" });
 

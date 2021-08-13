@@ -29,6 +29,8 @@ export async function submitQuestions(body) {
     if (response.ok) {
         return await response.json();
     } else {
+        const res = await response.json();
+        console.log(res);
         throw new CustomError("ERR_REQUEST_FAILED", "Error in submitting questions", await response.json());
     }
 }

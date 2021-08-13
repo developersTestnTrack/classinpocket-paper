@@ -9,13 +9,17 @@
         size: A4;
     }
 
+    #logo {
+        margin-top: auto;
+    }
+
     #print-row {
         display: flex;
         clear: both;
         break-after: avoid !important;
         break-before: always !important;
         break-inside: avoid !important;
-        padding-top: 4rem;
+        padding-top: 2rem;
     }
 
     #para {
@@ -37,12 +41,32 @@
     #print-btn {
         display: none;
     }
+
+    #container {
+        background-color: white;
+        padding: 0;
+    }
 }
 
-#print-btn {
-    position: absolute;
-    right: 0;
-    margin-right: 16px;
+hr {
+    margin: 0;
+    border-color: black;
+}
+
+#header {
+    display: flex;
+}
+
+#inner-header {
+    width: 100%;
+}
+
+#inner-header > h4 {
+    margin: 0;
+}
+
+#logo {
+    margin-top: auto;
 }
 
 p {
@@ -55,9 +79,17 @@ p {
 }
 
 #container {
-    position: relative;
     background-color: white;
-    padding: 0 1rem;
+}
+
+#inner-container {
+    position: relative;
+}
+
+#print-btn {
+    position: absolute;
+    right: 0;
+    margin-right: 16px;
 }
 
 #option-container {
