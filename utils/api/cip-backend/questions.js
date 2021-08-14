@@ -137,11 +137,10 @@ export async function getFixedFormatQuestions(body) {
  * @param {string} body.class class name
  * @param {string} body.subject subject name
  * @param {string[]} body.chapter chapter list
- * @param {number} body.questions_marks number of questions to get
+ * @param {number} body.question_marks number of questions to get
  * @param {string[]} body.question_ids question ids
  */
 export async function getFreshQuestion(body) {
-    console.log(body);
     const response = await fetch(`${uri}/question/paper/refetch`, {
         method: "POST",
         headers: {
