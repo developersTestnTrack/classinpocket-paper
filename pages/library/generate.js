@@ -1,4 +1,4 @@
-import { useReducer, forwardRef, useEffect } from "react";
+import { useReducer, forwardRef } from "react";
 import {
     Container,
     Grid,
@@ -118,9 +118,6 @@ export default function SearchPage({ lib }) {
                 case "QUESTIONS": {
                     return { ...state, questions_number: action.value, search: false };
                 }
-                case "LIST": {
-                    return { ...state, questions_id_list: action.value };
-                }
                 case "DIALOG": {
                     return { ...state, openDialog: action.value };
                 }
@@ -137,14 +134,9 @@ export default function SearchPage({ lib }) {
             question_cat: "",
             search: false,
             questions_number: 0,
-            questions_id_list: [],
             openDialog: false,
         }
     );
-
-    useEffect(() => {
-        // console.log(state);
-    });
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -283,8 +275,8 @@ export default function SearchPage({ lib }) {
                                     ))}
                                 </TextField>
                             </Grid>
-                            <Grid item xs={12}>
-                                {state.paper_cat === "Chapter Wise" && (
+                            {state.paper_cat === "Chapter Wise" && (
+                                <Grid item xs={12}>
                                     <TextField
                                         size="small"
                                         select
@@ -319,8 +311,10 @@ export default function SearchPage({ lib }) {
                                             <MenuItem value="no value">No subject selected</MenuItem>
                                         )}
                                     </TextField>
-                                )}
-                                {state.paper_cat === "Mock Wise" && (
+                                </Grid>
+                            )}
+                            {state.paper_cat === "Mock Wise" && (
+                                <Grid item xs={12}>
                                     <TextField
                                         size="small"
                                         select
@@ -356,60 +350,8 @@ export default function SearchPage({ lib }) {
                                             <MenuItem value="no value">No subject selected</MenuItem>
                                         )}
                                     </TextField>
-                                )}
-                            </Grid>
-                            {/* <Grid item xs={12}>
-                            <TextField
-                                size="small"
-                                select
-                                SelectProps={{ multiple: true }}
-                                fullWidth
-                                variant="outlined"
-                                label="Topic"
-                                placeholder="Enter Topics"
-                                value={state.topic}
-                                onChange={(e) => {
-                                    dispatch({ type: "TOPIC", value: e.target.value });
-                                }}
-                            >
-                                {state.chapter.length > 0 ? (
-                                    lib.topic_list
-                                        .filter(
-                                            (obj) =>
-                                                obj.board === state.board &&
-                                                obj.class === state.klass &&
-                                                obj.subject === state.subject &&
-                                                obj.chapter === state.chapter
-                                        )
-                                        .map((obj) => (
-                                            <MenuItem key={obj.topic} value={obj.topic}>
-                                                {obj.topic}
-                                            </MenuItem>
-                                        ))
-                                ) : (
-                                    <MenuItem value="no value">No chapter selected</MenuItem>
-                                )}
-                            </TextField>
-                        </Grid> */}
-                            {/* <Grid item xs={12} md={5}>
-                        <TextField
-                            size="small"
-                            select
-                            fullWidth
-                            variant="outlined"
-                            label="Question Category"
-                            value={state.question_cat}
-                            onChange={(e) => {
-                                dispatch({ type: "QUESTION_CAT", value: e.target.value });
-                            }}
-                        >
-                            {lib.questions_cat_list.map((questionCat) => (
-                                <MenuItem key={questionCat} value={questionCat}>
-                                    {questionCat}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid> */}
+                                </Grid>
+                            )}
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
@@ -429,18 +371,6 @@ export default function SearchPage({ lib }) {
                                     ))}
                                 </TextField>
                             </Grid>
-                            {/* <Grid item xs={12}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                variant="outlined"
-                                label="Number of questions"
-                                value={state.questions_number}
-                                onChange={(e) => {
-                                    dispatch({ type: "QUESTIONS", value: e.target.value });
-                                }}
-                            />
-                        </Grid> */}
                             <Grid item xs={12} className={classes.btnGroup}>
                                 <Button
                                     color="primary"
@@ -480,9 +410,6 @@ export default function SearchPage({ lib }) {
                                                     chapter: Array.isArray(state.chapter)
                                                         ? state.chapter
                                                         : [state.chapter],
-                                                }}
-                                                getList={(data) => {
-                                                    dispatch({ type: "LIST", value: data });
                                                 }}
                                             />
                                         ) : (

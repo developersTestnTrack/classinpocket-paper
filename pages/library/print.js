@@ -11,7 +11,6 @@ export function getServerSideProps({ query }) {
 }
 
 export default function PrintPage({ ids, details }) {
-    console.log(details);
     const { data: list, isLoading, isError } = useQuery("questions", () => fetchQuestionsByIds(ids), {
         refetchOnWindowFocus: false,
     });
