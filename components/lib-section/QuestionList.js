@@ -6,17 +6,10 @@ import { Progress } from "../Common";
 import { getFixedFormatQuestions } from "@/utils/api/cip-backend/questions";
 
 /**
- * @callback getList
- * @param {string[]} question id list
- * @returns null
- */
-
-/**
  * @param {Object} props Question list component props
- * @param {Object.<string, string>} props.filter filter name for questions
- * @param {getList} props.getList callback for getting question id list
+ * @param {Object.<string, unknown>} props.filter filter name for questions
  */
-export default function QuestionList({ filter, getList }) {
+export default function QuestionList({ filter }) {
     const { data, isLoading, isError } = useQuery(
         ["fetch questions", filter],
         () => {
@@ -46,15 +39,7 @@ export default function QuestionList({ filter, getList }) {
     }
 
     if (data.length) {
-        return (
-            <List
-                data={data}
-                filter={filter}
-                getList={(list) => {
-                    getList(list.map((question) => question._id));
-                }}
-            />
-        );
+        return <List filter={filter} data={data} />;
     } else {
         return (
             <Typography variant="h4" align="center">
