@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Grid, CssBaseline, Menu, MenuItem, IconButton, Button } from "@material-ui/core";
+import { Typography, Grid, CssBaseline, Menu, MenuItem, IconButton, Button, Dialog } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import { usePopupState, bindTrigger, bindMenu } from "material-ui-popup-state/hooks";
 
+import Editor from "@/components/editor/Editor";
 import { getFreshQuestion } from "@/utils/api/cip-backend/questions";
-// import Editor from "@/components/editor/Editor";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -51,7 +51,7 @@ function MoreBtn(props) {
                 <MoreIcon />
             </IconButton>
             <Menu {...bindMenu(popupState)}>
-                {/* <MenuItem
+                <MenuItem
                     dense
                     onClick={() => {
                         props.onClickEdit();
@@ -59,7 +59,7 @@ function MoreBtn(props) {
                     }}
                 >
                     Edit
-                </MenuItem> */}
+                </MenuItem>
                 {/* <MenuItem
                     dense
                     onClick={() => {
@@ -87,8 +87,8 @@ export default function List({ data, filter }) {
     const classes = useStyles();
     const router = useRouter();
     const [list, setList] = useState(data);
-    // const [dailog, setDailog] = useState(false);
-    // const [editor, setEditorState] = useState({ text: "", index: 0 });
+    const [dailog, setDailog] = useState(false);
+    const [editor, setEditorState] = useState({ text: "", index: 0 });
     const [questions, setQuestions] = useState(null);
     const { mutate, isLoading } = useMutation((payload) => getFreshQuestion(payload));
 
@@ -108,14 +108,14 @@ export default function List({ data, filter }) {
         }
     };
 
-    // const editItem = (index, question) => {
-    //     // const tempList = [...list];
-    //     // const [deleteItem] = tempList.splice(i, 1);
-    //     // tempList.splice(i, 0, deleteItem);
-    //     // setList(tempList);
-    //     // setEditorState({ text: question.question_text, index: index });
-    //     // setDailog(true);
-    // };
+    const editItem = (index, question) => {
+        const tempList = [...list];
+        const [deleteItem] = tempList.splice(index, 1);
+        tempList.splice(index, 0, deleteItem);
+        setList(tempList);
+        setEditorState({ text: question.question_text, index: index });
+        setDailog(true);
+    };
 
     const deleteItem = (index) => {
         const tempList = [...list];
@@ -124,6 +124,7 @@ export default function List({ data, filter }) {
     };
 
     const refetchItem = (index, q) => {
+        console.log("question: ", q);
         setQuestions(index);
         mutate(
             {
@@ -136,6 +137,7 @@ export default function List({ data, filter }) {
             },
             {
                 onSuccess: (data) => {
+                    console.log("question fetched: ", data);
                     const tempList = [...list];
                     tempList.splice(index, 1);
                     tempList.splice(index, 0, data[0]);
@@ -168,7 +170,7 @@ export default function List({ data, filter }) {
                 Go to print page
             </Button>
 
-            <Grid container spacing={0}>
+            <Grid container>
                 {list.map((question, i) => {
                     return (
                         <Grid className={classes.item} item xs={12} key={question._id}>
@@ -179,7 +181,7 @@ export default function List({ data, filter }) {
                                     </Typography>
                                     <MoreBtn
                                         className={classes.moreIcon}
-                                        // onClickEdit={() => editItem(i, question)}
+                                        onClickEdit={() => editItem(i, question)}
                                         onClickDelete={() => deleteItem(i)}
                                         refetch={() => refetchItem(i, question)}
                                     />
@@ -215,11 +217,7 @@ export default function List({ data, filter }) {
                     );
                 })}
             </Grid>
-        </CssBaseline>
-    );
-}
-{
-    /* <Dialog
+            <Dialog
                 fullWidth
                 keepMounted={false}
                 maxWidth="md"
@@ -249,5 +247,7 @@ export default function List({ data, filter }) {
                         setEditorState((prevState) => ({ ...prevState, text: content }));
                     }}
                 />
-            </Dialog> */
+            </Dialog>
+        </CssBaseline>
+    );
 }
