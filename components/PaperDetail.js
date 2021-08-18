@@ -122,7 +122,7 @@ export default function PaperDetail({ details }) {
     };
 
     return (
-        <Container>
+        <Container maxWidth="md">
             <Grid container spacing={4}>
                 <Grid item xs={12} />
                 <Grid item md={6}>
@@ -298,20 +298,12 @@ export default function PaperDetail({ details }) {
                             });
                         }}
                     >
-                        {form.config.paperType === "Quizo" ? (
-                            <MenuItem value="Individual" key="Individual">
-                                Individual
-                            </MenuItem>
-                        ) : (
-                            [
-                                <MenuItem value="Pdf" key="Pdf">
-                                    Pdf
-                                </MenuItem>,
-                                <MenuItem value="Individual" key="Individual">
-                                    Individual
-                                </MenuItem>,
-                            ]
-                        )}
+                        <MenuItem value="Pdf" key="Pdf">
+                            Pdf
+                        </MenuItem>
+                        <MenuItem value="Individual" key="Individual">
+                            Individual
+                        </MenuItem>
                     </TextField>
                 </Grid>
                 <Grid item md={3}>
@@ -441,7 +433,6 @@ export default function PaperDetail({ details }) {
                         Finish
                     </Button>
                 </Grid>
-                <Grid item md={6} />
             </Grid>
             <Dialog
                 keepMounted={false}

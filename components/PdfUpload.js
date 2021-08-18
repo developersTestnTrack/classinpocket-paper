@@ -14,6 +14,7 @@ import {
     DialogContentText,
 } from "@material-ui/core";
 
+import { Info as InfoIcon } from "@material-ui/icons";
 import { styled } from "@material-ui/core/styles";
 
 import { Progress } from "@/components/Common";
@@ -28,17 +29,18 @@ export default function PdfUpload({ paperDetails }) {
 
     const [pdf, setPdf] = useState({
         numberOfQuestion: paperDetails.config.numberOfQuestions,
-        perQuestionMarks: [],
         paperPdf: "",
         solutionPdf: "",
-        solutionVideo: "",
+        solutionVideo: "link",
+        perQuestionMarks: "",
+        negativeMarks: "",
     });
-    const [loader, setLoader] = useState({ show: false });
+    const [loader, setLoader] = useState({ show: false, msg: "" });
     const [questinPdf, setQuestionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [solutionPdf, setSolutionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [questionMarksList, setQuestionMarksList] = useState([]);
 
-    const { mutate } = useMutation("upload paper", uploadPdfPaper, {
+    const { mutate, isError, isLoading } = useMutation("upload paper", uploadPdfPaper, {
         onMutate: () => {
             setLoader({ show: true });
         },
@@ -56,7 +58,6 @@ export default function PdfUpload({ paperDetails }) {
 
     useEffect(() => {
         const newArray = [];
-
         for (let index = 1; index <= Number(pdf.numberOfQuestion); index++) {
             newArray.push({ id: index, marks: "" });
         }
@@ -65,11 +66,6 @@ export default function PdfUpload({ paperDetails }) {
     }, []);
 
     const onClickSubmit = async () => {
-        const pdfConfig = {
-            ...pdf,
-            perQuestionMarks: questionMarksList.map((el) => Number(el.marks)),
-        };
-
         const paper = {
             board: paperDetails.board,
             class_name: paperDetails.class,
@@ -90,16 +86,17 @@ export default function PdfUpload({ paperDetails }) {
             student_id: paperDetails.studentId,
             teacher_id: paperDetails.teacherId,
             pdf: {
-                number_of_question: Number(pdfConfig.numberOfQuestion),
-                per_question_marks: pdfConfig.perQuestionMarks,
+                number_of_question: Number(pdf.numberOfQuestion),
+                per_question_marks: questionMarksList.map(() => Number(pdf.perQuestionMarks)),
+                negative_mark_per_que: -Number(pdf.negativeMarks),
                 paper_pdf: "",
                 solution_pdf: "",
-                solution_video: pdfConfig.solutionVideo,
+                solution_video: pdf.solutionVideo,
+                answer_key: Object.fromEntries(questionMarksList.map((value, i) => [i, [value.marks]])),
             },
         };
 
         console.log(paper);
-
         mutate({
             paper: paper,
             question_pdf_blob: questinPdf.blob,
@@ -109,7 +106,7 @@ export default function PdfUpload({ paperDetails }) {
     };
 
     return (
-        <Container>
+        <Container maxWidth="md">
             <Grid container>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
@@ -117,8 +114,10 @@ export default function PdfUpload({ paperDetails }) {
 
                         {/* select pdf  */}
                         <Grid item xs={6}>
+                            <Typography variant="h5">Question Pdf</Typography>
                             <Paper>
                                 <Button
+                                    size="small"
                                     variant="contained"
                                     color="primary"
                                     onClick={() => {
@@ -131,7 +130,7 @@ export default function PdfUpload({ paperDetails }) {
                                 </Button>
                                 <div style={{ flex: 1 }}>
                                     {questinPdf.isSelect ? (
-                                        <Typography variant="h5" align="center">
+                                        <Typography variant="h5" align="center" noWrap>
                                             {questinPdf.name}
                                         </Typography>
                                     ) : (
@@ -143,8 +142,10 @@ export default function PdfUpload({ paperDetails }) {
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
+                            <Typography variant="h5">Solution Pdf</Typography>
                             <Paper>
                                 <Button
+                                    size="small"
                                     variant="contained"
                                     color="primary"
                                     onClick={() => {
@@ -157,7 +158,7 @@ export default function PdfUpload({ paperDetails }) {
                                 </Button>
                                 <div style={{ flex: 1 }}>
                                     {solutionPdf.isSelect ? (
-                                        <Typography variant="h5" align="center">
+                                        <Typography variant="h5" align="center" noWrap>
                                             {solutionPdf.name}
                                         </Typography>
                                     ) : (
@@ -173,6 +174,7 @@ export default function PdfUpload({ paperDetails }) {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 label="Solution link"
                                 placeholder="Enter video solution link"
@@ -182,14 +184,47 @@ export default function PdfUpload({ paperDetails }) {
                                 }}
                             />
                         </Grid>
+                        <Grid item xs={12}></Grid>
 
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                variant="outlined"
+                                label="Per Question Marks"
+                                placeholder="Enter video solution link"
+                                value={pdf.perQuestionMarks}
+                                onChange={(e) => {
+                                    setPdf((prevState) => ({ ...prevState, perQuestionMarks: e.target.value }));
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                variant="outlined"
+                                label="Per Question Negative Marks"
+                                placeholder="Enter video solution link"
+                                value={pdf.negativeMarks}
+                                onChange={(e) => {
+                                    setPdf((prevState) => ({ ...prevState, negativeMarks: e.target.value }));
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="h5">Enter option for each question :</Typography>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <InfoIcon size="small" style={{ padding: "2px" }} />
+                                <Typography variant="caption">You can only enter one option : A, B, C, D</Typography>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12}></Grid>
                         {/* Per question marks */}
                         {questionMarksList.length !== 0 && (
                             <Grid item xs={12}>
                                 <Grid container spacing={1}>
-                                    <Grid item xs={12}>
-                                        <Typography variant="h5">Enter marks for each question :</Typography>
-                                    </Grid>
                                     {questionMarksList.length !== 0 &&
                                         questionMarksList.map(({ id, marks }, i) => (
                                             <Grid item xs={2} key={i}>
@@ -197,19 +232,18 @@ export default function PdfUpload({ paperDetails }) {
                                                     fullWidth
                                                     size="small"
                                                     variant="outlined"
-                                                    placeholder="Question Marks"
+                                                    placeholder="Question Option"
                                                     label={`Question ${id}`}
                                                     value={marks}
                                                     onChange={(e) => {
                                                         const value = e.target.value;
-                                                        const numberRegx = /^(\s*|\d+)$/;
 
-                                                        if (value.match(numberRegx)) {
+                                                        if (value.length === 0) {
                                                             const newList = questionMarksList.map((el1) => {
                                                                 if (el1.id === id) {
                                                                     return {
                                                                         ...el1,
-                                                                        marks: e.target.value,
+                                                                        marks: "",
                                                                     };
                                                                 } else {
                                                                     return el1;
@@ -217,6 +251,41 @@ export default function PdfUpload({ paperDetails }) {
                                                             });
 
                                                             setQuestionMarksList(newList);
+                                                        }
+
+                                                        if (value.length === 1) {
+                                                            if (["A", "B", "C", "D"].includes(value.toUpperCase())) {
+                                                                const newList = questionMarksList.map((el1) => {
+                                                                    if (el1.id === id) {
+                                                                        return {
+                                                                            ...el1,
+                                                                            marks: value.toUpperCase(),
+                                                                        };
+                                                                    } else {
+                                                                        return el1;
+                                                                    }
+                                                                });
+
+                                                                setQuestionMarksList(newList);
+                                                            }
+                                                        }
+
+                                                        if (value.length === 2) {
+                                                            const value = e.target.value[1];
+                                                            if (["A", "B", "C", "D"].includes(value.toUpperCase())) {
+                                                                const newList = questionMarksList.map((el1) => {
+                                                                    if (el1.id === id) {
+                                                                        return {
+                                                                            ...el1,
+                                                                            marks: value.toUpperCase(),
+                                                                        };
+                                                                    } else {
+                                                                        return el1;
+                                                                    }
+                                                                });
+
+                                                                setQuestionMarksList(newList);
+                                                            }
                                                         }
                                                     }}
                                                 />
@@ -235,8 +304,12 @@ export default function PdfUpload({ paperDetails }) {
             </Grid>
             <Dialog open={loader.show}>
                 <DialogContent>
-                    <Progress />
-                    <DialogContentText>Please wait it will take some time</DialogContentText>
+                    {isLoading && <Progress />}
+                    {isError ? (
+                        <DialogContentText>Something went wrong please try again later.</DialogContentText>
+                    ) : (
+                        <DialogContentText>Please wait it will take some time.</DialogContentText>
+                    )}
                 </DialogContent>
             </Dialog>
         </Container>
