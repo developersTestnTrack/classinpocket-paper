@@ -14,7 +14,6 @@ import {
     DialogContentText,
 } from "@material-ui/core";
 
-import { Info as InfoIcon } from "@material-ui/icons";
 import { styled } from "@material-ui/core/styles";
 
 import { Progress } from "@/components/Common";
@@ -23,24 +22,23 @@ import { uploadPdfPaper } from "@/utils/api/firebase-api/mutation";
 
 const Paper = styled(MuiPaper)(({ theme }) => ({ padding: theme.spacing(2), display: "flex" }));
 
-export default function ExamaniaPdfUploadPanel({ paperDetails }) {
+export default function PdfUpload({ paperDetails }) {
     const router = useRouter();
     const { params } = router.query;
 
     const [pdf, setPdf] = useState({
         numberOfQuestion: paperDetails.config.numberOfQuestions,
+        perQuestionMarks: [],
         paperPdf: "",
         solutionPdf: "",
-        solutionVideo: "link",
-        perQuestionMarks: "",
-        negativeMarks: "",
+        solutionVideo: "",
     });
-    const [loader, setLoader] = useState({ show: false, msg: "" });
+    const [loader, setLoader] = useState({ show: false });
     const [questinPdf, setQuestionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [solutionPdf, setSolutionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [questionMarksList, setQuestionMarksList] = useState([]);
 
-    const { mutate, isError, isLoading } = useMutation("upload paper", uploadPdfPaper, {
+    const { mutate } = useMutation("upload paper", uploadPdfPaper, {
         onMutate: () => {
             setLoader({ show: true });
         },
@@ -58,6 +56,7 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
 
     useEffect(() => {
         const newArray = [];
+
         for (let index = 1; index <= Number(pdf.numberOfQuestion); index++) {
             newArray.push({ id: index, marks: "" });
         }
@@ -66,6 +65,11 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
     }, []);
 
     const onClickSubmit = async () => {
+        const pdfConfig = {
+            ...pdf,
+            perQuestionMarks: questionMarksList.map((el) => Number(el.marks)),
+        };
+
         const paper = {
             board: paperDetails.board,
             class_name: paperDetails.class,
@@ -86,17 +90,16 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
             student_id: paperDetails.studentId,
             teacher_id: paperDetails.teacherId,
             pdf: {
-                number_of_question: Number(pdf.numberOfQuestion),
-                per_question_marks: questionMarksList.map(() => Number(pdf.perQuestionMarks)),
-                negative_mark_per_que: -Number(pdf.negativeMarks),
+                number_of_question: Number(pdfConfig.numberOfQuestion),
+                per_question_marks: pdfConfig.perQuestionMarks,
                 paper_pdf: "",
                 solution_pdf: "",
-                solution_video: pdf.solutionVideo,
-                answer_key: Object.fromEntries(questionMarksList.map((value, i) => [i, [value.marks]])),
+                solution_video: pdfConfig.solutionVideo,
             },
         };
 
         console.log(paper);
+
         mutate({
             paper: paper,
             question_pdf_blob: questinPdf.blob,
@@ -130,7 +133,7 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                                 </Button>
                                 <div style={{ flex: 1 }}>
                                     {questinPdf.isSelect ? (
-                                        <Typography variant="h5" align="center" noWrap>
+                                        <Typography variant="h5" align="center">
                                             {questinPdf.name}
                                         </Typography>
                                     ) : (
@@ -158,7 +161,7 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                                 </Button>
                                 <div style={{ flex: 1 }}>
                                     {solutionPdf.isSelect ? (
-                                        <Typography variant="h5" align="center" noWrap>
+                                        <Typography variant="h5" align="center">
                                             {solutionPdf.name}
                                         </Typography>
                                     ) : (
@@ -173,8 +176,8 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                         {/* Enter video solution link */}
                         <Grid item xs={12}>
                             <TextField
-                                fullWidth
                                 size="small"
+                                fullWidth
                                 variant="outlined"
                                 label="Solution link"
                                 placeholder="Enter video solution link"
@@ -184,43 +187,10 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12}></Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                size="small"
-                                variant="outlined"
-                                label="Question marks"
-                                placeholder="Per question marks"
-                                value={pdf.perQuestionMarks}
-                                onChange={(e) => {
-                                    setPdf((prevState) => ({ ...prevState, perQuestionMarks: e.target.value }));
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                size="small"
-                                variant="outlined"
-                                label="Negative marks"
-                                placeholder="Per question negative marks"
-                                value={pdf.negativeMarks}
-                                onChange={(e) => {
-                                    setPdf((prevState) => ({ ...prevState, negativeMarks: e.target.value }));
-                                }}
-                            />
-                        </Grid>
 
                         <Grid item xs={12}>
-                            <Typography variant="h5">Enter option for each question :</Typography>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <InfoIcon size="small" style={{ padding: "2px" }} />
-                                <Typography variant="caption">You can only enter one option : A, B, C, D</Typography>
-                            </div>
+                            <Typography variant="h5">Enter marks for each question :</Typography>
                         </Grid>
-                        <Grid item xs={12}></Grid>
                         {/* Per question marks */}
                         {questionMarksList.length !== 0 && (
                             <Grid item xs={12}>
@@ -232,18 +202,19 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                                                     fullWidth
                                                     size="small"
                                                     variant="outlined"
-                                                    placeholder="Question Option"
+                                                    placeholder="Question Marks"
                                                     label={`Question ${id}`}
                                                     value={marks}
                                                     onChange={(e) => {
                                                         const value = e.target.value;
+                                                        const numberRegx = /^(\s*|\d+)$/;
 
-                                                        if (value.length === 0) {
+                                                        if (value.match(numberRegx)) {
                                                             const newList = questionMarksList.map((el1) => {
                                                                 if (el1.id === id) {
                                                                     return {
                                                                         ...el1,
-                                                                        marks: "",
+                                                                        marks: e.target.value,
                                                                     };
                                                                 } else {
                                                                     return el1;
@@ -251,41 +222,6 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
                                                             });
 
                                                             setQuestionMarksList(newList);
-                                                        }
-
-                                                        if (value.length === 1) {
-                                                            if (["A", "B", "C", "D"].includes(value.toUpperCase())) {
-                                                                const newList = questionMarksList.map((el1) => {
-                                                                    if (el1.id === id) {
-                                                                        return {
-                                                                            ...el1,
-                                                                            marks: value.toUpperCase(),
-                                                                        };
-                                                                    } else {
-                                                                        return el1;
-                                                                    }
-                                                                });
-
-                                                                setQuestionMarksList(newList);
-                                                            }
-                                                        }
-
-                                                        if (value.length === 2) {
-                                                            const value = e.target.value[1];
-                                                            if (["A", "B", "C", "D"].includes(value.toUpperCase())) {
-                                                                const newList = questionMarksList.map((el1) => {
-                                                                    if (el1.id === id) {
-                                                                        return {
-                                                                            ...el1,
-                                                                            marks: value.toUpperCase(),
-                                                                        };
-                                                                    } else {
-                                                                        return el1;
-                                                                    }
-                                                                });
-
-                                                                setQuestionMarksList(newList);
-                                                            }
                                                         }
                                                     }}
                                                 />
@@ -304,12 +240,8 @@ export default function ExamaniaPdfUploadPanel({ paperDetails }) {
             </Grid>
             <Dialog open={loader.show}>
                 <DialogContent>
-                    {isLoading && <Progress />}
-                    {isError ? (
-                        <DialogContentText>Something went wrong please try again later.</DialogContentText>
-                    ) : (
-                        <DialogContentText>Please wait it will take some time.</DialogContentText>
-                    )}
+                    <Progress />
+                    <DialogContentText>Please wait it will take some time</DialogContentText>
                 </DialogContent>
             </Dialog>
         </Container>

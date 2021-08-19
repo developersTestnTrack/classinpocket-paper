@@ -221,7 +221,7 @@ export default function PdfUpload({ paperDetails }) {
                             </div>
                         </Grid>
                         <Grid item xs={12}></Grid>
-                        {/* Per question marks */}
+                        {/* Per question options */}
                         {questionMarksList.length !== 0 && (
                             <Grid item xs={12}>
                                 <Grid container spacing={1}>
