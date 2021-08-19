@@ -42,7 +42,7 @@ export default function QuestionEditor({ paperDetails }) {
     };
 
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
             <EditorGlobal initialState={initialState}>
                 <EditorContainer>
                     <Grid container spacing={2}>

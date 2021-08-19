@@ -135,49 +135,73 @@ export default function PaperPreviewPanel({ data }) {
     const classes = useStyles();
     console.log(data);
     return (
-        <Container classes={{ root: classes.container }} maxWidth="xl">
+        <Container classes={{ root: classes.container }} maxWidth="lg">
             <Grid className={classes.grid} container spacing={2}>
                 <Grid item xs={2}>
                     <Paper className={classes.paper}>
-                        <Typography variant="h6" align="center">
+                        <Typography variant="h6" align="left">
                             Academics
                         </Typography>
-                        <Typography align="center">Board: {data.paper.board}</Typography>
-                        <Typography align="center">Class: {data.paper.class_name}</Typography>
-                        <Typography align="center">Section: {data.paper.section}</Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Board: {data.paper.board}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Class: {data.paper.class_name}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Section: {data.paper.section}
+                        </Typography>
                     </Paper>
                     <Paper className={classes.paper}>
-                        <Typography variant="h6" align="center">
+                        <Typography variant="h6" align="left">
                             Paper Details
                         </Typography>
-                        <Typography align="center">Paper Title: {data.paper.paper_name}</Typography>
-                        <Typography align="center">Paper Rejoin: {data.paper.paper_rejoin}</Typography>
-                        <Typography align="center">Submission Time: {data.paper.submission_time}min</Typography>
-                        <Typography align="center">Total Marks: {data.paper.paper_total_marks}</Typography>
-                        <Typography align="center">
+                        <Typography variant="subtitle2" align="left">
+                            Paper Title: {data.paper.paper_name}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Paper Rejoin: {data.paper.paper_rejoin}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Submission Time: {data.paper.submission_time}min
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Total Marks: {data.paper.paper_total_marks}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
                             Duration:{" "}
                             {differenceInMinutes(new Date(data.paper.end_time), new Date(data.paper.start_time))}
                             min
                         </Typography>
-                        <Typography align="center">Subject: {data.paper.subject_list.join(", ")}</Typography>
-                        <Typography align="center">Topic: {data.paper.topic_list.join(", ")}</Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Subject: {data.paper.subject_list.join(", ")}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Topic: {data.paper.topic_list.join(", ")}
+                        </Typography>
                     </Paper>
                     <Paper className={classes.paper}>
-                        <Typography variant="h6" align="center">
+                        <Typography variant="h6" align="left">
                             Type
                         </Typography>
-                        <Typography align="center">Paper Type: {data.paper.paper_type}</Typography>
-                        <Typography align="center">Question Type: {data.paper.question_type}</Typography>
-                        <Typography align="center">Test Type: {data.paper.test_type}</Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Paper Type: {data.paper.paper_type}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Question Type: {data.paper.question_type}
+                        </Typography>
+                        <Typography variant="subtitle2" align="left">
+                            Test Type: {data.paper.test_type}
+                        </Typography>
                     </Paper>
                     <Paper className={classes.paper}>
-                        <Typography variant="h6" align="center">
+                        <Typography variant="h6" align="left">
                             Timing
                         </Typography>
-                        <Typography align="center">
+                        <Typography variant="subtitle2" align="left">
                             Date: {format(new Date(data.paper.start_time), "dd/MM/yyyy")}
                         </Typography>
-                        <Typography align="center">
+                        <Typography variant="subtitle2" align="left">
                             Time: {format(new Date(data.paper.start_time), "hh:mm aaa")}
                         </Typography>
                     </Paper>

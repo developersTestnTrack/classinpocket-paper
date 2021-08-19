@@ -1,30 +1,17 @@
 import { useState, useRef } from "react";
-// import { Scrollbars } from "react-custom-scrollbars";
 
-import { Grid, Typography, Button, Switch } from "@material-ui/core";
-import { makeStyles, styled } from "@material-ui/core/styles";
+import { Grid, Typography, Button, Switch, Paper } from "@material-ui/core";
+import { styled } from "@material-ui/core/styles";
 
 import Snack from "../../Snack";
 import { editorHW, useEditor } from "./editorUtil";
 import { validateQuestion } from "@/utils/validation";
 import Editor from "./Editor";
 
-const useStyles = makeStyles((theme) => ({
-    btns: {
-        width: "100%",
-        display: "flex",
-        justifyContent: "flex-end",
-    },
-    btn: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
-}));
-
 const PaperHeader = styled("div")(({ theme }) => ({
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: theme.spacing(2),
+    padding: theme.spacing(1, 2),
 }));
 
 const OptionHeader = styled("div")(({ theme }) => ({
@@ -86,7 +73,6 @@ export default function MainEditor({ nextInitialState }) {
     const ref = useRef();
     const [state, dispatch] = useEditor();
     const [snackState, setSnackState] = useState({ open: false, status: "error", msg: "Please fill all the fields" });
-    const classes = useStyles();
 
     console.log(state);
 
@@ -108,50 +94,49 @@ export default function MainEditor({ nextInitialState }) {
 
     return (
         <>
-            <PaperHeader>
-                {edit.isEditing ? (
-                    <Typography variant="h4">Edit</Typography>
-                ) : (
-                    <Typography variant="h4">Question: {list.length + 1}</Typography>
-                )}
+            <Paper>
+                <PaperHeader>
+                    <Typography variant="h5">{edit.isEditing ? "Edit" : `Question: ${list.length + 1}`}</Typography>
 
-                {edit.isEditing ? (
-                    <div className={classes.btns}>
-                        <Button
-                            className={classes.btn}
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                dispatch({
-                                    type: "SAVE_EDIT",
-                                    question: question,
-                                    initialState: { ...nextInitialState.question },
-                                });
-                            }}
-                        >
-                            Save
+                    {edit.isEditing ? (
+                        <div>
+                            <Button
+                                size="small"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    dispatch({
+                                        type: "SAVE_EDIT",
+                                        question: question,
+                                        initialState: { ...nextInitialState.question },
+                                    });
+                                }}
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                style={{ marginLeft: "10px" }}
+                                size="small"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    dispatch({
+                                        type: "DISABLE_EDIT",
+                                        initialState: { ...nextInitialState.question },
+                                    });
+                                }}
+                            >
+                                Close
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button size="small" variant="contained" color="primary" onClick={onClickAddBtn}>
+                            Next Question
                         </Button>
-                        <Button
-                            className={classes.btn}
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                dispatch({
-                                    type: "DISABLE_EDIT",
-                                    initialState: { ...nextInitialState.question },
-                                });
-                            }}
-                        >
-                            Close
-                        </Button>
-                    </div>
-                ) : (
-                    <Button variant="contained" color="primary" onClick={onClickAddBtn}>
-                        Next Question
-                    </Button>
-                )}
-            </PaperHeader>
-            <Grid container spacing={1} style={{ maxHeight: "90vh", overflowY: "scroll" }}>
+                    )}
+                </PaperHeader>
+            </Paper>
+            <Grid container spacing={1} style={{ maxHeight: "90vh", overflowY: "auto", marginTop: "10px" }}>
                 <Grid item xs={12}>
                     <Editor
                         getSunEditorInstance={(refEditor) => {

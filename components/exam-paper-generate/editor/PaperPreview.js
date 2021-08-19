@@ -2,7 +2,7 @@ import { Typography, Container, IconButton, Button } from "@material-ui/core";
 import { Close as CloseIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import PaperPreviewPanel from "../../PaperPreviewPanel";
+import PaperPreviewPanel from "./PaperPreviewPanel";
 import { generatePaper } from "@/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         padding: theme.spacing(1, 1),
     },
+    containerRoot: {
+        backgroundColor: "#eceff1",
+    },
 }));
 
 export default function PaperPreview({ onClose, list, paper, submit }) {
@@ -20,16 +23,16 @@ export default function PaperPreview({ onClose, list, paper, submit }) {
     console.log(generatePaper({ paper, questions: list }));
 
     return (
-        <Container maxWidth="xl" style={{ backgroundColor: "#eceff1", minHeight: "100vh" }}>
+        <Container maxWidth="xl" classes={{ root: classes.containerRoot }} style={{ height: "100%" }}>
             <div className={classes.nav}>
                 <IconButton onClick={onClose}>
                     <CloseIcon />
                 </IconButton>
-                <Typography variant="h4" align="center" className={classes.offset}>
+                <Typography variant="h5" align="center" className={classes.offset}>
                     Paper Preview
                 </Typography>
                 <div>
-                    <Button variant="contained" color="primary" size="large" onClick={() => submit()}>
+                    <Button variant="contained" color="primary" size="small" onClick={() => submit()}>
                         Submit
                     </Button>
                 </div>

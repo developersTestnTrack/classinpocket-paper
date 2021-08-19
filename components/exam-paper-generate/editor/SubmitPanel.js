@@ -1,19 +1,9 @@
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 
-import {
-    List,
-    ListItem,
-    ListItemText,
-    Paper,
-    Typography,
-    Dialog,
-    DialogContent,
-    DialogContentText,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Dialog, DialogContent, DialogContentText, Button } from "@material-ui/core";
 
 import { useEditor } from "./editorUtil";
 import { Progress } from "@/components/Common";
@@ -23,22 +13,10 @@ import { addPaper } from "@/utils/api/firebase-api/mutation";
 
 const PaperPreview = dynamic(() => import("./PaperPreview"));
 
-const useStyles = makeStyles((theme) => ({
-    listBtnPreview: {
-        backgroundColor: theme.palette.primary.light,
-        borderRadius: "4px",
-        color: "black",
-        "&:hover": {
-            backgroundColor: theme.palette.primary.light,
-        },
-    },
-}));
-
 export default function SubmitPanel() {
     const router = useRouter();
     const { params } = router.query;
 
-    const classes = useStyles();
     const [state] = useEditor();
     const [dialogState, setDialogState] = useState({ open: false, msg: "", status: "idle" });
     const [previewPaper, setPreviewPaper] = useState(false);
@@ -91,16 +69,10 @@ export default function SubmitPanel() {
     };
 
     return (
-        <Fragment>
-            <List component={Paper} disablePadding>
-                <ListItem button className={classes.listBtnPreview} onClick={() => setPreviewPaper(true)}>
-                    <ListItemText>
-                        <Typography variant="h6" align="center">
-                            Finish
-                        </Typography>
-                    </ListItemText>
-                </ListItem>
-            </List>
+        <>
+            <Button fullWidth variant="contained" color="primary" onClick={() => setPreviewPaper(true)}>
+                Proceed to submit
+            </Button>
 
             {/* paper preview panel */}
             <Dialog fullScreen open={previewPaper}>
@@ -117,6 +89,6 @@ export default function SubmitPanel() {
                     <DialogContentText>{dialogState.msg}</DialogContentText>
                 </DialogContent>
             </Dialog>
-        </Fragment>
+        </>
     );
 }
