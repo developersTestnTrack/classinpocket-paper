@@ -7,7 +7,7 @@ import { Skeleton } from "@material-ui/lab";
 import { MoreVert as MoreIcon } from "@material-ui/icons";
 import { usePopupState, bindTrigger, bindMenu } from "material-ui-popup-state/hooks";
 
-import Editor from "@/components/editor/Editor";
+import Editor from "@/components/exam-paper-generate/editor/Editor";
 import { getFreshQuestion } from "@/utils/api/cip-backend/questions";
 
 const useStyles = makeStyles((theme) => ({

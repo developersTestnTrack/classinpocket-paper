@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { Progress } from "@/components/Common";
-import PaperDetail from "@/components/PaperDetail";
+import PaperDetail from "@/components/exam-paper-generate/PaperDetail";
 
 import { getClassById } from "@/utils/api/firebase-api/query";
 import { Container, Typography } from "@material-ui/core";

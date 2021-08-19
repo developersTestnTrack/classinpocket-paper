@@ -23,7 +23,7 @@ import { uploadPdfPaper } from "@/utils/api/firebase-api/mutation";
 
 const Paper = styled(MuiPaper)(({ theme }) => ({ padding: theme.spacing(2), display: "flex" }));
 
-export default function PdfUpload({ paperDetails }) {
+export default function ExamaniaPdfUploadPanel({ paperDetails }) {
     const router = useRouter();
     const { params } = router.query;
 
@@ -191,8 +191,8 @@ export default function PdfUpload({ paperDetails }) {
                                 fullWidth
                                 size="small"
                                 variant="outlined"
-                                label="Per Question Marks"
-                                placeholder="Enter video solution link"
+                                label="Question marks"
+                                placeholder="Per question marks"
                                 value={pdf.perQuestionMarks}
                                 onChange={(e) => {
                                     setPdf((prevState) => ({ ...prevState, perQuestionMarks: e.target.value }));
@@ -204,8 +204,8 @@ export default function PdfUpload({ paperDetails }) {
                                 fullWidth
                                 size="small"
                                 variant="outlined"
-                                label="Per Question Negative Marks"
-                                placeholder="Enter video solution link"
+                                label="Negative marks"
+                                placeholder="Per question negative marks"
                                 value={pdf.negativeMarks}
                                 onChange={(e) => {
                                     setPdf((prevState) => ({ ...prevState, negativeMarks: e.target.value }));

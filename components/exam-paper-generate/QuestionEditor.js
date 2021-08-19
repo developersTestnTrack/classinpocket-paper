@@ -3,10 +3,10 @@ import Grid from "@material-ui/core/Grid";
 import { Container } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
-import { EditorGlobal } from "@/components/editor/editorUtil";
-import MainEditor from "@/components/editor/MainEditor";
-import QuestionDetailPanel from "@/components/editor/QuestionDetailPanel";
-import PreviewList from "@/components/editor/PreviewList";
+import { EditorGlobal } from "@/components/exam-paper-generate/editor/editorUtil";
+import MainEditor from "@/components/exam-paper-generate/editor/MainEditor";
+import QuestionDetailPanel from "@/components/exam-paper-generate/editor/QuestionDetailPanel";
+import PreviewList from "@/components/exam-paper-generate/editor/PreviewList";
 
 const EditorContainer = styled("div")(({ theme }) => ({
     padding: theme.spacing(2, 0, 4, 0),

@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Grid, Typography, Button, Switch } from "@material-ui/core";
 import { makeStyles, styled } from "@material-ui/core/styles";
 
-import Snack from "../Snack";
+import Snack from "../../Snack";
 import { editorHW, useEditor } from "./editorUtil";
 import { validateQuestion } from "@/utils/validation";
 import Editor from "./Editor";

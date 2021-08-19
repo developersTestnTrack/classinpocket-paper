@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
@@ -23,12 +23,19 @@ import Snack from "@/components/Snack";
 import { Progress } from "@/components/Common";
 import { validatePaperForm } from "@/utils/validation";
 
-const QuestionEditor = dynamic(() => import("@/components/editor/QuestionEditor"), {
+const QuestionEditor = dynamic(() => import("@/components/exam-paper-generate/QuestionEditor"), {
     loading: function loading() {
         return <Progress />;
     },
 });
-const PdfUpload = dynamic(() => import("@/components/PdfUpload"), {
+
+const QuizoPdfUploadPanel = dynamic(() => import("@/components/exam-paper-generate/QuizoPdfUploadPanel"), {
+    loading: function loading() {
+        return <Progress />;
+    },
+});
+
+const ExamaniaPdfUploadPanel = dynamic(() => import("@/components/exam-paper-generate/ExamaniaPdfUploadPanel"), {
     loading: function loading() {
         return <Progress />;
     },
@@ -43,8 +50,22 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: theme.spacing(35),
     },
 }));
+
+function RenderPanel({ paperDetails }) {
+    const { config } = paperDetails;
+
+    if (config.paperType === "Quizo" && config.questionType === "Pdf") {
+        return <QuizoPdfUploadPanel paperDetails={paperDetails} />;
+    }
+
+    if (config.paperType === "Examania" && config.questionType === "Pdf") {
+        return <ExamaniaPdfUploadPanel paperDetails={paperDetails} />;
+    }
+
+    return <QuestionEditor paperDetails={paperDetails} />;
+}
+
 export default function PaperDetail({ details }) {
-    console.log(details);
     const classes = useStyles();
     const { subject_list, board, class_name, section, teacher_list, student_list, id } = details;
     const [snack, setSnack] = useState({ open: false, msg: "", status: "idle" });
@@ -110,6 +131,10 @@ export default function PaperDetail({ details }) {
             studentId: [],
         }
     );
+
+    useEffect(() => {
+        console.log(form);
+    });
 
     const handleDateChange = (type, date) => {
         if (type === "start") {
@@ -430,7 +455,7 @@ export default function PaperDetail({ details }) {
                             }
                         }}
                     >
-                        Finish
+                        Next
                     </Button>
                 </Grid>
             </Grid>
@@ -442,11 +467,7 @@ export default function PaperDetail({ details }) {
                 onClose={() => setDialog(false)}
             >
                 <Container style={{ backgroundColor: "#eceff1", minHeight: "100vh" }} maxWidth="xl">
-                    {form.config.questionType === "Pdf" ? (
-                        <PdfUpload paperDetails={form} />
-                    ) : (
-                        <QuestionEditor paperDetails={form} />
-                    )}
+                    <RenderPanel paperDetails={form} />
                 </Container>
             </Dialog>
             <Snack

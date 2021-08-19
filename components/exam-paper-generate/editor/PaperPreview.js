@@ -2,7 +2,7 @@ import { Typography, Container, IconButton, Button } from "@material-ui/core";
 import { Close as CloseIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import PaperPreviewPanel from "../PaperPreviewPanel";
+import PaperPreviewPanel from "../../PaperPreviewPanel";
 import { generatePaper } from "@/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
