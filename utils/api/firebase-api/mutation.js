@@ -10,39 +10,37 @@ export async function uploadPdfPaper({ paper, question_pdf_blob, solution_pdf_bl
 
     try {
         // upload both pdf to bucket
-        const pdfUploadTask = await Promise.all([
-            paperStorageRef
-                .child(
-                    `question_pdf_${getTime(new Date())}${question_pdf_blob.name}`.replaceAll(" ", "").toLowerCase(),
-                    {
-                        contentType: "application/pdf",
-                    }
-                )
-                .put(question_pdf_blob),
-            paperStorageRef
-                .child(
-                    `solution_pdf_${getTime(new Date())}${solution_pdf_blob.name}`.replaceAll(" ", "").toLowerCase(),
-                    {
-                        contentType: "application/pdf",
-                    }
-                )
-                .put(solution_pdf_blob),
-        ]);
+        let question_pdf_url = "";
+        if (question_pdf_blob) {
+            const objRef = await paperStorageRef
+                .child(`question_pdf_${getTime(new Date())}${question_pdf_blob.name}`.replaceAll(" ", "").toLowerCase())
+                .put(question_pdf_blob, {
+                    contentType: "application/pdf",
+                });
 
-        // get bucket url
-        const question_pdf_url = await pdfUploadTask[0].ref.getDownloadURL();
-        const solution_pdf_url = await pdfUploadTask[1].ref.getDownloadURL();
+            question_pdf_url = await objRef.ref.getDownloadURL();
+        }
+
+        let solution_pdf_url = "";
+        if (solution_pdf_blob) {
+            const objRef = await paperStorageRef
+                .child(`solution_pdf_${getTime(new Date())}${solution_pdf_blob.name}`.replaceAll(" ", "").toLowerCase())
+                .put(solution_pdf_blob, {
+                    contentType: "application/pdf",
+                });
+            solution_pdf_url = await objRef.ref.getDownloadURL();
+        }
 
         // upload paper to database with pdf url
-        await paperDocRef.set({
-            ...paper,
-            id: paperDocRef.id,
-            start_time: firestoreTimeStamp.fromDate(parseISO(paper.start_time)),
-            end_time: firestoreTimeStamp.fromDate(parseISO(paper.end_time)),
-            pdf: { ...paper.pdf, paper_pdf: question_pdf_url, solution_pdf: solution_pdf_url },
-        });
+        paper.id = paperDocRef.id;
+        paper.start_time = firestoreTimeStamp.fromDate(parseISO(paper.start_time));
+        paper.end_time = firestoreTimeStamp.fromDate(parseISO(paper.end_time));
+        paper.pdf.paper_pdf = question_pdf_url;
+        paper.pdf.solution_pdf = solution_pdf_url;
 
-        return paperDocRef.id;
+        await paperDocRef.set(paper);
+
+        return paper;
     } catch {
         throw new Error("something went wrong with uploadlPdfPaper function");
     }

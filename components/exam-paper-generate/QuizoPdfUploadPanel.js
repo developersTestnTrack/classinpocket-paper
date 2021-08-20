@@ -17,6 +17,7 @@ import {
 import { Info as InfoIcon } from "@material-ui/icons";
 import { styled } from "@material-ui/core/styles";
 
+import Snack from "@/components/Snack";
 import { Progress } from "@/components/Common";
 import { openFile } from "@/utils/utils";
 import { uploadPdfPaper } from "@/utils/api/firebase-api/mutation";
@@ -39,6 +40,7 @@ export default function PdfUpload({ paperDetails }) {
     const [questinPdf, setQuestionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [solutionPdf, setSolutionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [questionMarksList, setQuestionMarksList] = useState([]);
+    const [snack, setSnackState] = useState({ open: false, msg: "", status: "" });
 
     const { mutate, isError, isLoading } = useMutation("upload paper", uploadPdfPaper, {
         onMutate: () => {
@@ -97,12 +99,21 @@ export default function PdfUpload({ paperDetails }) {
         };
 
         console.log(paper);
-        mutate({
-            paper: paper,
-            question_pdf_blob: questinPdf.blob,
-            solution_pdf_blob: solutionPdf.blob,
-            school_id: params[0],
-        });
+
+        if (!questinPdf.isSelect) {
+            setSnackState({ open: true, msg: "Please select question pdf", status: "error" });
+        } else if (questionMarksList.every((ele) => ele.marks.length === 0)) {
+            setSnackState({ open: true, msg: "Please fill all the options", status: "error" });
+        } else if (pdf.perQuestionMarks.length === 0 || pdf.negativeMarks.length === 0) {
+            setSnackState({ open: true, msg: "Please fill marks", status: "error" });
+        } else {
+            mutate({
+                paper: paper,
+                question_pdf_blob: questinPdf.blob,
+                solution_pdf_blob: solutionPdf.blob,
+                school_id: params[0],
+            });
+        }
     };
 
     return (
@@ -312,6 +323,12 @@ export default function PdfUpload({ paperDetails }) {
                     )}
                 </DialogContent>
             </Dialog>
+            <Snack
+                open={snack.open}
+                onClose={() => setSnackState(() => ({ open: false, status: "", msg: "" }))}
+                status={snack.status}
+                msg={snack.msg}
+            />
         </Container>
     );
 }
