@@ -16,6 +16,7 @@ import {
 
 import { styled } from "@material-ui/core/styles";
 
+import Snack from "@/components/Snack";
 import { Progress } from "@/components/Common";
 import { openFile } from "@/utils/utils";
 import { uploadPdfPaper } from "@/utils/api/firebase-api/mutation";
@@ -37,6 +38,7 @@ export default function PdfUpload({ paperDetails }) {
     const [questinPdf, setQuestionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [solutionPdf, setSolutionPdf] = useState({ blob: null, name: "", isSelect: false });
     const [questionMarksList, setQuestionMarksList] = useState([]);
+    const [snack, setSnackState] = useState({ open: false, msg: "", status: "" });
 
     const { mutate } = useMutation("upload paper", uploadPdfPaper, {
         onMutate: () => {
@@ -98,14 +100,23 @@ export default function PdfUpload({ paperDetails }) {
             },
         };
 
-        console.log(paper);
+        console.log(paperDetails);
+        const currentTotalMarks = pdfConfig.perQuestionMarks.reduce((acc, curr) => acc + curr, 0);
+        console.log(currentTotalMarks);
 
-        mutate({
-            paper: paper,
-            question_pdf_blob: questinPdf.blob,
-            solution_pdf_blob: solutionPdf.blob,
-            school_id: params[0],
-        });
+        if (!questinPdf.isSelect) {
+            setSnackState({ open: true, msg: "Please select question pdf", status: "error" });
+        } else if (paper.paper_total_marks !== currentTotalMarks) {
+            setSnackState({ open: true, msg: "Total number of question does not match.", status: "error" });
+        } else {
+            console.log(paper);
+            mutate({
+                paper: paper,
+                question_pdf_blob: questinPdf.blob,
+                solution_pdf_blob: solutionPdf.blob,
+                school_id: params[0],
+            });
+        }
     };
 
     return (
@@ -190,6 +201,7 @@ export default function PdfUpload({ paperDetails }) {
 
                         <Grid item xs={12}>
                             <Typography variant="h5">Enter marks for each question :</Typography>
+                            <Typography>Total marks: {paperDetails.config.totalMarks}</Typography>
                         </Grid>
                         {/* Per question marks */}
                         {questionMarksList.length !== 0 && (
@@ -244,6 +256,12 @@ export default function PdfUpload({ paperDetails }) {
                     <DialogContentText>Please wait it will take some time</DialogContentText>
                 </DialogContent>
             </Dialog>
+            <Snack
+                open={snack.open}
+                onClose={() => setSnackState(() => ({ open: false, status: "", msg: "" }))}
+                status={snack.status}
+                msg={snack.msg}
+            />
         </Container>
     );
 }
