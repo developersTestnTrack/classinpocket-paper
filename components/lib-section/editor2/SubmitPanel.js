@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { saveAs } from "file-saver";
 import { format } from "date-fns";
@@ -114,12 +114,12 @@ export default function SubmitPanel() {
     };
 
     return (
-        <Fragment>
+        <>
             <Button
                 fullWidth
+                size="small"
                 color="primary"
                 variant="contained"
-                size="large"
                 onClick={() => {
                     onClickSubmit();
                 }}
@@ -169,6 +169,6 @@ export default function SubmitPanel() {
                     <DialogContentText>{dialogState.msg}</DialogContentText>
                 </DialogContent>
             </Dialog>
-        </Fragment>
+        </>
     );
 }

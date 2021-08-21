@@ -87,7 +87,7 @@ export default function LibEditor({ lib }) {
     };
 
     return (
-        <Container>
+        <Container maxWidth="md">
             <Grid container spacing={4}>
                 <Grid item xs={12} />
                 <Grid item xs={6}>

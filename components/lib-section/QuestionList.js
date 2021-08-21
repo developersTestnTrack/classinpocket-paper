@@ -12,15 +12,14 @@ import { getFixedFormatQuestions } from "@/utils/api/cip-backend/questions";
 export default function QuestionList({ filter }) {
     const { data, isLoading, isError } = useQuery(
         ["fetch questions", filter],
-        () => {
-            return getFixedFormatQuestions({
+        () =>
+            getFixedFormatQuestions({
                 board: filter.board,
                 class_name: filter.klass,
                 subject: filter.subject,
                 chapter: filter.chapter,
                 total_marks: filter.marks,
-            });
-        },
+            }),
         {
             refetchOnWindowFocus: false,
         }

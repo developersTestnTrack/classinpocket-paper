@@ -86,12 +86,7 @@ export default function MainEditor({ nextInitialState }) {
     return (
         <Container>
             <PaperHeader>
-                {edit.isEditing ? (
-                    <Typography variant="h4">Edit</Typography>
-                ) : (
-                    <Typography variant="h4">Question: {list.length + 1}</Typography>
-                )}
-
+                <Typography>{edit.isEditing ? "Edit" : `Question: ${list.length + 1}`}</Typography>
                 {edit.isEditing ? (
                     <div>
                         <Button
@@ -123,10 +118,11 @@ export default function MainEditor({ nextInitialState }) {
                     </div>
                 ) : (
                     <div>
-                        <Button variant="contained" color="primary" onClick={onClickAddBtn}>
+                        <Button size="small" variant="contained" color="primary" onClick={onClickAddBtn}>
                             Next Question
                         </Button>
                         <Button
+                            size="small"
                             style={{ marginLeft: "10px" }}
                             variant="contained"
                             color="primary"

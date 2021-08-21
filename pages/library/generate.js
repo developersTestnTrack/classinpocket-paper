@@ -1,4 +1,4 @@
-import { useReducer, forwardRef } from "react";
+import { useReducer, forwardRef, useState } from "react";
 import {
     Container,
     Grid,
@@ -16,6 +16,7 @@ import { Search as SearchIcon } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { firestoreDB } from "@/utils/api/firebase-api/fire";
+import Snack from "@/components/Snack";
 import QuestionList from "@/components/lib-section/QuestionList";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
         alignItems: "center",
     },
+    containerRoot: {
+        margin: theme.spacing(0, 10),
+    },
 }));
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -57,7 +61,7 @@ export async function getServerSideProps() {
 
 export default function SearchPage({ lib }) {
     const classes = useStyles();
-
+    const [snackState, setSnackState] = useState({ open: false, msg: "", status: "" });
     const [state, dispatch] = useReducer(
         (state, action) => {
             switch (action.type) {
@@ -137,6 +141,15 @@ export default function SearchPage({ lib }) {
             openDialog: false,
         }
     );
+
+    const onClickSearch = () => {
+        console.log(state);
+        if (state.board.length && state.klass.length && state.subject.length && state.chapter.length && state.marks) {
+            dispatch({ type: "SEARCH" });
+        } else {
+            setSnackState({ open: true, msg: "Please select all the fields", status: "error" });
+        }
+    };
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -376,9 +389,7 @@ export default function SearchPage({ lib }) {
                                     color="primary"
                                     variant="contained"
                                     startIcon={<SearchIcon />}
-                                    onClick={() => {
-                                        dispatch({ type: "SEARCH" });
-                                    }}
+                                    onClick={onClickSearch}
                                 >
                                     Search
                                 </Button>
@@ -424,6 +435,14 @@ export default function SearchPage({ lib }) {
                     </Container>
                 </Paper>
             </div>
+            <Snack
+                open={snackState.open}
+                onClose={() =>
+                    setSnackState((prevState) => ({ open: false, msg: prevState.msg, status: prevState.status }))
+                }
+                status={snackState.status}
+                msg={snackState.msg}
+            />
         </CssBaseline>
     );
 }

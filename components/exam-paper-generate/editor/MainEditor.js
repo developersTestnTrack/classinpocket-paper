@@ -74,8 +74,6 @@ export default function MainEditor({ nextInitialState }) {
     const [state, dispatch] = useEditor();
     const [snackState, setSnackState] = useState({ open: false, status: "error", msg: "Please fill all the fields" });
 
-    console.log(state);
-
     const { question, list, edit, paper } = state;
 
     const onClickAddBtn = () => {
