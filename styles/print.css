@@ -87,7 +87,9 @@ p {
 
 #print-btn {
     position: absolute;
-    right: 0;
+    right: 50%;
+    /* top: 45px; */
+    
     margin-right: 16px;
 }
 

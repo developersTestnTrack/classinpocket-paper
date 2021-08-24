@@ -40,19 +40,19 @@ export default function PrintPage({ ids, details }) {
         return num;
     };
 
-    const getTimeByMarks = (marks) => {
-        switch (marks) {
-            case 25: {
-                return 1;
-            }
-            case 50: {
-                return 2;
-            }
-            case 80: {
-                return 3;
-            }
-        }
-    };
+    // const getTimeByMarks = (marks) => {
+    //     switch (marks) {
+    //         case 25: {
+    //             return 1;
+    //         }
+    //         case 50: {
+    //             return 2;
+    //         }
+    //         case 80: {
+    //             return 3;
+    //         }
+    //     }
+    // };
 
     if (isLoading) {
         return <Progress />;
@@ -71,28 +71,28 @@ export default function PrintPage({ ids, details }) {
                             <h4>Class: {details.klass}</h4>
                             <h4>Subject: {details.subject}</h4>
                             <h4>Marks: {details.marks}</h4>
-                            <h4>Time: {getTimeByMarks(details.marks)} hours</h4>
+                            {/* <h4>Time: {getTimeByMarks(details.marks)} hours</h4> */}
                         </div>
+                        <Button
+                            id="print-btn"
+                            variant="text"
+                            startIcon={<PrintIcon />}
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(location.href)
+                                    .then(() => {
+                                        window.print();
+                                    })
+                                    .catch(() => {
+                                        window.print();
+                                    });
+                            }}
+                        >
+                            Print
+                        </Button>
                         <img id="logo" src="/logo.png" alt="logo" width="120" height="50" />
                     </div>
                     <hr />
-                    <Button
-                        id="print-btn"
-                        variant="text"
-                        startIcon={<PrintIcon />}
-                        onClick={() => {
-                            navigator.clipboard
-                                .writeText(location.href)
-                                .then(() => {
-                                    window.print();
-                                })
-                                .catch(() => {
-                                    window.print();
-                                });
-                        }}
-                    >
-                        Print
-                    </Button>
                     {list.map((question, i) => {
                         return (
                             <div id="print-row" key={i}>

@@ -87,7 +87,6 @@ export default function MainEditor({ nextInitialState }) {
         });
     };
 
-    console.log(question);
     return (
         <Container>
             <PaperHeader>

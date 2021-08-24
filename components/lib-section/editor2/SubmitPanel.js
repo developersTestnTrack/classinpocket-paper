@@ -18,6 +18,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { useEditor } from "./editorUtil";
 import { Progress } from "@/components/Common";
+import Snack from "../../Snack";
 
 import { submitQuestions } from "@/utils/api/cip-backend/questions";
 import { Close } from "@material-ui/icons";
@@ -67,6 +68,7 @@ export default function SubmitPanel() {
     const [state] = useEditor();
     const [dialogState, setDialogState] = useState({ open: false, msg: "", status: "idle" });
     const [previewPaper, setPreviewPaper] = useState(false);
+    const [snackState, setSnackState] = useState({ open: false, msg: "", status: "" });
 
     const { list, paper } = state;
 
@@ -99,14 +101,19 @@ export default function SubmitPanel() {
     };
 
     const onClickSubmit = () => {
-        const questionPayload = {
-            number_of_questions: list.length,
-            list: genrateQuestionList(list, paper),
-            created_date: Date.now(),
-        };
+        if (list.length) {
+            const questionPayload = {
+                number_of_questions: list.length,
+                list: genrateQuestionList(list, paper),
+                created_date: Date.now(),
+            };
 
-        console.log(questionPayload);
-        mutate(questionPayload);
+            console.log(questionPayload);
+            mutate(questionPayload);
+        } else {
+            setSnackState({ open: true, msg: "Please add atleast one question.", status: "error" });
+            console.log("add atleast one question");
+        }
     };
 
     const onClickClose = () => {
@@ -126,6 +133,13 @@ export default function SubmitPanel() {
             >
                 Proceed to Submit
             </Button>
+
+            <Snack
+                open={snackState.open}
+                status={snackState.status}
+                msg={snackState.msg}
+                onClose={() => setSnackState((prevState) => ({ ...prevState, open: false }))}
+            />
 
             {/* paper preview panel */}
             <Dialog fullScreen open={previewPaper}>
