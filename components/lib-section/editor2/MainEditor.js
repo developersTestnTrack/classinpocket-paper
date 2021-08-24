@@ -7,8 +7,13 @@ import { styled } from "@material-ui/core/styles";
 import Snack from "../../Snack";
 import { Progress } from "../../Common";
 import { editorHW, useEditor } from "./editorUtil";
-// eslint-disable-next-line react/display-name
-const Editor = dynamic(() => import("./Editor"), { ssr: false, loading: () => <Progress>loading</Progress> });
+
+const Editor = dynamic(() => import("./Editor"), {
+    ssr: false,
+    loading: function loader() {
+        return <Progress>loading</Progress>;
+    },
+});
 
 const PaperHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -86,10 +91,11 @@ export default function MainEditor({ nextInitialState }) {
     return (
         <Container>
             <PaperHeader>
-                <Typography>{edit.isEditing ? "Edit" : `Question: ${list.length + 1}`}</Typography>
+                <Typography variant="h5">{edit.isEditing ? "Edit" : `Question: ${list.length + 1}`}</Typography>
                 {edit.isEditing ? (
                     <div>
                         <Button
+                            size="small"
                             variant="contained"
                             color="primary"
                             onClick={() => {
@@ -103,6 +109,7 @@ export default function MainEditor({ nextInitialState }) {
                             Save
                         </Button>
                         <Button
+                            size="small"
                             style={{ marginLeft: "10px" }}
                             variant="contained"
                             color="primary"
