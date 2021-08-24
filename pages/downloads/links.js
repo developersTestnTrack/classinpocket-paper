@@ -1,17 +1,7 @@
 import { useQuery } from "react-query";
 import { format } from "date-fns";
-import {
-    Typography,
-    Container,
-    Grid,
-    Table,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableRow,
-    TableContainer,
-    Paper,
-} from "@material-ui/core";
+import { Typography, Container, Grid, Paper, Divider, Button } from "@material-ui/core";
+import { GetApp as GetAppIcon } from "@material-ui/icons";
 
 import { firebaseStorage } from "@/utils/api/firebase-api/fire";
 import { Progress } from "@/components/Common";
@@ -47,43 +37,58 @@ export default function Links() {
                 <Grid style={{ display: "flex", justifyContent: "center", width: "100%" }} item xs={12}>
                     <img src="/black_logo.png" alt="logo" />
                 </Grid>
-                <Grid item xs={12}>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Apk Name</TableCell>
-                                    <TableCell size="small" align="right">
-                                        Size
-                                    </TableCell>
-                                    <TableCell size="small" align="right">
-                                        Upload Date
-                                    </TableCell>
-                                    <TableCell size="small" align="right">
-                                        Link
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">
-                                        {data.appName}
-                                    </TableCell>
-                                    <TableCell size="small" align="right">
-                                        <Typography noWrap>{data.size} MB</Typography>
-                                    </TableCell>
-                                    <TableCell size="small" align="right">
-                                        {format(new Date(data.timeCreated), "dd/MM/yyyy hh:mm aaa")}
-                                    </TableCell>
-                                    <TableCell size="small" align="right">
-                                        <Typography component="a" href={data.url} download>
-                                            Download
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                <Grid item xs={12} style={{ padding: "16px" }}>
+                    <Grid container component={Paper} style={{ padding: "16px" }} spacing={1}>
+                        <Grid item xs={12}>
+                            <Typography variant="h6" align="center">
+                                Apk Name
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Typography>{data.appName}</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Typography variant="h6" align="center">
+                                Size
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Typography>{data.size} MB</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Typography variant="h6" align="center">
+                                Upload Date
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            {format(new Date(data.timeCreated), "dd/MM/yyyy hh:mm aaa")}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
+                        <Grid item xs={12} align="center" style={{ paddingTop: "16px" }}>
+                            <div>
+                                <Button
+                                    startIcon={<GetAppIcon />}
+                                    component="a"
+                                    href={data.url}
+                                    download
+                                    style={{ textDecoration: "none" }}
+                                    size="small"
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    Download
+                                </Button>
+                            </div>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Container>
