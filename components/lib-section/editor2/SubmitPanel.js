@@ -70,14 +70,14 @@ export default function SubmitPanel() {
 
     const { list, paper } = state;
 
-    const { mutate } = useMutation("submit", submitQuestions, {
+    const { mutate, isLoading, isError, isSuccess } = useMutation("submit", submitQuestions, {
         onMutate: () => {
             setDialogState({ open: true, msg: "Please wait it will take some time" });
         },
         onSuccess: () => {
             console.log("successfully submitted");
             location.reload();
-            setDialogState({ open: true, msg: "successfully submitted", status: "idle" });
+            setDialogState({ open: true, msg: "successfully submitted, refreshing", status: "idle" });
         },
         onError: () => {
             console.log("something went wrong !!!");
@@ -124,7 +124,7 @@ export default function SubmitPanel() {
                     onClickSubmit();
                 }}
             >
-                Submit
+                Proceed to Submit
             </Button>
 
             {/* paper preview panel */}
@@ -137,36 +137,42 @@ export default function SubmitPanel() {
                 open={dialogState.open}
                 onClose={() => setDialogState((prevState) => ({ ...prevState, open: false }))}
             >
-                {dialogState.status === "error" && (
-                    <DialogTitle disableTypography>
-                        <Typography variant="h6">Error</Typography>
-                        <IconButton
-                            className={classes.closeButton}
-                            onClick={() => {
-                                setDialogState((prevState) => ({ ...prevState, open: false }));
-                            }}
-                        >
-                            <Close />
-                        </IconButton>
-                    </DialogTitle>
-                )}
                 <DialogContent>
-                    {dialogState.status !== "error" && <Progress />}
-                    {dialogState.status === "error" && (
-                        <div style={{ width: "100%", paddingLeft: "32%", marginBottom: "1rem" }}>
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                startIcon={<CloudDownloadIcon />}
-                                onClick={() => {
-                                    downloadQuestions();
-                                }}
-                            >
-                                Download
-                            </Button>
-                        </div>
+                    {isLoading && (
+                        <>
+                            <Progress />
+                            <DialogContentText>{dialogState.msg}</DialogContentText>
+                        </>
                     )}
-                    <DialogContentText>{dialogState.msg}</DialogContentText>
+                    {isError && (
+                        <>
+                            <DialogTitle disableTypography>
+                                <Typography variant="h6">Error</Typography>
+                                <IconButton
+                                    className={classes.closeButton}
+                                    onClick={() => {
+                                        setDialogState((prevState) => ({ ...prevState, open: false }));
+                                    }}
+                                >
+                                    <Close />
+                                </IconButton>
+                            </DialogTitle>
+                            <div style={{ width: "100%", paddingLeft: "32%", marginBottom: "1rem" }}>
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    startIcon={<CloudDownloadIcon />}
+                                    onClick={() => {
+                                        downloadQuestions();
+                                    }}
+                                >
+                                    Download
+                                </Button>
+                            </div>
+                            <DialogContentText>{dialogState.msg}</DialogContentText>
+                        </>
+                    )}
+                    {isSuccess && <DialogContentText>{dialogState.msg}</DialogContentText>}
                 </DialogContent>
             </Dialog>
         </>
