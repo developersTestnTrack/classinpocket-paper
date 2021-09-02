@@ -150,7 +150,99 @@ export default function PaperDetail({ details }) {
         <Container maxWidth="md">
             <Grid container spacing={4}>
                 <Grid item xs={12} />
+                <Grid item md={3}>
+                    {/* paper type */}
+                    <TextField
+                        select
+                        fullWidth
+                        variant="outlined"
+                        label="Select Paper Type"
+                        value={form.config.paperType}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "config",
+                                value: { paperType: e.target.value, questionType: "" },
+                            });
+                        }}
+                    >
+                        <MenuItem value="Examania" key="Examania">
+                            Examania
+                        </MenuItem>
+                        <MenuItem value="Quizo" key="Quizo">
+                            Quizo
+                        </MenuItem>
+                    </TextField>
+                </Grid>
+                <Grid item md={3}>
+                    {/* paper question type */}
+                    <TextField
+                        select
+                        fullWidth
+                        variant="outlined"
+                        label="Select Question Type"
+                        value={form.config.questionType}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "config",
+                                value: { questionType: e.target.value },
+                            });
+                        }}
+                    >
+                        <MenuItem value="Pdf" key="Pdf">
+                            Pdf
+                        </MenuItem>
+                        <MenuItem value="Individual" key="Individual">
+                            Individual
+                        </MenuItem>
+                    </TextField>
+                </Grid>
+                <Grid item md={3}>
+                    {/* paper exam type */}
+                    <TextField
+                        select
+                        fullWidth
+                        variant="outlined"
+                        label="Select Exam Type"
+                        value={form.config.examType}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "config",
+                                value: { examType: e.target.value },
+                            });
+                        }}
+                    >
+                        <MenuItem value="Test" key="Test">
+                            Test
+                        </MenuItem>
+                        <MenuItem value="Practice" key="Practice">
+                            Practice
+                        </MenuItem>
+                    </TextField>
+                </Grid>
+                <Grid item md={3}>
+                    {/* paper test type */}
+                    <TextField
+                        select
+                        fullWidth
+                        variant="outlined"
+                        label="Select Test Type"
+                        value={form.config.testType}
+                        onChange={(e) => {
+                            dispatch({
+                                type: "config",
+                                value: { testType: e.target.value },
+                            });
+                        }}
+                    >
+                        {details.paper_cat_list.map((ele) => (
+                            <MenuItem value={ele} key={ele}>
+                                {ele}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
                 <Grid item md={6}>
+                    {/* paper name */}
                     <TextField
                         fullWidth
                         label="Paper Name"
@@ -165,6 +257,7 @@ export default function PaperDetail({ details }) {
                     />
                 </Grid>
                 <Grid item md={6}>
+                    {/* paper total marks */}
                     <TextField
                         fullWidth
                         label="Total Marks"
@@ -184,6 +277,7 @@ export default function PaperDetail({ details }) {
                     />
                 </Grid>
                 <Grid item md={12}>
+                    {/* paper subject */}
                     <TextField
                         fullWidth
                         select
@@ -207,30 +301,45 @@ export default function PaperDetail({ details }) {
                     </TextField>
                 </Grid>
                 <Grid item xs={12}>
+                    {/* paper topics */}
                     <ChipInput
                         fullWidth
                         variant="outlined"
                         label="Enter Topics"
-                        placeholder="ex. friction, power, cells, chemical reactions"
+                        placeholder="Press enter key for next topic"
                         defaultValue={form.topicList}
                         onChange={(value) => {
                             dispatch({ type: "topic", value: value });
                         }}
                     />
                 </Grid>
-                <Grid item md={3}>
+                <Grid item md={form.config.paperType.toLowerCase() === "examania" ? 3 : 6}>
+                    {/* paper start time */}
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <DateTimePicker
                             fullWidth
+                            disablePast
+                            showTodayButton
                             label="Paper Start Time"
                             inputVariant="outlined"
                             value={form.config.startTime}
                             name="start"
-                            onChange={(date) => handleDateChange("start", date)}
+                            onChange={(date) => {
+                                if (date > new Date()) {
+                                    handleDateChange("start", date);
+                                } else {
+                                    setSnack({
+                                        open: true,
+                                        status: "error",
+                                        msg: "Please check time.",
+                                    });
+                                }
+                            }}
                         />
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item md={3}>
+                    {/* paper duration */}
                     <TextField
                         fullWidth
                         label="Paper Durations"
@@ -248,27 +357,32 @@ export default function PaperDetail({ details }) {
                         }}
                     />
                 </Grid>
-                <Grid item md={3}>
-                    <TextField
-                        fullWidth
-                        label="Submission Time"
-                        placeholder="In Min"
-                        variant="outlined"
-                        value={form.config.submissionTime}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            const numberRegx = /^(\s*|\d+)$/;
+                {form.config.paperType.toLowerCase() === "examania" && (
+                    <Grid item md={3}>
+                        {/* paper submission time */}
+                        <TextField
+                            fullWidth
+                            label="Submission Time"
+                            placeholder="In Min"
+                            variant="outlined"
+                            value={form.config.submissionTime}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const numberRegx = /^(\s*|\d+)$/;
 
-                            if (value.match(numberRegx)) {
-                                dispatch({
-                                    type: "config",
-                                    value: { submissionTime: value },
-                                });
-                            }
-                        }}
-                    />
-                </Grid>
+                                if (value.match(numberRegx)) {
+                                    dispatch({
+                                        type: "config",
+                                        value: { submissionTime: value },
+                                    });
+                                }
+                            }}
+                        />
+                    </Grid>
+                )}
+
                 <Grid item md={3}>
+                    {/* paper rejoin */}
                     <TextField
                         fullWidth
                         label="Paper Rejoin"
@@ -288,93 +402,7 @@ export default function PaperDetail({ details }) {
                     />
                 </Grid>
                 <Grid item md={3}>
-                    <TextField
-                        select
-                        fullWidth
-                        variant="outlined"
-                        label="Select Paper Type"
-                        value={form.config.paperType}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "config",
-                                value: { paperType: e.target.value, questionType: "" },
-                            });
-                        }}
-                    >
-                        <MenuItem value="Examania" key="Examania">
-                            Examania
-                        </MenuItem>
-                        <MenuItem value="Quizo" key="Quizo">
-                            Quizo
-                        </MenuItem>
-                    </TextField>
-                </Grid>
-                <Grid item md={3}>
-                    <TextField
-                        select
-                        fullWidth
-                        variant="outlined"
-                        label="Select Question Type"
-                        value={form.config.questionType}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "config",
-                                value: { questionType: e.target.value },
-                            });
-                        }}
-                    >
-                        <MenuItem value="Pdf" key="Pdf">
-                            Pdf
-                        </MenuItem>
-                        <MenuItem value="Individual" key="Individual">
-                            Individual
-                        </MenuItem>
-                    </TextField>
-                </Grid>
-                <Grid item md={3}>
-                    <TextField
-                        select
-                        fullWidth
-                        variant="outlined"
-                        label="Select Exam Type"
-                        value={form.config.examType}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "config",
-                                value: { examType: e.target.value },
-                            });
-                        }}
-                    >
-                        <MenuItem value="Test" key="Test">
-                            Test
-                        </MenuItem>
-                        <MenuItem value="Practice" key="Practice">
-                            Practice
-                        </MenuItem>
-                    </TextField>
-                </Grid>
-                <Grid item md={3}>
-                    <TextField
-                        select
-                        fullWidth
-                        variant="outlined"
-                        label="Select Test Type"
-                        value={form.config.testType}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "config",
-                                value: { testType: e.target.value },
-                            });
-                        }}
-                    >
-                        {details.paper_cat_list.map((ele) => (
-                            <MenuItem value={ele} key={ele}>
-                                {ele}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Grid>
-                <Grid item md={3}>
+                    {/* number of questions */}
                     <TextField
                         fullWidth
                         variant="outlined"
@@ -387,6 +415,7 @@ export default function PaperDetail({ details }) {
                     />
                 </Grid>
                 <Grid item md={3}>
+                    {/* paper teacher */}
                     <TextField
                         fullWidth
                         select
@@ -405,6 +434,7 @@ export default function PaperDetail({ details }) {
                     </TextField>
                 </Grid>
                 <Grid item md={6}>
+                    {/* paper student */}
                     <TextField
                         fullWidth
                         select
@@ -447,9 +477,13 @@ export default function PaperDetail({ details }) {
                         onClick={() => {
                             console.log(form);
                             const errors = validatePaperForm(form);
-                            if (errors.length !== 0) {
-                                console.log(errors);
-                                setSnack({ open: true, status: "error", msg: errors[0] });
+                            console.log(errors);
+                            if (errors) {
+                                setSnack({
+                                    open: true,
+                                    status: "error",
+                                    msg: "Please check all the enteries or try to refresh the page",
+                                });
                             } else {
                                 setDialog(true);
                             }
