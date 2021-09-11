@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { parseISO, add, formatISO } from "date-fns";
-
 import {
     TextField,
     FormControlLabel,
@@ -49,16 +48,20 @@ const useStyles = makeStyles((theme) => ({
     list: {
         maxHeight: theme.spacing(35),
     },
+    paper: {
+        backgroundColor: "#eceff1",
+    },
 }));
 
 function RenderPanel({ paperDetails }) {
     const { config } = paperDetails;
+    const { paperType, questionType } = config;
 
-    if (config.paperType === "Quizo" && config.questionType === "Pdf") {
+    if (paperType === "Quizo" && questionType === "Pdf") {
         return <QuizoPdfUploadPanel paperDetails={paperDetails} />;
     }
 
-    if (config.paperType === "Examania" && config.questionType === "Pdf") {
+    if (paperType === "Examania" && questionType === "Pdf") {
         return <ExamaniaPdfUploadPanel paperDetails={paperDetails} />;
     }
 
@@ -117,11 +120,11 @@ export default function PaperDetail({ details }) {
                 submissionTime: "10",
                 questionType: "",
                 paperType: "Quizo",
-                paperRejoin: "2",
+                paperRejoin: "3",
                 examType: "",
                 totalMarks: "",
                 testType: "",
-                duration: "",
+                duration: "15",
                 numberOfQuestions: "",
                 startTime: formatISO(new Date()),
                 endTime: formatISO(new Date()),
@@ -129,7 +132,7 @@ export default function PaperDetail({ details }) {
             },
             teacherId: "",
             studentId: [],
-        }
+        },
     );
 
     useEffect(() => {
@@ -147,9 +150,9 @@ export default function PaperDetail({ details }) {
     };
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="md" style={{ backgroundColor: "#eceff1" }}>
             <Grid container spacing={4}>
-                <Grid item xs={12} />
+                <Grid item xs={12}></Grid>
                 <Grid item md={3}>
                     {/* paper type */}
                     <TextField
@@ -260,19 +263,19 @@ export default function PaperDetail({ details }) {
                     {/* paper total marks */}
                     <TextField
                         fullWidth
+                        type="number"
                         label="Total Marks"
                         variant="outlined"
                         value={form.config.totalMarks}
                         onChange={(e) => {
                             const value = e.target.value;
-                            const numberRegx = /^(\s*|\d+)$/;
-
-                            if (value.match(numberRegx)) {
-                                dispatch({
-                                    type: "config",
-                                    value: { totalMarks: value },
-                                });
-                            }
+                            // const numberRegx = /^(\s*|\d+)$/;
+                            dispatch({
+                                type: "config",
+                                value: { totalMarks: value },
+                            });
+                            // if (value.match(numberRegx)) {
+                            // }
                         }}
                     />
                 </Grid>
@@ -306,7 +309,7 @@ export default function PaperDetail({ details }) {
                         fullWidth
                         variant="outlined"
                         label="Enter Topics"
-                        placeholder="Press enter key for next topic"
+                        placeholder="Type topic name then press enter key"
                         defaultValue={form.topicList}
                         onChange={(value) => {
                             dispatch({ type: "topic", value: value });
@@ -342,18 +345,20 @@ export default function PaperDetail({ details }) {
                     {/* paper duration */}
                     <TextField
                         fullWidth
+                        type="number"
                         label="Paper Durations"
                         placeholder="In Min"
                         variant="outlined"
                         value={form.config.duration}
                         onChange={(event) => {
                             const time = event.target.value;
-                            const numberRegx = /^(\s*|\d+)$/;
+                            // const numberRegx = /^(\s*|\d+)$/;
 
-                            if (time.match(numberRegx)) {
-                                const end = add(parseISO(form.config.datetime), { minutes: Number(time) });
-                                dispatch({ type: "config", value: { duration: time, endTime: formatISO(end) } });
-                            }
+                            const end = add(parseISO(form.config.datetime), { minutes: Number(time) });
+                            dispatch({ type: "config", value: { duration: time, endTime: formatISO(end) } });
+
+                            // if (time.match(numberRegx)) {
+                            // }
                         }}
                     />
                 </Grid>
@@ -385,19 +390,20 @@ export default function PaperDetail({ details }) {
                     {/* paper rejoin */}
                     <TextField
                         fullWidth
+                        type="number"
                         label="Paper Rejoin"
                         variant="outlined"
                         value={form.config.paperRejoin}
                         onChange={(e) => {
                             const value = e.target.value;
-                            const numberRegx = /^(\s*|\d+)$/;
+                            // const numberRegx = /^(\s*|\d+)$/;
 
-                            if (value.match(numberRegx)) {
-                                dispatch({
-                                    type: "config",
-                                    value: { paperRejoin: value },
-                                });
-                            }
+                            dispatch({
+                                type: "config",
+                                value: { paperRejoin: value },
+                            });
+                            // if (value.match(numberRegx)) {
+                            // }
                         }}
                     />
                 </Grid>
@@ -405,6 +411,7 @@ export default function PaperDetail({ details }) {
                     {/* number of questions */}
                     <TextField
                         fullWidth
+                        type="number"
                         variant="outlined"
                         placeholder="Questions"
                         label="Number of Questions"
@@ -457,17 +464,18 @@ export default function PaperDetail({ details }) {
                             </MenuItem>
                         ))}
                     </TextField>
-                </Grid>
-                <Grid item md={6} />
-                <Grid item md={6}>
                     <FormControlLabel
-                        label="Select All"
-                        control={<Switch color="primary" />}
-                        value={selectAll}
-                        onChange={() => {
-                            dispatch({ type: "student", value: [] });
-                            setSelectAll((prev) => !prev);
-                        }}
+                        label="All students"
+                        control={
+                            <Switch
+                                color="primary"
+                                value={selectAll}
+                                onChange={() => {
+                                    setSelectAll((prev) => !prev);
+                                    dispatch({ type: "student", value: [] });
+                                }}
+                            />
+                        }
                     />
                 </Grid>
                 <Grid item md={6}>
@@ -496,13 +504,16 @@ export default function PaperDetail({ details }) {
             <Dialog
                 keepMounted={false}
                 fullScreen
+                classes={{
+                    paper: classes.paper,
+                }}
                 TransitionComponent={Transition}
                 open={openDialog}
                 onClose={() => setDialog(false)}
             >
-                <Container style={{ backgroundColor: "#eceff1", minHeight: "100vh" }} maxWidth="xl">
-                    <RenderPanel paperDetails={form} />
-                </Container>
+                <RenderPanel paperDetails={form} />
+                {/* <Container maxWidth="xl">
+                </Container> */}
             </Dialog>
             <Snack
                 open={snack.open}

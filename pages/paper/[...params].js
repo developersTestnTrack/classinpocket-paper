@@ -1,10 +1,9 @@
 import { useQuery } from "react-query";
+import { Container, Typography } from "@material-ui/core";
 
 import { Progress } from "@/components/Common";
 import PaperDetail from "@/components/exam-paper-generate/PaperDetail";
-
 import { getClassById } from "@/utils/api/firebase-api/query";
-import { Container, Typography } from "@material-ui/core";
 
 export function getServerSideProps({ params }) {
     return {
@@ -18,7 +17,11 @@ export default function PaperPage({ params }) {
     });
 
     if (isLoading) {
-        return <Progress />;
+        return (
+            <Container style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                <Progress />
+            </Container>
+        );
     }
 
     if (data.teacher_list.length === 0 || data.student_list.length === 0) {

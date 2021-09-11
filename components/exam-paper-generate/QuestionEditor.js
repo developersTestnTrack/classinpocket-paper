@@ -22,7 +22,7 @@ export default function QuestionEditor({ paperDetails }) {
                 cat: paperDetails.config.paperType === "Examania" ? "Subjective" : "MCQ",
                 type: paperDetails.config.paperType === "Examania" ? "None" : "Multiple",
                 pdf: "link",
-                video: "",
+                video: "link",
                 subjectId: "",
                 courseId: "",
             },

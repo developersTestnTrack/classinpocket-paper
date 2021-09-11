@@ -33,7 +33,7 @@ export function validatePaperForm(payload) {
         class: yup.string().required(),
         class_id: yup.string().required(),
         section: yup.string().required(),
-        subjectList: yup.array().required(),
+        subjectList: yup.array().of(yup.string()).required().min(1),
         topicList: yup.array().of(yup.string()).required().min(1),
         config: yup.object({
             name: yup.string().required(),

@@ -76,11 +76,11 @@ export default function QuestionDetailPanel() {
                             }}
                         />
                     </ListItem> */}
-                    <ListItem>
+                    {/* <ListItem>
                         <TextField
                             fullWidth
                             size="small"
-                            label="Video Solution Link"
+                            label="Video Link"
                             placeholder="Video Solution Link"
                             variant="outlined"
                             value={question.config.video}
@@ -93,7 +93,7 @@ export default function QuestionDetailPanel() {
                                 });
                             }}
                         />
-                    </ListItem>
+                    </ListItem> */}
                     {paper.config.paperType !== "Examania" ? (
                         <ListItem>
                             <TextField
