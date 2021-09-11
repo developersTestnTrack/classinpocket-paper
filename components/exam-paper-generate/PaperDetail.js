@@ -132,7 +132,7 @@ export default function PaperDetail({ details }) {
             },
             teacherId: "",
             studentId: [],
-        },
+        }
     );
 
     useEffect(() => {
