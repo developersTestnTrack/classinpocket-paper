@@ -1,6 +1,5 @@
-import { forwardRef, useEffect } from "react";
+import { useState, useReducer, forwardRef } from "react";
 import dynamic from "next/dynamic";
-import { useState, useReducer } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { parseISO, add, formatISO } from "date-fns";
 import {
@@ -134,10 +133,6 @@ export default function PaperDetail({ details }) {
             studentId: [],
         }
     );
-
-    useEffect(() => {
-        console.log(form);
-    });
 
     const handleDateChange = (type, date) => {
         if (type === "start") {
@@ -512,8 +507,6 @@ export default function PaperDetail({ details }) {
                 onClose={() => setDialog(false)}
             >
                 <RenderPanel paperDetails={form} />
-                {/* <Container maxWidth="xl">
-                </Container> */}
             </Dialog>
             <Snack
                 open={snack.open}
