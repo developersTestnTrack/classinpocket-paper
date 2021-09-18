@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { format } from "date-fns";
 import { Typography, Container, Grid, Paper, Divider, Button } from "@material-ui/core";
+import Image from "next/image";
 import { GetApp as GetAppIcon } from "@material-ui/icons";
 
 import { firebaseStorage } from "@/utils/api/firebase-api/fire";
@@ -44,13 +45,11 @@ export default function Links() {
         return <Progress />;
     }
 
-    console.log(data);
-
     return (
         <Container maxWidth="xs">
             <Grid container>
                 <Grid style={{ display: "flex", justifyContent: "center", width: "100%" }} item xs={12}>
-                    <img src="/black_logo.png" alt="logo" />
+                    <Image width={400} height={129} layout="fixed" src="/black_logo.png" alt="logo" />
                 </Grid>
                 <Grid item xs={12} style={{ padding: "16px" }}>
                     <Grid container component={Paper} style={{ padding: "16px" }} spacing={1}>
