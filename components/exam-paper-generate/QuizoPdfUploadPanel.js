@@ -179,14 +179,14 @@ export default function PdfUpload({ paperDetails }) {
             },
         };
 
-        console.log(paper);
-
         if (!questinPdf.isSelect) {
             setSnackState({ open: true, msg: "Please select question pdf", status: "error" });
         } else if (questionMarksList.every((ele) => ele.marks.length === 0)) {
             setSnackState({ open: true, msg: "Please fill all the options", status: "error" });
         } else if (pdf.perQuestionMarks.length === 0 || pdf.negativeMarks.length === 0) {
             setSnackState({ open: true, msg: "Please fill marks", status: "error" });
+        } else if (Object.values(paper.pdf.answer_key).some((el) => el.length === 0)) {
+            setSnackState({ open: true, msg: "Please fill all options", status: "error" });
         } else {
             mutate({
                 paper: paper,
@@ -196,10 +196,6 @@ export default function PdfUpload({ paperDetails }) {
             });
         }
     };
-
-    useEffect(() => {
-        console.log(questionMarksList);
-    });
 
     return (
         <>
@@ -300,18 +296,7 @@ export default function PdfUpload({ paperDetails }) {
                                     </Typography>
                                 </div>
                             </Grid>
-                            <Grid item xs={6}>
-                                {/* <span style={{ flex: 1 }}></span>
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={() => {
-                                    onClickSubmit();
-                                }}
-                            >
-                                Submit Paper
-                            </Button> */}
-                            </Grid>
+                            <Grid item xs={6}></Grid>
 
                             {/* Per question options */}
                             {questionMarksList.length !== 0 && (
