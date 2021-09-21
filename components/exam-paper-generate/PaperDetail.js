@@ -123,7 +123,7 @@ export default function PaperDetail({ details }) {
                 examType: "",
                 totalMarks: "",
                 testType: "",
-                duration: "15",
+                duration: "",
                 numberOfQuestions: "",
                 startTime: formatISO(new Date()),
                 endTime: formatISO(new Date()),
